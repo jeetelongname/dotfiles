@@ -1,0 +1,24 @@
+[global_config]
+  suppress_multiple_term_dialog = True
+[keybindings]
+  split_horiz = <Alt>h
+  split_vert = <Alt>v
+  help = <Primary><Shift>h
+[profiles]
+  [[default]]
+    background_darkness = 0.7
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+    font = InconsolataGo Nerd Font 15
+    show_titlebar = False
+    scrollbar_position = hidden
+    use_system_font = False
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+[plugins]

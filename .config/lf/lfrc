@@ -1,0 +1,25 @@
+# Some simple lf settings
+
+set shell zsh
+set icons
+set color256
+
+# functions
+
+cmd delete ${{
+	set -f
+	printf "%s\n\t" "$fx"
+	printf "delete?[y/N]"
+	read ans
+	[ $ans = "y" ] && rm -rf $fx
+}}
+
+cmd bulkrename ${{
+    vidir
+}}
+
+
+#bindings
+
+map D delete
+map b bulkrename
