@@ -1,0 +1,15 @@
+#!/bin/sh
+
+xclip -h 2>/dev/null || exit 1
+
+Selected=$(cut -d ';' -f1 ~/.local/share/emoji | dmenu -F -i -l 20 -p "select emoji" -b | sed "s/ .*//")
+
+[ "$Selected" != "" ] || exit
+
+if [ -n "$1" ]; then
+    xdotool key Shift+Insert
+else
+    echo "$Selected" | tr -d '\n' | xclip -selection clipboard
+	notify-send -i -u low "'$Selected' copied to clipboard." &
+fi
+

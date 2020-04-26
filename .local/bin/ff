@@ -1,0 +1,11 @@
+#! /bin/sh
+
+if [ "$*" = "-w" ] ; then
+    figlet -Sw 50 -f slant $1 >> ~/header-for-confs.yeet
+    cat ~/header-for-confs.yeet
+elif [ "$*" = "-h" ] ; then
+    echo  " ff [-w] [-h] \n\t -w (writes the files to ~/header-for-confs.yeet ) \n\t -h prints this message and exits "
+    exit
+else
+    figlet -Sw 50 -f slant $1
+fi
