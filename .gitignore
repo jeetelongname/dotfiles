@@ -75,3 +75,7 @@ Videos
 .config/awesome/freedesktop
 .config/awesome/lain
 .config/awesome/themes
+
+# zsh cleanup
+
+.config/zsh/.zcompdump
