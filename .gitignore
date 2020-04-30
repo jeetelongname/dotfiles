@@ -12,6 +12,7 @@
 .minecraft
 .pki
 .rustup
+.sane
 .ssh
 .sudo_as_admin_successful
 .texlive2019
