@@ -80,3 +80,4 @@ Videos
 # zsh cleanup
 
 .config/zsh/.zcompdump
+.config/zsh/.zcompdump*
