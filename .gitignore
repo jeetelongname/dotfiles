@@ -45,6 +45,7 @@ Videos
 .config/chromium
 .config/dconf
 .config/deepin
+**/.config/discord/
 **/.config/discordcanary/
 .config/enchant
 .config/eog
