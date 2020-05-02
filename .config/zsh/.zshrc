@@ -63,6 +63,6 @@ source $HOME/.config/pfetch/pfetchconfig.sh && pfetch || (echo pfetch config not
 #sourcing the oh my zsh script
 source $ZSH/oh-my-zsh.sh
 ##for syntax highlighting. 
-source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 ##for autocomplete in zsh. 
-source $ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
