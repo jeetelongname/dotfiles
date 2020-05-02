@@ -1,11 +1,12 @@
 #!/usr/bin env sh
-
-basics=(zsh alacritty neovim emacs)
-code=(golang python3-pip rustc)
-GNOME=(gnome-pomadoro gnome-backgrounds gnome-paint)
-appformats=(flatpak snapd)
-
-sudo apt-get install 
+packages=(
+    basics=(zsh alacritty neovim emacs)
+    lang=(golang python3-pip rustc)
+    term=(xdotool tree)
+    GNOME=(gnome-pomadoro gnome-backgrounds gnome-paint)
+    appformats=(flatpak snapd)
+)
+sudo apt-get install $packages
 wget -qO- https://git.io/papirus-icon-theme-install | sh
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
