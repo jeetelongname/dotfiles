@@ -3,6 +3,7 @@
 basics=(zsh alacritty neovim emacs)
 code=(golang python3-pip rustc)
 GNOME=(gnome-pomadoro gnome-backgrounds gnome-paint)
+appformats=(flatpak snapd)
 
 sudo apt-get install 
 wget -qO- https://git.io/papirus-icon-theme-install | sh
