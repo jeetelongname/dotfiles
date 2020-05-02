@@ -36,6 +36,7 @@ Videos
 .local/share
 .local/lib
 .local/bin/Appimages
+.local/bin/exa
 # .config cleanup
 
 .config/autostart
