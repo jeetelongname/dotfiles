@@ -85,4 +85,7 @@ Videos
 
 .config/zsh/.zcompdump
 .config/zsh/.zcompdump*
+<<<<<<< HEAD
 **/.config/zsh/plugins/*
+=======
+>>>>>>> f353835b677d7613d423e3d773e0c3ca35cd90d4
