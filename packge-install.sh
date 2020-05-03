@@ -5,6 +5,7 @@ packages=(
     term=(xdotool tree)
     GNOME=(gnome-pomadoro gnome-backgrounds gnome-paint)
     appformats=(flatpak snapd)
+    games=(ninvaders moonbuggy)
 )
 sudo apt-get install $packages
 wget -qO- https://git.io/papirus-icon-theme-install | sh
