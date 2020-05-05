@@ -1,12 +1,11 @@
-#!/usr/bin env sh
-packages=(
-    basics=(zsh alacritty neovim emacs)
-    lang=(golang python3-pip rustc texlive-full)
-    term=(xdotool tree neofetch)
-    GNOME=(gnome-shell-pomodoro gnome-backgrounds gnome-paint)
-    appformats=(flatpak snapd)
-    games=(ninvaders moonbuggy)
-)
+#!/usr/bin env bash
+packages=((zsh alacritty neovim emacs
+          golang python3-pip rustc texlive-full
+          xdotool tree neofetch
+          gnome-shell-pomodoro gnome-backgrounds gnome-paint
+          flatpak snapd
+          ninvaders moonbuggy
+          libavcodec-extra))
 
 sudo apt-get install $packages 
 wget -qO- https://git.io/papirus-icon-theme-install | sh
