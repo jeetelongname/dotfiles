@@ -75,6 +75,7 @@ Videos
 .config/spotify
 .config/skypeforlinux
 .config/teams
+.config/user-dirs.dirs
 # awesome cleanup
 .config/awesome/awesome-copycats
 .config/awesome/awesome-wm-widgets
@@ -89,4 +90,3 @@ Videos
 <<<<<<< HEAD
 **/.config/zsh/plugins/*
 =======
->>>>>>> f353835b677d7613d423e3d773e0c3ca35cd90d4
