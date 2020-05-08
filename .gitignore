@@ -37,6 +37,8 @@ Videos
 .local/lib
 .local/bin/Appimages
 .local/bin/exa
+.local/bin/ytop
+.local/state
 # .config cleanup
 
 .config/autostart
