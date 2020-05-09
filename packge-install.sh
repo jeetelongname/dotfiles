@@ -8,6 +8,7 @@ packages=(zsh alacritty neovim emacs
           notrogen 
           ninvaders moonbuggy figlet lolcat cowsay
           libavcodec-extra)
+
 sudo apt-get install < $("${packages[*]}"| xargs)
 # wget -qO- https://git.io/papirus-icon-theme-install | sh
 # sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
