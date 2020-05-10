@@ -48,7 +48,7 @@
 
 (setq prettify-symbols-mode t)
 ;; some simple additions to the modeline that make it more usable for me
-(setq doom-modeline-buffer-file-name-style 'truncate-upto-project
+(setq doom-modeline-buffer-file-name-style 'truncate-upto-root
       doom-modeline-height 3
       doom-modeline-icon 't
       doom-modeline-modal-icon 'nil
