@@ -1,8 +1,8 @@
 #!/usr/bin env bash
 
 packages=(zsh alacritty neovim emacs
-          golang python3-pip rustc texlive-full
-          xdotool tree neofetch git aptitude
+          golang python3-pip rustc texlive-full markdown
+          xdotool tree neofetch git aptitude 
           gnome-shell-pomodoro gnome-backgrounds gnome-paint dconf-editor gnome-tweaks
           flatpak snapd
           notrogen 
