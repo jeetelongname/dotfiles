@@ -1,7 +1,7 @@
-#+TITLE: Readme
+#+TITLE: Me Dot files
 
-* Me Dot-files
-there is a configuration for ...
+* Some Configs I have wrote over time. If they have quirks (or need Rewriting) then Do let me know!
+** there is a configuration for ...
     - alacritty
     - compton
     - Doom Emacs
@@ -13,5 +13,5 @@ there is a configuration for ...
     - zsh
     - tmux
     - probably more that I forgot about
-* Installation
+** Installation
 I have written these by hand for the  most part and have not really set them up on another system so symlink them i guess. if i write an install script i will put it here
