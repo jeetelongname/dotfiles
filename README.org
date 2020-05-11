@@ -1,0 +1,17 @@
+#+TITLE: Readme
+
+* Me Dot-files
+there is a configuration for ...
+    - alacritty
+    - compton
+    - Doom Emacs
+    - Dunst (barley)
+    - Herbstluftwm
+    - neofetch
+    - pfetch
+    - rofi (not really)
+    - zsh
+    - tmux
+    - probably more that I forgot about
+* Installation
+I have written these by hand for the  most part and have not really set them up on another system so symlink them i guess. if i write an install script i will put it here
