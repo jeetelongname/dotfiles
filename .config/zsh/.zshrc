@@ -1,4 +1,5 @@
-#                     __      
+#!/usr/bin env zsh
+#                     __
 #    __  _____  ___  / /______
 #   / / / / _ \/ _ \/ __/ ___/
 #  / /_/ /  __/  __/ /_(__  ) 
@@ -59,7 +60,15 @@ plugins=( ## these are oh-my-zsh plugins (i will probably move to a plugin manag
 )
 # pfetch is configured through enviroment varables.
 # so for a cleaner config i move that to a diffrent file with a bit of error checking aswell
-source $HOME/.config/pfetch/pfetchconfig.sh && pfetch || (echo pfetch config not found && pfetch)
+if [ -f  "/usr/bin/pfetch" ] ; then
+   if [ -f  ~/.config/pfetch/pfetchconfig.sh ] ; then
+       (source $HOME/.config/pfetch/pfetchconfig.sh && pfetch)
+    else
+        (echo pfetch config not found && pfetch)
+    fi
+else
+    echo "pfetch not installed"
+fi
 #sourcing the oh my zsh script
 source $ZSH/oh-my-zsh.sh
 ##for syntax highlighting. 
