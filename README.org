@@ -10,6 +10,7 @@ If they have quirks (or need Rewriting) then Do let me know!
     - [[https://herbstluftwm.org][Herbstluftwm]]
     - [[https://github.com/dylanaraps/neofetch][neofetch]]
     - [[https://github.com/dylanaraps/pfetch][pfetch]]
+    - [[https://polybar.github.io][polybar]]
     - [[https://github.com/davatorium/rofi][rofi (not really)]]
     - [[https://www.zsh.org][zsh]]
     - [[https://github.com/tmux/tmux/wiki][tmux]]
