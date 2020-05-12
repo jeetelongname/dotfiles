@@ -3,16 +3,16 @@
 * Some Configs I have wrote over time...
 If they have quirks (or need Rewriting) then Do let me know!
 ** there is a configuration for ...
-    - [[]]
-    - compton
-    - Doom Emacs
-    - Dunst (barley)
-    - Herbstluftwm
-    - neofetch
-    - pfetch
-    - rofi (not really)
-    - zsh
-    - tmux
+    - [[https://github.com/alacritty][alacritty]]
+    - [[https://github.com/chjj/compton][compton]]
+    - [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
+    - [[https://dunst-project.org/][Dunst (barley)]]
+    - [[https://herbstluftwm.org][Herbstluftwm]]
+    - [[https://github.com/dylanaraps/neofetch][neofetch]]
+    - [[https://github.com/dylanaraps/pfetch][pfetch]]
+    - [[https://github.com/davatorium/rofi][rofi (not really)]]
+    - [[https://www.zsh.org][zsh]]
+    - [[https://github.com/tmux/tmux/wiki][tmux]]
     - probably more that I forgot about
 ** Other Stuff include ...
     - some scripts i have collected / wrote
