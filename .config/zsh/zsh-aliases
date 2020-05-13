@@ -11,6 +11,7 @@ alias shut='shutdown now'
 alias py='python3'
 alias doom='~/.emacs.d/bin/doom'
 alias ap="sudo aptitude"
+alias gitsta='git status'
 # moving files out of my home directory
 alias bash='bash --rcfile ~/.config/bash/.bashrc'
 alias tmux="tmux -f ~/.config/tmux/tmux.conf"
