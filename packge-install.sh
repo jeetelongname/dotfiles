@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-echo "yeet"
 packages=(zsh alacritty neovim emacs nitrogen build-essential ## the basics (goes on any system no natter what)
           golang python3-pip rustc texlive-full markdown ## the languages and the backends that i use
           xdotool tree neofetch git aptitude pandoc ## some nice commandline apps tht i use
