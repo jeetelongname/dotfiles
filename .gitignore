@@ -17,6 +17,7 @@
 .ssh
 .sudo_as_admin_successful
 .texlive2019
+.tmux
 .var
 .vim
 Documents
