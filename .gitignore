@@ -90,7 +90,4 @@ Videos
 
 .config/zsh/.zcompdump
 .config/zsh/.zcompdump*
-<<<<<<< HEAD
-**/.config/zsh/plugins/*
-=======
-yeets
+.config/zsh/plugins
