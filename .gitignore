@@ -38,6 +38,7 @@ Videos
 .local/share
 .local/lib
 .local/bin/Appimages
+.local/bin/dotenv
 .local/bin/exa
 .local/bin/ytop
 .local/state
