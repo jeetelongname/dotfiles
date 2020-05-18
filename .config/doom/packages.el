@@ -50,6 +50,16 @@
 ;; our package manager can't deal with; see raxod502/straight.el#279)
 ;(package! builtin-package :recipe (:branch "develop"))
 ;; simple package that makes scrolling a little better on emacs
-;; (package! smooth-scrolling
-;;   :recipe (:host github :repo DarwinAwardWinner/smooth-scrolling
-;;                  :files smooth-scrolling.el))
+;; Comands!
+;; (unpin! some-package  ; unpins the package from the commits thats holding them
+;;         other-package) set to "t" to live on the edge (Unpin all packages)
+;; (package! some-package) ; this would declare it straight from melpa elpa or emacs mirror
+;; (package! some-package
+;;   :recipe (
+;;            :host some-git-remote-provider
+;;            :repo "username/repo"
+;;             :files ("Some-files") )) ; if you want a cetain file then use the flie property
+(package! smooth-scrolling
+  :recipe (:host github
+           :repo "DarwinAwardWinner/smooth-scrolling"
+                 :files ("smooth-scrolling.el")))

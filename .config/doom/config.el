@@ -50,6 +50,16 @@
       centaur-tabs-modified-marker "Ø"
       )
 
+(setq fancy-splash-image "~/.config/doom/icons/emacs-icon.png")
+(custom-theme-set-faces! 'doom-horizon
+  '(doom-dashboard-footer :inherit font-lock-constant-face)
+  '(doom-dashboard-footer-icon :inherit all-the-icons-red)
+  '(doom-dashboard-loaded :inherit font-lock-warning-face)
+  '(doom-dashboard-menu-desc :inherit font-lock-string-face)
+  '(doom-dashboard-menu-title :inherit font-lock-function-name-face))
+
+(require 'smooth-scrolling)
+(smooth-scrolling-mode 1)
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;; - `load!' for loading external *.el files relative to this one
 ;; - `use-package' for configuring packages
