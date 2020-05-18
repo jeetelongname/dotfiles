@@ -65,6 +65,7 @@ plugins=( ## these are oh-my-zsh plugins (i will probably move to a plugin manag
     colorize
     golang
     themes
+    tmx
 )
 # pfetch is configured through enviroment varables.
 # so for a cleaner config i move that to a diffrent file with a bit of error checking aswell
