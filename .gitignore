@@ -73,7 +73,7 @@ Videos
 .config/Microsoft
 .config/nautilus
 .config/Nextcloud
-**/.config/nvim/autoload/*
+**/.config/nvim/autoload/**
 **/.config/oh-my-zsh/
 .config/pulse
 .config/Rygel
