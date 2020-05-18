@@ -1,4 +1,4 @@
-#!/usr/bin env zsh
+#!/usr/bin/env zsh
 #                     __
 #    __  _____  ___  / /______
 #   / / / / _ \/ _ \/ __/ ___/
@@ -54,6 +54,7 @@ ZSH_THEME=muse
 plugins=( ## these are oh-my-zsh plugins (i will probably move to a plugin manager)
     git
     colored-man-pages
+    cargo
     colorize
     golang
     themes
