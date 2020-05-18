@@ -11,4 +11,4 @@ packages=(zsh alacritty neovim emacs nitrogen build-essential ## the basics (goe
          )
 echo ${packages[*]} | xargs sudo apt install -y
 # wget -qO- https://git.io/papirus-icon-theme-install | sh
-# sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
