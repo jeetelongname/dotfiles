@@ -1,28 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
-
-;; To install a package with Doom you must declare them here, run 'doom sync' on
-;; the command line, then restart Emacs for the changes to take effect.
-;; Alternatively, use M-x doom/reload.
-;;
-;; WARNING: Disabling core packages listed in ~/.emacs.d/core/packages.el may
-;; have nasty side-effects and is not recommended.
-
-
-;; All of Doom's packages are pinned to a specific commit, and updated from
-;; release to release. To un-pin all packages and live on the edge, do:
-;(unpin! t)
-
-;; ...but to unpin a single package:
-;(unpin! pinned-package)
-;; Use it to unpin multiple packages
-;(unpin! pinned-package another-pinned-package)
-
-
-;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
-;(package! some-package)
-
-;; To install a package directly from a particular repo, you'll need to specify
 ;; a `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format
 ;(package! another-package
@@ -49,17 +26,29 @@
 ;; This is required for some packages whose default branch isn't 'master' (which
 ;; our package manager can't deal with; see raxod502/straight.el#279)
 ;(package! builtin-package :recipe (:branch "develop"))
-;; simple package that makes scrolling a little better on emacs
 ;; Comands!
 ;; (unpin! some-package  ; unpins the package from the commits thats holding them
 ;;         other-package) set to "t" to live on the edge (Unpin all packages)
 ;; (package! some-package) ; this would declare it straight from melpa elpa or emacs mirror
 ;; (package! some-package
 ;;   :recipe (
-;;            :host some-git-remote-provider
+;;            :host some-git-remote-provider (github gitlab)
 ;;            :repo "username/repo"
-;;             :files ("Some-files") )) ; if you want a cetain file then use the flie property
+;;            :branch "some branch"
+;;            :files ("Some-files") )) ; if you want a cetain file then use the file property
+;; (package! some-package
+;;   `:type'some type ; specifys the type
+;;   `:disable' BOOL ; disables the packages and all of its use package configs
+;;   `:ignore' FORM ; don't install this package
+;;   `:pin' STR|nil ; same as `:ignore' but for built in packages
+;;   `:built-in' BOOL | 'prefer
+;;   )
+;; simple package that makes scrolling a little better on emacs
 (package! smooth-scrolling
   :recipe (:host github
            :repo "DarwinAwardWinner/smooth-scrolling"
-                 :files ("smooth-scrolling.el")))
+            :files ("smooth-scrolling.el")))
+;; (package! sublimity
+;;   :recipe (:host github
+;;            :repo "zk-phi/sublimity"
+;;             :files ("*.el")))
