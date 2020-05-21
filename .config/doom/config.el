@@ -10,7 +10,7 @@
       doom-theme 'doom-horizon  ; pretty self explanitory
       treemacs-width 30
       display-line-numbers-type 'relative ; i like my autocomplete like my tea fast and always
-      company-idle-delay 1)
+      company-idle-delay 0.1)
 
 ;;
 (setq doom-font
@@ -58,8 +58,6 @@
   '(doom-dashboard-menu-desc :inherit font-lock-string-face)
   '(doom-dashboard-menu-title :inherit font-lock-function-name-face))
 
-(require 'smooth-scrolling)
-(smooth-scrolling-mode 1)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;; - `load!' for loading external *.el files relative to this one
