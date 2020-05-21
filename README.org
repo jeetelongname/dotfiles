@@ -21,6 +21,5 @@ If they have quirks (or need Rewriting) then Do let me know!
     - some files that probably should not be here
 ** Installation
 I have written these by hand for the  most part and have not really set them up on another system so symlink them i guess. if i write an install script i will put it here
-
 ** Any Questions email me here!
 [[mailto:jeetelongname@gmail.com][jeetelongname@gmail.com]]

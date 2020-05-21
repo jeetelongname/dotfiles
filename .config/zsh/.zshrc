@@ -59,11 +59,12 @@ ZSH_THEME=muse
 #Set up the prompt
 
 plugins=( ## these are oh-my-zsh plugins (i will probably move to a plugin manager)
-    git
-    colored-man-pages
     cargo
+    colored-man-pages
     colorize
+    git
     golang
+    pip
     themes
     tmux
 )

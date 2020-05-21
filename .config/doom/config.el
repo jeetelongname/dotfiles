@@ -1,16 +1,14 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
+;; sync' after modifying this file! run SPC-m-e-b (this reruns the config)
 
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
       doom-theme 'doom-horizon  ; pretty self explanitory
       treemacs-width 30
-      display-line-numbers-type 'relative ; i like my autocomplete like my tea fast and always
-      company-idle-delay 0.1)
+      display-line-numbers-type 'relative
+      company-idle-delay 0.1) ; i like my autocomplete like my tea fast and always
 
 ;;
 (setq doom-font
@@ -39,19 +37,27 @@
       doom-modeline-mu4e 't
       doom-modeline-env-version t
       doom-modeline-env-enable-python 't
-      doom-modeline-env-enable-go 't)
+      doom-modeline-env-enable-go 't
+      doom-modeline-icon(display-graphic-p)
+      doom-modeline-major-mode-color-icon t
+      doom-modeline-buffer-modification-icon t
+      doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
+
+      
+      )
 ;; changes to the tab bar
 
-(setq centaur-tabs-style "slant"
-      centaur-tabs-height 25
+(setq centaur-tabs-style "zigzag"
+      centaur-tabs-height 5
       centaur-tabs-show-navigation-buttons t
       centaur-tabs-set-bar 'under
+      x-underline-at-descent-line t
       centaur-tabs-close-button "×"
       centaur-tabs-modified-marker "Ø"
       )
 
 (setq fancy-splash-image "~/.config/doom/icons/emacs-icon.png")
-(custom-theme-set-faces! 'doom-horizon
+(custom-theme-set-faces!
   '(doom-dashboard-footer :inherit font-lock-constant-face)
   '(doom-dashboard-footer-icon :inherit all-the-icons-red)
   '(doom-dashboard-loaded :inherit font-lock-warning-face)
