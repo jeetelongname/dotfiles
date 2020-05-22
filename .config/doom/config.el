@@ -42,8 +42,6 @@
       doom-modeline-major-mode-color-icon t
       doom-modeline-buffer-modification-icon t
       doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
-
-      
       )
 ;; changes to the tab bar
 
