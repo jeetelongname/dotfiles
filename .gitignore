@@ -79,8 +79,10 @@ Videos
 .config/pulse
 .config/Rygel
 .config/spotify
+.config/spwm
 .config/skypeforlinux
 .config/teams
+.config/transmission/**
 .config/user-dirs.dirs
 # awesome cleanup
 .config/awesome/awesome-copycats
