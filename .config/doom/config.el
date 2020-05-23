@@ -8,7 +8,7 @@
       doom-theme 'doom-horizon  ; pretty self explanitory
       treemacs-width 30
       display-line-numbers-type 'relative
-      company-idle-delay 0.1) ; i like my autocomplete like my tea fast and always
+      company-idle-delay 0.5) ; i like my autocomplete like my tea fast and always
 
 ;;
 (setq doom-font
