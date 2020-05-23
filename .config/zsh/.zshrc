@@ -47,21 +47,18 @@ if [[ $DISPLAY ]]; then
 fi
 
 ## bindkey comands
-bindkey -v
 # export KEYTIMEOUT=10
 
-bindkey -s '^f' 'lfcd'
 
-source $ZDOTDIR/zsh-aliases
 
 
 ZSH_THEME=muse
 #Set up the prompt
 
 plugins=( ## these are oh-my-zsh plugins (i will probably move to a plugin manager)
+    alias-finder
     cargo
     colored-man-pages
-    colorize
     git
     golang
     pip
@@ -79,6 +76,7 @@ if [ -f  "/usr/bin/pfetch" ] ; then
 else
     echo "pfetch not installed"
 fi
+source $ZDOTDIR/zsh-aliases
 #sourcing the oh my zsh script
 source $ZSH/oh-my-zsh.sh
 ##for syntax highlighting. 

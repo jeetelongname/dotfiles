@@ -2,7 +2,7 @@
 
 packages=(zsh alacritty tmux neovim emacs nitrogen build-essential ## the basics (goes on any system no matter what)
           golang python3-pip rustc texlive-full markdown ## the languages and the backends that i use
-          xdotool tree neofetch git aptitude pandoc ## some nice commandline apps tht i use
+          xdotool tree neofetch git aptitude pandoc bat## some nice commandline apps tht i use
           gnome-shell-pomodoro gnome-backgrounds dconf-editor gnome-tweaks ## GNOME apps (because i use Gnome)
           flatpak snapd ## all the apps
           ninvaders moon-buggy figlet lolcat cowsay ##games and all that fun stuff
