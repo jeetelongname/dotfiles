@@ -75,7 +75,7 @@ Videos
 .config/nautilus
 .config/Nextcloud
 **/.config/nvim/autoload/**
-**/.config/oh-my-zsh/**
+**/.config/oh-my-zsh/
 .config/pulse
 .config/Rygel
 .config/spotify
