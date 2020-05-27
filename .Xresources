@@ -1,0 +1,80 @@
+
+
+! The numbers mason. what do they mean!
+! well this is what they mean each colour
+! has a light and dark varient the numbers in the very nice table
+! (thanks luke smith) tell you what what numbers corespond to which colours
+!
+! name     dark   light
+! ---------------------
+! black    0       8
+! red      1       9
+! green    2       10
+! yellow   3       11
+! blue     4       12
+! purple   5       13
+! cyan     6       14
+! white    7       15
+
+! Nord Colour scheme
+!#define nord0  #2E3440
+!#define nord1  #3B4252
+!#define nord2  #434C5E
+!#define nord3  #4C566A
+!#define nord4  #D8DEE9
+!#define nord5  #E5E9F0
+!#define nord6  #ECEFF4
+!#define nord7  #8FBCBB
+!
+!#define nord8  #88C0D0
+!#define nord9  #81A1C1
+!#define nord10 #5E81AC
+!#define nord11 #BF616A
+!#define nord12 #D08770
+!#define nord13 #EBCB8B
+!#define nord14 #A3BE8C
+!#define nord15 #B48EAD
+!
+!! Horizon Colour scheme
+!#define horizon0  #16161C
+!#define horizon1  #1A1C23
+!#define horizon2  #1C1E26
+!#define horizon3  #232530
+!#define horizon4  #2E303E
+!#define horizon5  #6C6F93
+!#define horizon6  #E9436F
+!#define horizon7  #E95379
+!
+!#define horizon8  #F43E5C
+!#define horizon9  #09F7A0
+!#define horizon10 #27D796
+!#define horizon11 #21BFC2
+!#define horizon12 #FAB28E
+! #define horizon13
+! #define horizon14
+! #define horizon15
+
+!*.forground:   nord4
+!*.background:  nord0
+!*.cursorColor: nord4
+!*fading:       35
+!*fadeColor:    nord3
+!
+!*.color0:      nord1
+!*.color1:      nord11
+!*.color2:      nord14
+!*.color3:      nord13
+!*.color4:      nord9
+!*.color5:      nord15
+!*.color6:      nord8
+!*.color7:      nord5
+!
+!*.color8:      nord3
+!*.color9:      nord11
+!*.color10:     nord14
+!*.color11:     nord13
+!*.color12:     nord9
+!*.color13:     nord15
+!*.color14:     nord7
+!*.color15:     nord6
+!

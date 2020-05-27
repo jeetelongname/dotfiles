@@ -82,6 +82,7 @@ Videos
 .config/spwm
 .config/skypeforlinux
 .config/teams
+**/.config/teams-insiders
 .config/user-dirs.dirs
 # awesome cleanup
 .config/awesome/awesome-copycats
