@@ -15,6 +15,7 @@
 .pki
 .python_history
 .npm
+reveal.js
 .rustup
 .sane
 .ssh

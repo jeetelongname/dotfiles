@@ -62,7 +62,6 @@
  "t c" #'rainbow-mode)
 
 (require 'ox-reveal)
-(setq org-reveal-root "")
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
 
