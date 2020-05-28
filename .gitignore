@@ -4,6 +4,7 @@
 .cache
 .cpan
 .cups
+.emacs.d
 .fonts
 .gnupg
 .gtkrc-2.0
