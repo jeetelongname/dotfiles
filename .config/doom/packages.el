@@ -43,12 +43,10 @@
 ;;   `:pin' STR|nil ; same as `:ignore' but for built in packages
 ;;   `:built-in' BOOL | 'prefer
 ;;   )
-;; simple package that makes scrolling a little better on emacs
-(package! smooth-scrolling
-  :recipe (:host github
+(package! smooth-scrolling :recipe (:host github
            :repo "DarwinAwardWinner/smooth-scrolling"
             :files ("smooth-scrolling.el")))
-;; (package! sublimity
-;;   :recipe (:host github
-;;            :repo "zk-phi/sublimity"
-;;             :files ("*.el")))
+
+(package! org-reveal :recipe (:host github
+           :repo "yjwen/org-reveal"
+           :files ("*el")))

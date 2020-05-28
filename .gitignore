@@ -13,6 +13,7 @@
 .minecraft
 .pki
 .python_history
+.npm
 .rustup
 .sane
 .ssh
@@ -46,6 +47,7 @@ Videos
 # .config cleanup
 
 .config/autostart
+.config/configstore
 .config/BraveSoftware
 .config/cef_user_data
 .config/chromium

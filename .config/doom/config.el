@@ -5,10 +5,10 @@
 
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
-      doom-theme 'doom-snazzy; pretty self explanitory
+      doom-theme 'doom-horizon; pretty self explanitory
       treemacs-width 30
       display-line-numbers-type 'relative
-      company-idle-delay 0.5) ; i like my autocomplete like my tea fast and always
+      company-idle-delay 0.1) ; i like my autocomplete like my tea fast and always
 
 ;;
 (setq doom-font
@@ -36,8 +36,6 @@
       doom-modeline-modal-icon 'nil
       doom-modeline-mu4e 't
       doom-modeline-env-version t
-      doom-modeline-env-enable-python 't
-      doom-modeline-env-enable-go 't
       doom-modeline-icon(display-graphic-p)
       doom-modeline-major-mode-color-icon t
       doom-modeline-buffer-modification-icon t
@@ -45,24 +43,28 @@
 ;; changes to the tab bar
 
 (setq centaur-tabs-style "zigzag"
-      centaur-tabs-height 5
+      centaur-tabs-height 3 
       centaur-tabs-show-navigation-buttons t
-      centaur-tabs-set-bar 'left
+      centaur-tabs-set-bar 'under
       x-underline-at-descent-line t
       centaur-tabs-close-button "×"
       centaur-tabs-modified-marker "Ø")
 
-(setq fancy-splash-image "~/.config/doom/icons/emacs-icon.png")
-
-(setq wttrin-default-accept-language
-      '("Accept-Language" . "en-gb")
-      wttrin-default-cities
-      '("London"))
+(setq fancy-splash-image
+      (concat doom-private-dir "icons/emacs-icon.png"))
 
 (setq +mu4e-backend 'offlineimap)
 
+(map! :n
+ "zz " 'save-buffer ;; = :w ZZ = :wq
 
+ :leader
+ "t c" #'rainbow-mode)
 
+(require 'ox-reveal)
+(setq org-reveal-root "")
+(add-hook! 'rainbow-mode-hook
+  (hl-line-mode (if rainbow-mode -1 +1)))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;; - `load!' for loading external *.el files to relative this one
