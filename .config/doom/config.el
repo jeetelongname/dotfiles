@@ -55,11 +55,14 @@
 
 (setq +mu4e-backend 'offlineimap)
 
-(map! :n
- "zz " 'save-buffer ;; = :w ZZ = :wq
+(map!
+ :n
+  "zw" 'save-buffer ;; = :w ZZ = :wq
 
  :leader
- "t c" #'rainbow-mode)
+  :desc "Enable Coloured Values""t c" #'rainbow-mode
+  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode :desc)
+
 
 (require 'ox-reveal)
 (add-hook! 'rainbow-mode-hook
