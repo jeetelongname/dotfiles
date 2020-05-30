@@ -10,6 +10,7 @@
 .gtkrc-2.0
 .hplip
 .icons
+.java
 .mozilla
 .minecraft
 .pki
@@ -20,10 +21,14 @@ reveal.js
 .sane
 .ssh
 .sudo_as_admin_successful
+.steam
 .texlive2019
 .tmux
 .var
 .vim
+.pulse-cookie
+.steampath
+.steampid
 Documents
 Downloads
 git-repos
@@ -35,6 +40,7 @@ perl5
 Pictures
 Python
 snap
+Steam
 Templates
 Videos
 # .local cleanup
