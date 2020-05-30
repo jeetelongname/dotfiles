@@ -1,4 +1,5 @@
 # home directroy cleaning
+*.desktop
 .bash_history
 .cache
 .cache
