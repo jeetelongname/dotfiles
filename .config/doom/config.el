@@ -18,11 +18,16 @@
       doom-big-font
       (font-spec
        :family "Inconsolata Nerd Font"
-       :size 15)
+       :size 20)
       doom-variable-pitch-font
       (font-spec
        :family "Inconsolata Nerd Font"
-       :size 15))
+      :size 15)
+      ;; doom-unicode-font
+      ;; (font-spec
+      ;;  :family "Ligconsolata Regular"
+      ;;  :size 15)
+)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -42,8 +47,8 @@
       doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
 ;; changes to the tab bar
 
-(setq centaur-tabs-style "zigzag"
-      centaur-tabs-height 3 
+(setq centaur-tabs-style "box"
+      centaur-tabs-height 32
       centaur-tabs-show-navigation-buttons t
       centaur-tabs-set-bar 'under
       x-underline-at-descent-line t
@@ -54,7 +59,7 @@
       (concat doom-private-dir "icons/emacs-icon.png"))
 
 (setq +mu4e-backend 'offlineimap)
-
+(setq +treemacs-git-mode 'extended)
 (map!
  :n
   "zw" 'save-buffer ;; = :w ZZ = :wq
