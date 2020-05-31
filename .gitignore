@@ -82,6 +82,7 @@ Videos
 .config/ibus
 .config/libreoffice
 .config/libfm
+.config/libvirt
 .config/Microsoft
 .config/nautilus
 .config/Nextcloud
