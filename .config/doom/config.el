@@ -73,6 +73,19 @@
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
 
+(after! go-mode
+  (set-pretty-symbols! 'go-mode
+    :def "func"
+    ;; :lambda "func("
+    :true "true" :false "false"
+    :int "int" :str "string"
+    :float "float" :bool "bool"
+    :not "!"
+    :and "&&" :or "||"
+    :for "for"
+    :return "return" :yeild "yeild"))
+
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;; - `load!' for loading external *.el files to relative this one
 ;; - `use-package' for configuring packages

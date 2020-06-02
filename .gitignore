@@ -110,3 +110,4 @@ Videos
 .config/zsh/plugins
 /.pip/
 /.cabal/
+/.twittering-mode-user-info.gz
