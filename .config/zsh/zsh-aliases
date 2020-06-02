@@ -20,6 +20,8 @@ alias gitl='git log'
 alias bash='bash --rcfile ~/.config/bash/.bashrc'
 #a little bit of fun
 alias rr='curl -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
+alias c='echo your a dumbass && sleep 0.51'
+alias s='echo "its cls not c;s" && sleep 0.5 && clear'
 alias par='curl parrot.live'
 alias clock='tty-clock -Scxs'
 alias weather='read weath ; curl wttr.in/$weath '
