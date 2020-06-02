@@ -24,6 +24,6 @@ function GitClone (){
 
   )
   for i in repos ; do
-  git clone repos[i]
+    echo ${repos[i]} | xargs git clone
   done
 }
