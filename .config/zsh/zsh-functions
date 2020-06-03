@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+
+
+# Use lf to switch directories and bind it to ctrl-f (its not working at the mo)
+lfcd() {
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp"
+        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+
+if [[ $DISPLAY ]]; then
+    # If not running interactively, do not do anything
+    [[ $- != *i* ]] && return
+    [[ -z "$TMUX" ]] && exec tmux
+fi
+
+if [ -f  "/usr/bin/pfetch" ] ; then
+   if [ -f  ~/.config/pfetch/pfetchconfig.sh ] ; then
+        (echo "yeet")
+        (exec /opt/shell-color-scripts/randomcolors.sh)
+        (source $HOME/.config/pfetch/pfetchconfig.sh && pfetch)
+    else
+        (echo "pfetch config not found" && pfetch)
+    fi
+else
+    echo "pfetch not installed"
+fi
