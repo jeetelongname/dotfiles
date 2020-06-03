@@ -112,3 +112,5 @@ Videos
 /.cabal/
 /.twittering-mode-user-info.gz
 /.config/totem/
+/.buttrc
+/.fltk/
