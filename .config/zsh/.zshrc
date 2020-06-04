@@ -33,7 +33,7 @@ bindkey -v
 
 export ZPLUG_HOME=$ZDOTDIR/zplug/
 source $ZPLUG_HOME/init.zsh
-zplug "plugins/git",   from:oh-my-zsh
+    zplug "plugins/git",   from:oh-my-zsh
 
 export ZSH="$HOME/.config/oh-my-zsh"
 
