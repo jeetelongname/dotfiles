@@ -24,13 +24,3 @@ if [[ $DISPLAY ]]; then
     [[ -z "$TMUX" ]] && exec tmux
 fi
 
-if [ -f  "/usr/bin/pfetch" ] ; then
-   if [ -f  ~/.config/pfetch/pfetchconfig.sh ] ; then
-        # (exec /opt/shell-color-scripts/randomcolors.sh)
-        (source $HOME/.config/pfetch/pfetchconfig.sh && pfetch)
-    else
-        (echo "pfetch config not found" && pfetch)
-    fi
-else
-    echo "pfetch not installed"
-fi
