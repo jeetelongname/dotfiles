@@ -12,6 +12,12 @@ lfcd() {
     fi
 }
 
+zle-line-init() {
+    zle -K viins # initiate `vi insert` as keymap (can be removed if `bindkey -V` has been set elsewhere)
+    echo -ne "\e[5 q"
+}
+zle -N zle-line-init
+
 if [[ $DISPLAY ]]; then
     # If not running interactively, do not do anything
     [[ $- != *i* ]] && return
@@ -20,7 +26,6 @@ fi
 
 if [ -f  "/usr/bin/pfetch" ] ; then
    if [ -f  ~/.config/pfetch/pfetchconfig.sh ] ; then
-        (echo "yeet")
         (exec /opt/shell-color-scripts/randomcolors.sh)
         (source $HOME/.config/pfetch/pfetchconfig.sh && pfetch)
     else

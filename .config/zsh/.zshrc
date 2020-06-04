@@ -31,11 +31,9 @@ _comp_options+=(globdots)		# Include hidden files.
 export KEYTIMEOUT=10
 bindkey -v
 
-zle-line-init() {
-    zle -K viins # initiate `vi insert` as keymap (can be removed if `bindkey -V` has been set elsewhere)
-    echo -ne "\e[5 q"
-}
-zle -N zle-line-init
+export ZPLUG_HOME=$ZDOTDIR/zplug/
+source $ZPLUG_HOME/init.zsh
+zplug "plugins/git",   from:oh-my-zsh
 
 export ZSH="$HOME/.config/oh-my-zsh"
 
@@ -51,10 +49,6 @@ plugins=(
     themes
     tmux
 )
-# pfetch is configured through enviroment varables.
-# so for a cleaner config i move that to a diffrent file with a bit of error checking aswell
-
-
 
 # bindkey -a
 #zsh functions that i have written/ stole live in here
@@ -64,6 +58,6 @@ source $ZDOTDIR/zsh-aliases
 #sourcing the oh my zsh script
 source $ZSH/oh-my-zsh.sh
 ##for syntax highlighting. 
-source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-##for autocomplete in zsh. 
-source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# ##for autocomplete in zsh. 
+# source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
