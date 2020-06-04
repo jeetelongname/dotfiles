@@ -26,7 +26,7 @@ fi
 
 if [ -f  "/usr/bin/pfetch" ] ; then
    if [ -f  ~/.config/pfetch/pfetchconfig.sh ] ; then
-        (exec /opt/shell-color-scripts/randomcolors.sh)
+        # (exec /opt/shell-color-scripts/randomcolors.sh)
         (source $HOME/.config/pfetch/pfetchconfig.sh && pfetch)
     else
         (echo "pfetch config not found" && pfetch)
