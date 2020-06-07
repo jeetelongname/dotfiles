@@ -116,3 +116,4 @@ Videos
 /.fltk/
 /.config/zsh/zplug/
 /.config/zsh/.zcompcache/
+/.ghc/
