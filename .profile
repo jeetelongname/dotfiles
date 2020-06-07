@@ -16,7 +16,7 @@ export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export LESSHSTFILE="/dev/null/"
 ##golang
 #setting the gopath
-export GOPATH=$HOME/go
+export GOPATH=$HOME/code/go
 #setting paths
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$GOPATH/bin
