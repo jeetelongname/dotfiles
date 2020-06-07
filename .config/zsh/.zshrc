@@ -34,6 +34,7 @@ bindkey -v
 
 #zsh functions that i have written/ stole live in here
 source $ZDOTDIR/zsh-functions
+bindkey -s '^o' 'lfcd\n'
 #aliases for commands
 source $ZDOTDIR/zsh-aliases
 
