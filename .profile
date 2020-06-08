@@ -17,6 +17,7 @@ export LESSHSTFILE="/dev/null/"
 ##golang
 #setting the gopath
 export GOPATH=$HOME/code/go
+export GOBIN=$GOPATH/bin
 #setting paths
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$GOPATH/bin
