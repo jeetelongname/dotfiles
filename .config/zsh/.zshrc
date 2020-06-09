@@ -29,19 +29,18 @@ zmodload zsh/complist
 compinit -D ~/.cache/zsh/compdump
 _comp_options+=(globdots)# Include hidden files.
 
-export KEYTIMEOUT=10
 bindkey -v
+export KEYTIMEOUT=1
 
 #zsh functions that i have written/ stole live in here
 source $ZDOTDIR/zsh-functions
-bindkey -s '^o' 'lfcd\n'
+bindkey '^o' 'lfcd\n'
 #aliases for commands
 source $ZDOTDIR/zsh-aliases
 
-export ZPLUG_HOME=$ZDOTDIR/zplug
 ## I moved to zplug :) it was a little persnickity but we are all good now :)
+export ZPLUG_HOME=$ZDOTDIR/zplug
 source $ZPLUG_HOME/init.zsh
-
 
 zplug "ohmyzsh/ohmyzsh", as:plugin, use:"lib/{clipboard.zsh,completion.zsh,correction.zsh,functions.zsh,git.zsh,grep.zsh,misc.zsh,prompt_info_functions.zsh,spectrum.zsh,termsupport.zsh,theme-and-appearance.zsh}", defer:0
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
@@ -56,6 +55,7 @@ zplug "plugins/alias-finder", from:oh-my-zsh
 zplug "plugins/colored-man-pages", from:oh-my-zsh
 
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
     if read -q; then
