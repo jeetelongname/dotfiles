@@ -21,9 +21,8 @@ function OtherStuff (){
 function GitClone (){
   repos=(
     "https://github.com/jeetelongname/Dmenu-My-build.git"
-
   )
   for i in repos ; do
-    echo ${repos[i]} | xargs git clone
+    echo ${repos[i]} | xargs git clone 
   done
 }

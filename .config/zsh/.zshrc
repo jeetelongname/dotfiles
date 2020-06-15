@@ -16,11 +16,12 @@
 # into seperate files. plugins are mangaed by zplug 
 
 # Keep 1000 lines of history within the shell and save it to ~/.cache/zsh_history:
-setopt histignorealldups sharehistory
 
-HISTSIZE=1000
-SAVEHIST=1000
-HISTFILE=~/.cache/zsh/zsh_history
+#history settings
+setopt histignorealldups sharehistory
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.cache/zsh/zsh_history ## my history file is located here
 
 # good auto/tab complete:
 autoload -U compinit
@@ -29,12 +30,15 @@ zmodload zsh/complist
 compinit -D ~/.cache/zsh/compdump
 _comp_options+=(globdots)# Include hidden files.
 
-bindkey -v
-export KEYTIMEOUT=1
+bindkey -v #this makes my terminal use the zsh mode 
+export KEYTIMEOUT=1 
+
+#autosuggestions configuration
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4'
+bindkey '^ ' autosuggest-accept
 
 #zsh functions that i have written/ stole live in here
 source $ZDOTDIR/zsh-functions
-bindkey '^o' 'lfcd\n'
 #aliases for commands
 source $ZDOTDIR/zsh-aliases
 
