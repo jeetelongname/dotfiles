@@ -13,7 +13,7 @@ export ZDOTDIR="$HOME/.config/zsh"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
-export LESSHSTFILE="/dev/null/"
+export LESSHISTFILE="/dev/null"
 ##golang
 #setting the gopath
 export GOPATH=$HOME/code/go
@@ -21,6 +21,7 @@ export GOBIN=$GOPATH/bin
 #setting paths
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/opt/shell-color-scripts
 ## PATH Variables# set PATH so it includes users private bin if it existis
 if [ -d "$HOME/.local/bin/" ] ;then
     PATH="$HOME/.local/bin/:$PATH"

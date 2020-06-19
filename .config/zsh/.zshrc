@@ -47,7 +47,8 @@ export ZPLUG_HOME=$ZDOTDIR/zplug
 source $ZPLUG_HOME/init.zsh
 
 zplug "ohmyzsh/ohmyzsh", as:plugin, use:"lib/{clipboard.zsh,completion.zsh,correction.zsh,functions.zsh,git.zsh,grep.zsh,misc.zsh,prompt_info_functions.zsh,spectrum.zsh,termsupport.zsh,theme-and-appearance.zsh}", defer:0
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
+#zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zdharma/fast-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-autosuggestions", defer:0
 zplug "jeetelongname/Yeet-theme", as:theme, defer:0
 

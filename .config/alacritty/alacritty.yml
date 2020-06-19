@@ -12,7 +12,7 @@
 #                       /____/   
 #                       for alacritty :)
 env:
-  TERM: xterm-256color
+  TERM: screen-256color
 
 padding:
   x: 1
@@ -49,47 +49,65 @@ font:
   glyph_offset:
     x: 0
     y: 0
+# colors:
+#   # Default colors
+#   primary:
+#     background: '#212121'
+#     foreground: '#c0c5ce'
+#     bright_foreground: '#f3f4f5'
 
-# Colors (Tomorrow Night Bright)
+#   cursor:
+#     text: '#212121'
+#     cursor: '#c0c5ce'
+
+#   # Normal colors
+#   normal:
+#     black:   '#212121'
+#     red:     '#e57373'
+#     green:   '#a6bc69'
+#     yellow:  '#fac863'
+#     blue:    '#6699cc'
+#     magenta: '#c594c5'
+#     cyan:    '#5fb3b3'
+#     white:   '#c0c5ce'
+
+#   # Bright colors
+#   bright:
+#     black:   '#5c5c5c'
+#     red:     '#e57373'
+#     green:   '#a6bc69'
+#     yellow:  '#fac863'
+#     blue:    '#6699cc'
+#     magenta: '#c594c5'
+#     cyan:    '#5fb3b3'
+#     white:   '#f3f4f5'
+
 colors:
-  # Default colors
+  # Default Colors (pencil dark)
   primary:
-    background: '0x000000'
-    foreground: '0xeaeaea'
+    background: '#212121'
+    foreground: '#f1f1f1'
   # Normal colors
   normal:
-    black:   '0x666666'
-    red:     '0xd54e53'
-    green:   '0xb9ca4a'
-    yellow:  '0xe6c547'
-    blue:    '0x7aa6da'
-    magenta: '0xc397d8'
-    cyan:    '0x70c0ba'
-    white:   '0xeaeaea'
-
+    black:   '#212121'
+    red:     '#c30771'
+    green:   '#10a778'
+    yellow:  '#a89c14'
+    blue:    '#008ec4'
+    magenta: '#523c79'
+    cyan:    '#20a5ba'
+    white:   '#e0e0e0'
   # Bright colors
   bright:
-    black:   '0x666666'
-    red:     '0xff3334'
-    green:   '0x9ec400'
-    yellow:  '0xe7c547'
-    blue:    '0x7aa6da'
-    magenta: '0xb77ee0'
-    cyan:    '0x54ced6'
-    white:   '0xffffff'
-
-  # Dim colors
-  dim:
-    black:   '0x000000'
-    red:     '0x8c3336'
-    green:   '0x7a8530'
-    yellow:  '0x97822e'
-    blue:    '0x506d8f'
-    magenta: '0x80638e'
-    cyan:    '0x497e7a'
-    white:   '0x9a9a9a'
-
-background_opacity: 0.85
+    black:   '#212121'
+    red:     '#fb007a'
+    green:   '#5fd7af'
+    yellow:  '#f3e430'
+    blue:    '#20bbfc'
+    magenta: '#6855de'
+    cyan:    '#4fb8cc'
+    white:   '#f1f1f1'
+background_opacity: 0.90
 
 # Allow terminal applications to change Alacritty's window title.
 dynamic_title: true
