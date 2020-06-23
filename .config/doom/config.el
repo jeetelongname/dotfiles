@@ -39,13 +39,12 @@
       doom-modeline-height 3
       doom-modeline-icon 't
       doom-modeline-modal-icon 'nil
-      doom-modeline-mu4e 't
       doom-modeline-env-version t
-      doom-modeline-icon(display-graphic-p)
       doom-modeline-major-mode-color-icon t
       doom-modeline-buffer-modification-icon t
       doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
 ;; changes to the tab bar
+(setq doom-modeline-icon(display-graphic-p))
 
 (setq centaur-tabs-style "box"
       centaur-tabs-height 32

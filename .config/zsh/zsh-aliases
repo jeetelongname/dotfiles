@@ -4,7 +4,7 @@
 # quick comands
 alias cls='clear'
 alias e='exit' ; alias q='exit'
-alias l='exa -l -a  --color=auto --git '
+alias l='exa -lah  --color=auto --git '
 alias shutr='shutdown -r now'
 alias shut='shutdown now'
 alias py='python3'
