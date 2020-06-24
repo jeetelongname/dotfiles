@@ -2,7 +2,7 @@
 
 xclip -h 2>/dev/null || exit 1
 
-Selected=$(cut -d ';' -f1 ~/.local/share/emoji | dmenu -F -i -l 20 -p "select emoji" -b | sed "s/ .*//")
+Selected=$(cut -d ';' -f1 ~/.local/share/emoji | dmenu -l 20 -p "select emoji" | sed "s/ .*//")
 
 [ "$Selected" != "" ] || exit
 
