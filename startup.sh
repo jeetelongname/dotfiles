@@ -1,4 +1,4 @@
 #!/bin/sh
 
-setxkbmap -option caps:swapescape & disown
 emacs --daemon & disown
+setxkbmap -option caps:swapescape & disown

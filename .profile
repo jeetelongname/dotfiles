@@ -19,9 +19,10 @@ export LESSHISTFILE="/dev/null"
 export GOPATH=$HOME/code/go
 export GOBIN=$GOPATH/bin
 #setting paths
-export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/opt/shell-color-scripts
+export PATH=$PATH:$CARGO_HOME/bin
 ## PATH Variables# set PATH so it includes users private bin if it existis
 if [ -d "$HOME/.local/bin/" ] ;then
     PATH="$HOME/.local/bin/:$PATH"

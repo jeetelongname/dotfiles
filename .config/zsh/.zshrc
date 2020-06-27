@@ -33,6 +33,8 @@ _comp_options+=(globdots)# Include hidden files.
 bindkey -v #this makes my terminal use the zsh mode 
 export KEYTIMEOUT=1 
 
+#exports 
+export LS_COLORS="$(vivid generate snazzy)"
 #autosuggestions configuration
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4'
 bindkey '^ ' autosuggest-accept
