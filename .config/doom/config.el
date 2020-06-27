@@ -41,10 +41,10 @@
       doom-modeline-env-version t
       doom-modeline-major-mode-color-icon t
       doom-modeline-buffer-modification-icon t
-      doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
-;; changes to the tab bar
-(setq doom-modeline-icon(display-graphic-p))
+      doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
+      doom-modeline-icon(display-graphic-p))
 
+;; changes to the tab bar
 (setq centaur-tabs-style "box"
       centaur-tabs-height 32
       centaur-tabs-show-navigation-buttons t
