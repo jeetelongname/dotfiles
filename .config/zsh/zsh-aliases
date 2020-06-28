@@ -16,6 +16,8 @@ alias gits='git status'
 alias gitls='exa -l -a --color=auto --git --git-ignore'
 alias gitp='git push'
 alias gitl='git log'
+## not git 
+alias caps='setxkbmap -option caps:swapescape'
 # moving files out of my home directory
 alias bash='bash --rcfile ~/.config/bash/.bashrc'
 #a little bit of fun
