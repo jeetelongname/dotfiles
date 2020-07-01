@@ -43,6 +43,8 @@ bindkey '^ ' autosuggest-accept
 source $ZDOTDIR/zsh-functions
 #aliases for commands
 source $ZDOTDIR/zsh-aliases
+#keybinds will live here
+source $ZDOTDIR/zsh-keys
 
 ## I moved to zplug :) it was a little persnickity but we are all good now :)
 export ZPLUG_HOME=$ZDOTDIR/zplug

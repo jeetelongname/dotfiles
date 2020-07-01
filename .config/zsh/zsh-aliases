@@ -3,7 +3,7 @@
 ## alias
 # quick comands
 alias cls='clear'
-alias e='exit' ; alias q='exit'
+alias q='exit'
 alias l='exa -lah  --color=auto --git '
 alias shutr='shutdown -r now'
 alias shut='shutdown now'
@@ -11,6 +11,7 @@ alias py='python3'
 alias doom='~/.emacs.d/bin/doom'
 alias ap="sudo aptitude"
 alias bat='batcat'
+alias e='devour emacsclient -c'
 ## git quick commands (because im lazy)
 alias gits='git status'
 alias gitls='exa -l -a --color=auto --git --git-ignore'
