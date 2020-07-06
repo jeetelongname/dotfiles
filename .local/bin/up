@@ -4,7 +4,7 @@
 echo starting the update
 
 sudo apt-get update ## updates the reops
-[ $( aptitude search '~U' | wc -l ) -eq 0 ] && echo nothin to upgrade | cowsay -f flaming-sheep | lolcat && exit ## using wc and aptitude i list out all of the packages that need updating then count them. of the output is more then 0 the script moves on
+[ $( aptitude search '~U' | wc -l ) -eq 0 ] && echo nothin to upgrade | cowsay -f bud-frogs | lolcat && exit ## using wc and aptitude i list out all of the packages that need updating then count them. of the output is more then 0 the script moves on
 aptitude search '~U' ## lists the upgrades
 
 while [ "$des" != "y" ] ; [ "$des" != "n" ] ; do
@@ -12,7 +12,6 @@ while [ "$des" != "y" ] ; [ "$des" != "n" ] ; do
     read des ## reads user inputude and puts in the variable des
     if [ $des = "y" ] ; then 
             sudo apt-get upgrade -y && echo update done | cowsay -f tux | lolcat && exit
-
     elif [ $des = "n" ] ; then
             echo aborted | cowsay -f gnu | lolcat && exit
 
