@@ -40,12 +40,13 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4'
 bindkey '^ ' autosuggest-accept
 
 #zsh functions that i have written/ stole live in here
-source $ZDOTDIR/zsh-functions
+[ -f $ZDOTDIR/zsh-functions ] && source $ZDOTDIR/zsh-functions
 #aliases for commands
-source $ZDOTDIR/zsh-aliases
+[ -f $ZDOTDIR/zsh-aliases ] && source $ZDOTDIR/zsh-aliases
 #keybinds will live here
-source $ZDOTDIR/zsh-keys
-
+[ -f $ZDOTDIR/zsh-aliases ] && source $ZDOTDIR/zsh-keys
+# I like fzf so i use it for stuff
+[ -f $ZDOTDIR/fzf.zsh ] && source $ZDOTDIR/fzf.zsh
 ## I moved to zplug :) it was a little persnickity but we are all good now :)
 export ZPLUG_HOME=$ZDOTDIR/zplug
 source $ZPLUG_HOME/init.zsh
@@ -73,4 +74,5 @@ if ! zplug check --verbose; then
 fi
 
 zplug load
+
 

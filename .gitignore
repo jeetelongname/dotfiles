@@ -122,3 +122,5 @@ Videos
 /.config/GIMP/
 /.config/monitors.xml
 /.config/monitors.xml~
+/.xsession-errors
+/.Xauthority
