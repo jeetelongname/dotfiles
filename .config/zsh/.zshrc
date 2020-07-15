@@ -30,11 +30,12 @@ zmodload zsh/complist
 compinit -D ~/.cache/zsh/compdump
 _comp_options+=(globdots)# Include hidden files.
 
-bindkey -v #this makes my terminal use the zsh mode 
+bindkey -v #this makes my terminal use the vim mode 
 export KEYTIMEOUT=1 
 
 #exports 
 export LS_COLORS="$(vivid generate snazzy)"
+export ENABLE_CORRECTION= "true"
 #autosuggestions configuration
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4'
 bindkey '^ ' autosuggest-accept
@@ -49,20 +50,20 @@ bindkey '^ ' autosuggest-accept
 [ -f $ZDOTDIR/fzf.zsh ] && source $ZDOTDIR/fzf.zsh
 ## I moved to zplug :) it was a little persnickity but we are all good now :)
 export ZPLUG_HOME=$ZDOTDIR/zplug
-source $ZPLUG_HOME/init.zsh
+source $ZPLUG_HOME/init.zsh 
 
-zplug "ohmyzsh/ohmyzsh", as:plugin, use:"lib/{clipboard.zsh,completion.zsh,correction.zsh,functions.zsh,git.zsh,grep.zsh,misc.zsh,prompt_info_functions.zsh,spectrum.zsh,termsupport.zsh,theme-and-appearance.zsh}", defer:0
-#zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "ohmyzsh/ohmyzsh", as:plugin, use:"lib/{clipboard.zsh,correction.zsh,git.zsh,grep.zsh,history.zsh,misc.zsh,prompt_info_functions.zsh,spectrum.zsh,theme-and-appearance.zsh}", defer:0
+#zplug "zsh-users/zsh-syntax-highlighting", defer:2 # 
 zplug "zdharma/fast-syntax-highlighting", defer:2
-zplug "zsh-users/zsh-autosuggestions", defer:0
-zplug "jeetelongname/Yeet-theme", as:theme, defer:0
+zplug "zsh-users/zsh-autosuggestions", defer:2
+zplug "jeetelongname/Yeet-theme", as:theme, defer:1
 
-zplug "plugins/git", from:oh-my-zsh
-zplug "plugins/golang", from:oh-my-zsh
-zplug "plugins/pip", from:oh-my-zsh
-zplug "plugins/tmux", from:oh-my-zsh
-zplug "plugins/alias-finder", from:oh-my-zsh
-zplug "plugins/colored-man-pages", from:oh-my-zsh
+zplug "plugins/git", from:oh-my-zsh, lazy:true
+zplug "plugins/golang", from:oh-my-zsh, lazy:true
+zplug "plugins/pip", from:oh-my-zsh, lazy:true
+zplug "plugins/tmux", from:oh-my-zsh, lazy:true
+zplug "plugins/alias-finder", from:oh-my-zsh, lazy:true
+zplug "plugins/colored-man-pages", from:oh-my-zsh, lazy:true
 
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 

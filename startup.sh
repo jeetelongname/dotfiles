@@ -7,5 +7,8 @@ function run {
 }
 
 run "emacs --daemon"
-run "setxkbmap -option caps:swapescape"
-run "xrdb ~/.config/Xresources"
+
+setxkbmap -option caps:swapescape
+xrdb ~/.config/Xresources
+xset +fp ~/.local/share/fonts
+xset fp rehash
