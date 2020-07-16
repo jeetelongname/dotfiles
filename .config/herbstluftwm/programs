@@ -26,7 +26,7 @@ done
 killall -q compton
 killall -q dunst
 
-( nitrogen --restore & ) || xsetroot -solid '#01DFD7' # resoring my wallpaper 
+(nitrogen --restore &) || xsetroot -solid '#01DFD7' # resoring my wallpaper 
 dunst &# my notification deamon (yes you need one)
 compton --config ~/.config/compton/compton.conf &# this makes everything look pretty (adds transparncy and drop shadows and stuff)
 

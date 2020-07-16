@@ -126,3 +126,5 @@ Videos
 /.Xauthority
 /.config/pavucontrol.ini
 /code/
+/.config/herbstluftwm/buggy.diff
+/.config/nitrogen/bg-saved.cfg

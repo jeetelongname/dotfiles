@@ -58,7 +58,7 @@ hc keybind $Mod-Control-Right   resize right +$resizestep
 
 # Program Bindngs
 hc keybind $Mod-Return spawn ${TERMINAL:-xterm} # use your $TERMINAL with xterm as fallback
-hc keybind $Mod-d spawn rofi -show run # Uses Dmenu for my run launcher
+hc keybind $Mod-d spawn rofi -show drun # Uses Dmenu for my run launcher
 hc keybind $Mod-Shift-e spawn emoji-inserter # this is a script i riped from Luke Smith 
 hc keybind $Mod-e spawn $GUIEDITOR # incase emacs is ever ripped from my cold dead hands
 hc keybind $Mod-i spawn $BROWSER 

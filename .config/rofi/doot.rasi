@@ -1,0 +1,65 @@
+configuration {
+  show-icons: true;
+  icon-theme: "papirus-dark";
+  font: "Fira Mono Medium 11";
+  drun-display-format: "{icon} {name}";
+  /* display-combi: "Ʌ"; */
+  display-drun: " "; 
+  display-window: " ";
+  modi: "window,run,ssh,combi,drun";
+}
+* {
+  background-color: #292D3E;
+  bg-alt: #F07178;
+  fg: #ECEFF4;
+
+  mars-blue-light: #88C0D0;
+  mars-yellow: #EBCB8B;
+
+  border: 1;
+  lines: 15;
+  padding: 2;
+  margin: 3;
+  spacing: 1;
+}
+
+window {
+  width: 30%;
+  transparency: "real";
+}
+
+mainbox {
+  children: [inputbar, listview];
+}
+
+listview {
+  columns: 1;
+}
+
+element {
+  padding: 12;
+  orientation: vertical;
+  text-color: @fg;
+}
+
+element selected {
+  background-color: @bg-alt;
+  text-color: #292D3E;
+}
+
+inputbar {
+  background-color: @background;
+  children: [prompt, entry];
+}
+
+prompt {
+  enabled: true;
+  font: "Inconsolata Nerd Font 12";
+  padding: 12 0 0 12;
+  text-color: @bg-alt;
+}
+
+entry {
+  padding: 12;
+  text-color: @bg-alt;
+}
