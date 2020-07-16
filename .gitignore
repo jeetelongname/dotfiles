@@ -128,3 +128,4 @@ Videos
 /code/
 /.config/herbstluftwm/buggy.diff
 /.config/nitrogen/bg-saved.cfg
+/.local/bin/picom
