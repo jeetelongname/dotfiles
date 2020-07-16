@@ -63,7 +63,7 @@ zplug "plugins/golang", from:oh-my-zsh, lazy:true
 zplug "plugins/pip", from:oh-my-zsh, lazy:true
 zplug "plugins/tmux", from:oh-my-zsh, lazy:true
 zplug "plugins/alias-finder", from:oh-my-zsh, lazy:true
-zplug "plugins/colored-man-pages", from:oh-my-zsh, lazy:true
+zplug "plugins/colored-man-pages", from:oh-my-zsh, lazy:false
 
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 

@@ -13,5 +13,5 @@
 #                 /_/
 #                 for wallpaper changing
 
-Wallpapers=("~/code/git-repos/Wallpapers-")
-echo $Wallpapers | sxiv -tio | figlet
+Wallpapers=("~/code/git-repos/Wallpapers-/7pm.jpg")
+
