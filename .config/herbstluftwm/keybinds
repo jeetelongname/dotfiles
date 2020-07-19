@@ -58,7 +58,9 @@ hc keybind $Mod-Control-Right   resize right +$resizestep
 
 # Program Bindngs
 hc keybind $Mod-Return spawn ${TERMINAL:-xterm} # use your $TERMINAL with xterm as fallback
+
 hc keybind $Mod-d spawn rofi -show drun # Uses Dmenu for my run launcher
+hc keybind $Mod-w spawn rofi -show window
 hc keybind $Mod-Shift-e spawn emoji-inserter # this is a script i riped from Luke Smith 
 hc keybind $Mod-e spawn $GUIEDITOR # incase emacs is ever ripped from my cold dead hands
 hc keybind $Mod-i spawn $BROWSER 
@@ -78,7 +80,9 @@ hc mousebind $Mod-Button3 resize # same thing but makeing your window bigger
 
 # tags
 tag_names=( {1..9} ) # this is a list of numbers 1 to 9 (thats what the .. means)
+tag_icons=( "www","dev"{3..9} )
 tag_keys=( {1..9} 0 )
+
 hc rename default "${tag_names[0]}" || true
 for i in ${!tag_names[@]} ; do # this iterates through the tag list and adds a keybinding for them (this save typing out "hc keybind $Mod-1 use_index 1" 8 more times) 
     hc add "${tag_names[$i]}"

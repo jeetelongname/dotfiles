@@ -129,3 +129,8 @@ Videos
 /.config/herbstluftwm/buggy.diff
 /.config/nitrogen/bg-saved.cfg
 /.local/bin/picom
+/.local/bin/tty-mars
+/.stack-work/
+/.stack/
+/stack.yaml
+/stack.yaml.lock

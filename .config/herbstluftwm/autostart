@@ -21,18 +21,18 @@ hc() { # this aliases herbstclient to hc to make the conf more readable (don'ask
 
 hc emit_hook reload
 
-#################
-## keybindings ##
-#################
-
 # remove all existing keybindings
 hc keyunbind --all 
+
+source ~/.config/herbstluftwm/keybinds
+source ~/.config/herbstluftwm/programs
 
 # theme
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
 
 # padding
+hc pad 25 5 5 5
 hc set window_gap 2
 #hc set frame_gap 1
 
@@ -81,5 +81,3 @@ hc unlock
 # hc set_monitors 1280x1024+0+0 1280x1024+1280+0
 # or simply:
 # hc detect_monitors
-source ~/.config/herbstluftwm/keybinds
-source ~/.config/herbstluftwm/programs

@@ -15,12 +15,16 @@ run "nitrogen --restore"
 # find the panel
 # use hc pad (read the man page ya dumbass) to set the padding for polybar.
 # this loads the panel config file it uses dzen2 which is ok if a little light on... everything
-for monitor in $(herbstclient list_monitors | cut -d: -f1) ; do # all this does is cycle through the moniors and reload my config of polybar
-    hc pad $monitor 25 5 5 5  
-    killall -q polybar
-    while pgrep -u $UID -x polybar >/dev/null ; do sleep 0.5 ; done 
-    polybar yeet # one thing you may want to do is call your bar the number of the monitor they are that way you can launch all your bars using this for loop! 
-done
+# for monitor in $(herbstclient list_monitors | cut -d: -f1) ; do # all this does is cycle through the moniors and reload my config of polybar
+#     hc pad $monitor 25 5 5 5  
+#     killall -q polybar
+#     while pgrep -u $UID -x polybar >/dev/null ; do sleep 0.5 ; done 
+#     polybar yeet # one thing you may want to do is call your bar the number of the monitor they are that way you can launch all your bars using this for loop! 
+# done
+
+[ "$(pgrep xmobar)" != "" ] && killall xmobar
+~/.config/herbstluftwm/xmobar
+# 
 # finaly i load in all of my start up apps!
 # I kill them first just to make sure they are 
 killall -q compton
@@ -29,5 +33,5 @@ killall -q dunst
 (nitrogen --restore &) || xsetroot -solid '#01DFD7' # resoring my wallpaper 
 dunst &# my notification deamon (yes you need one)
 compton --config ~/.config/compton/compton.conf &# this makes everything look pretty (adds transparncy and drop shadows and stuff)
-
+~/startup.sh
 diff ~/.config/herbstluftwm/autostart /etc/xdg/herbstluftwm/autostart > ~/.config/herbstluftwm/buggy.diff &
