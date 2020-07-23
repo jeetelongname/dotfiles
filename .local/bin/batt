@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#                     __
+#    __  _____  ___  / /______
+#   / / / / _ \/ _ \/ __/ ___/
+#  / /_/ /  __/  __/ /_(__  )
+#  \__, /\___/\___/\__/____/
+# /____/
+#                    _       __
+#    _______________(_)___  / /_
+#   / ___/ ___/ ___/ / __ \/ __/
+#  (__  ) /__/ /  / / /_/ / /_
+# /____/\___/_/  /_/ .___/\__/
+#                 /_/
+#                 for battery stuff
+
+low () { 
+    notify-send "yeet"
+    symbol="!"
+}
+
+full () {
+   notify-send "full" 
+   symbol=""
+}
+
+charging () {
+   symbol="...." 
+}
+
+discharging () {
+   symbol="....." 
+}
+
+for battery in /sys/class/power_supply/BAT? ; do
+
+    capacity=$(cat "$battery"/capacity) || break
+    status=$(cat "$battery"/status)
+
+    if [ "$status" = "Discharging" ] && [ "$capacity" -le 25 ]; then
+        low
+
+    elif [ "$capacity" -eq 100 ] ; then
+        full
+
+    elif [ "$capacity" -le 99 ] ;then
+
+        if [ "$status" = "Discharging" ] ; then
+            discharging
+        elif [ $status = "Charging" ] ;then
+            charging
+        fi
+
+    fi
+    # printf '%s %s %s ' "$symbol" "$status" "$capacity%" 
+    printf '%s %s ' "$symbol" "$capacity%" 
+done

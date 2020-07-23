@@ -1,5 +1,5 @@
 
-Config { font = "xft:Fira mono:size=12"
+Config { font = "xft:Fira mono:size=11"
        , additionalFonts = []
        , borderColor = "black"
        , border = TopB
@@ -16,24 +16,17 @@ Config { font = "xft:Fira mono:size=12"
        , iconRoot = "."
        , allDesktops = True
        , overrideRedirect = True
-       , commands = [ Run Weather "EGPF" ["-t","<station>: <tempC>C",
-                                          "-L","18","-H","25",
-                                          "--normal","green",
-                                          "--high","red",
-                                          "--low","lightblue"] 36000
-                    , Run Network "enp3s0" ["-L","0","-H","32",
-                                          "--normal","green","--high","red"] 10
-                    , Run Network "wlp4s0" ["-L","0","-H","32",
-                                          "--normal","green","--high","red"] 10
-                    , Run Cpu ["-L","3","-H","50",
-                               "--normal","green","--high","red"] 10
-                    , Run Memory ["-t","Mem: <usedratio>%"] 10
-                    , Run Swap [] 10
-                    , Run Com "uname" ["-s","-r"] "" 36000
-                    , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+       , commands = [ Run Weather "EGPF" ["-t","Reading: <tempC>ºC","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 36000
+                    , Run Network "wlp4s0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    -- , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    -- , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    -- , Run Com "uname" ["-s","-r"] "" 36000
+                    , Run Date "%a %b %_d %Y %H:%M:%S" "date+time" 10
                     , Run UnsafeStdinReader
+                    , Run Com "batt" [] "" 5
+                    , Run Mpris2 "Spotify" ["-t", "<artist> - [<composer>] <title>"] 10
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "<fc=green>%UnsafeStdinReader%</fc>| %wlp4s0% }{ <fc=#ee9a00>%date%</fc>| %EGPF% |"
+       , template = "<fc=green>%UnsafeStdinReader%</fc>| <fc=#ee9a00>%date+time%</fc> }{ %Spotify% | %wlp4s0% |%EGPF% |<fc=red>%batt%</fc>"
       }

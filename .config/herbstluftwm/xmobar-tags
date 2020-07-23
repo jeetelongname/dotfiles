@@ -4,12 +4,20 @@
 # Wintervenom [(at)] gmail.com #
 ################################
 
-hc () {
+hc () { #an alias
     herbstclient "$@"
 }
 
 tags () {
-    printf '[%s] ' $(hc tag_status)
+    # this is how the tags are formated. it uses printf and sed to form how the tags look
+    # printf adds the space after every tag
+    # hc tag_status is where the tag info is sourced
+    # sed firsts removes the periods from the start of every tag (they are not useful)
+    # then find the hashtag # and uses that to surround a set of characters seperated with white spaces with []
+    # it then removes the hashtag
+    # sending it all to stdout
+    printf '%s ' $(hc tag_status | sed 's/\.//g;s/\(#\)\([[:print:]]*\)/[\2]/;s/\(:\)\([[:print:]]*\)/\1\2:/g')
+    # printf '%s ' $(hc tag_status)
     echo
 }
 

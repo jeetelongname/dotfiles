@@ -79,20 +79,6 @@ hc mousebind $Mod-Button2 zoom
 hc mousebind $Mod-Button3 resize # same thing but makeing your window bigger
 
 # tags
-tag_names=( {1..9} ) # this is a list of numbers 1 to 9 (thats what the .. means)
-tag_icons=( "www","dev"{3..9} )
-tag_keys=( {1..9} 0 )
-
-hc rename default "${tag_names[0]}" || true
-for i in ${!tag_names[@]} ; do # this iterates through the tag list and adds a keybinding for them (this save typing out "hc keybind $Mod-1 use_index 1" 8 more times) 
-    hc add "${tag_names[$i]}"
-    key="${tag_keys[$i]}"
-    if ! [ -z "$key" ] ; then
-        hc keybind "$Mod-$key" use_index "$i"
-        hc keybind "$Mod-Shift-$key" move_index "$i"
-    fi
-done
-
 
 # cycle through tags
 hc keybind $Mod-period use_index +1 --skip-visible

@@ -32,7 +32,7 @@ hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
 
 # padding
-hc pad 25 5 5 5
+hc pad 0 25 5 5 5
 hc set window_gap 2
 #hc set frame_gap 1
 
@@ -62,6 +62,20 @@ hc attr theme.active.outer_color "$bg2"
 hc attr theme.background_color "#333333"
 # hc set window_gap 5
 
+# tags
+tag_names=("dev" "www" "sys" "doc" "box" "chat" "mus" "vid" "gfx") 
+# tag_names=( {1..9} ) # this is a list of numbers 1 to 9 (thats what the .. means)
+tag_keys=( {1..9} 0 )
+
+hc rename default "${tag_names[0]}" || true
+for i in ${!tag_names[@]} ; do # this iterates through the tag list and adds a keybinding for them (this save typing out "hc keybind $Mod-1 use_index 1" 8 more times) 
+    hc add "${tag_names[$i]}"
+    key="${tag_keys[$i]}"
+    if ! [ -z "$key" ] ; then
+        hc keybind "$Mod-$key" use_index "$i"
+        hc keybind "$Mod-Shift-$key" move_index "$i"
+    fi
+done
 # rules
 hc unrule -F
 # hc rule class=XTerm tag=3 # move all xterms to tag 3
