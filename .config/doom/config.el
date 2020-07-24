@@ -5,6 +5,9 @@
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 
+(setq fancy-splash-image
+      (concat doom-private-dir "icons/emacs-icon.png"))
+
 (setq
       display-line-numbers-type 'relative
       company-idle-delay 0.3 ; i like my autocomplete like my tea fast and always

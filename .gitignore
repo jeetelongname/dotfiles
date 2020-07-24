@@ -134,3 +134,5 @@ Videos
 /.stack/
 /stack.yaml
 /stack.yaml.lock
+/.password-store/
+/.config/Gitter/

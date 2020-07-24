@@ -50,9 +50,9 @@
 !#define horizon10 #27D796
 !#define horizon11 #21BFC2
 !#define horizon12 #FAB28E
-! #define horizon13
-! #define horizon14
-! #define horizon15
+!#define horizon13
+!#define horizon14
+!#define horizon15
 
 *.forground:   nord4
 *.background:  nord0
@@ -78,3 +78,16 @@
 *.color14:     nord7
 *.color15:     nord6
 
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft.rgba: rgb
+Xft.autohint: true
+Xft.hintstyle: hintfull
+Xft.lcdfilter: lcdfilter
+
+!! XTerm Configuration (because i would rather have one than not)
+
+XTerm*renderFont: true
+XTerm*faceName:   xft:Inconsolata Nerd Font
+XTerm*faceSize:   10.0
