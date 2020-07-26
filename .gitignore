@@ -136,3 +136,7 @@ Videos
 /stack.yaml.lock
 /.password-store/
 /.config/Gitter/
+/.grip/
+/.local/bin/flask
+/.local/bin/grip
+/.config/eDEX-UI/
