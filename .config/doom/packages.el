@@ -50,3 +50,7 @@
 (package! org-reveal :recipe (:host github
            :repo "yjwen/org-reveal"
            :files ("*el")))
+
+(package! grip-mode)
+
+;; (package! latex-preview-pane)

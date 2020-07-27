@@ -52,10 +52,11 @@
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +icons)             ; making dired pretty [functional]
+       (dired
+         +icons)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
-       undo
-       (ibuffer +icons)           ; interactive buffer management
+       (ibuffer
+         +icons)           ; interactive buffer management
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
@@ -82,12 +83,12 @@
         +docsets)        ; ...or in Dash docsets locally
        lsp
        ;;macos             ; MacOS-specific commands
-       (magit +forge)             ; a git porcelain for Emacs
+       (magit
+        +forge)             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
        pdf               ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
-       taskrunner
        rgb               ; creating color strings
        ;;terraform         ; infrastructure as code
        tmux              ; an API for interacting with tmux
@@ -117,7 +118,7 @@
        ;;idris             ;
        ;;json
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+       javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        latex             ; writing papers in Emacs has never been so fun
@@ -168,6 +169,6 @@
        twitter           ; twitter client https://twitter.com/vnought
 
        :config
-       literate
+       ;; literate
        (default +bindings +smartparens)
        )

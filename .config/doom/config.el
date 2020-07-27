@@ -74,7 +74,12 @@
 
  :leader
   :desc "Enable Coloured Values""t c" #'rainbow-mode
-  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode :desc)
+  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode)
+
+;; (map! (:when (featurep! :lang markdown)
+;;        (map! markdown-mode-map
+;;             :localleader
+;;             :desc "Live Preview" "l" #'grip-mode)))
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))

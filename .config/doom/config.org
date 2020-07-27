@@ -104,6 +104,7 @@ Doom splash dir and other settings for the start screen
       treemacs-width 30)
 #+END_SRC
 * Key binds
+** global Keybinds
 #+BEGIN_SRC elisp
 
 (map!
@@ -112,8 +113,17 @@ Doom splash dir and other settings for the start screen
 
  :leader
   :desc "Enable Coloured Values""t c" #'rainbow-mode
-  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode :desc)
+  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode)
 
+
+#+END_SRC
+** Major Modes
+*** markdown
+#+BEGIN_SRC elisp
+;; (map! (:when (featurep! :lang markdown)
+;;        (map! markdown-mode-map
+;;             :localleader
+;;             :desc "Live Preview" "l" #'grip-mode)))
 #+END_SRC
 * Hooks
 #+BEGIN_SRC elisp

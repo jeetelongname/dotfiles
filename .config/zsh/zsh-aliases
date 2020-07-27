@@ -13,6 +13,7 @@ alias ap="sudo aptitude"
 alias bat='batcat'
 alias e='devour emacsclient -c'
 ## git quick commands (because im lazy)
+alias ig="devour emacsclient -a '' -e '(magit-status)' -c"
 alias gits='git status'
 alias gitls='exa -l -a --color=auto --git --git-ignore'
 alias gitp='git push'
