@@ -1,0 +1,51 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Home</title>
+        <meta name="" content="Yeets Home page">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="home.css">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+    </head>
+
+    <body>
+        <div id="viewport">
+
+            <div class="landing page">
+                <div id="Time"></div>
+                <div id="Weather"></div>
+                <div>
+            </div> <!-- landing page -->
+            
+        </div> <!-- Viewport -->
+
+        <script>
+
+         getTime = () => {
+             let date = new Date(),
+                 min = date.getMinutes(),
+                 sec = date.getSeconds(),
+                 hour = date.getHours();
+
+             return "" +
+            (hour < 10 ? ("0" + hour) : hour) + ":" +
+            (min < 10 ? ("0" + min) : min) + ":" +
+            (sec < 10 ? ("0" + sec) : sec);
+         }
+
+         window.onload = () => {
+             // Set up the clock
+             document.getElementById("Time").innerHTML = getTime();
+             // Set clock interval to tick clock
+             setInterval( () => {
+                 document.getElementById("Time").innerHTML = getTime();
+             },100);
+         }
+
+        </script>
+    </body>
+</html>

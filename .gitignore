@@ -140,3 +140,8 @@ Videos
 /.local/bin/flask
 /.local/bin/grip
 /.config/eDEX-UI/
+/.config/vimb/closed
+/.config/vimb/cookies.db
+/.config/vimb/search
+/.config/vimb/command
+/.config/vimb/history
