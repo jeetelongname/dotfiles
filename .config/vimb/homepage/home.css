@@ -31,7 +31,16 @@ body{
     text-align: center;
     text-transform: uppercase;
 }
-
+.landing.page .BookContainer{
+    position:absolute;
+    top:50%;
+    width:100%;
+    text-align:center;
+    font-size: 11;
+    font-weight: 200;
+    text-align: center;
+    text-transform: uppercase;
+}
 a {
     text-decoration:none;
     color:#e6bed8;

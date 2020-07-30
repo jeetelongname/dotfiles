@@ -51,6 +51,4 @@
            :repo "yjwen/org-reveal"
            :files ("*el")))
 
-(package! grip-mode)
-
 ;; (package! latex-preview-pane)
