@@ -8,7 +8,7 @@ alias l='exa -lah  --color=auto --git '
 alias shutr='shutdown -r now'
 alias shut='shutdown now'
 alias py='python3'
-alias doom='~/.emacs.d/bin/doom'
+#alias doom='~/.emacs.d/bin/doom'
 alias ap="sudo aptitude"
 alias bat='batcat'
 alias e='devour emacsclient -c'
