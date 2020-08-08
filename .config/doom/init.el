@@ -9,7 +9,9 @@
         +childframe)           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       ivy               ; a search engine for love and life
+       (ivy
+        +icons
+        +fuzzy)               ; a search engine for love and life
 
        :ui
        deft              ; notational velocity for Emacs
@@ -21,7 +23,7 @@
        hydra
        indent-guides     ; highlighted indent columns
        modeline          ; snazzy, Atom-inspired modeline, plus API
-       ;;nav-flash         ; blink the current line after jumping
+       nav-flash         ; blink the current line after jumping
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
        (popup            ; tame sudden yet inevitable temporary windows
@@ -52,11 +54,10 @@
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired
-         +icons)             ; making dired pretty [functional]
+       (dired +icons)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
-       (ibuffer
-         +icons)           ; interactive buffer management
+       (ibuffer +icons)           ; interactive buffer management
+       undo
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
@@ -83,8 +84,7 @@
         +docsets)        ; ...or in Dash docsets locally
        lsp
        ;;macos             ; MacOS-specific commands
-       (magit
-        +forge)             ; a git porcelain for Emacs
+       (magit +forge)             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
        pdf               ; pdf enhancements
@@ -126,7 +126,7 @@
        ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       ( markdown +grip)          ; writing docs for people to ignore
+       (markdown +grip)          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
@@ -165,10 +165,10 @@
        :app
        calendar
        ;;irc               ; how neckbeards socialize
-       (rss +org)        ; emacs as an RSS reader
-       twitter           ; twitter client https://twitter.com/vnought
+       (rss +org)          ; emacs as an RSS reader
+       ;; twitter          ; twitter client https://twitter.com/vnought
 
        :config
-       ;; literate
+       ;;literate
        (default +bindings +smartparens)
        )

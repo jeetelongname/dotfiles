@@ -30,18 +30,15 @@ Doom splash dir and other settings for the start screen
 ** fonts
 #+BEGIN_SRC elisp
 
-(setq doom-font
-      (font-spec
+(setq doom-font (font-spec
        :family "Inconsolata Nerd Font"
        :size 15)
-      doom-big-font
-      (font-spec
+      doom-big-font (font-spec
        :family "Inconsolata Nerd Font"
        :size 20)
-      doom-variable-pitch-font
-      (font-spec
+      doom-variable-pitch-font (font-spec
        :family "Inconsolata Nerd Font"
-      :size 15)
+       :size 15)
       ;; doom-unicode-font
       ;; (font-spec
       ;;  :family "Ligconsolata Regular"
@@ -52,7 +49,7 @@ Doom splash dir and other settings for the start screen
 * Major modes
 ** Org
 #+BEGIN_SRC elisp
-(setq org-directory "~/org-notes")
+(setq org-directory "~/org-notes/")
 
 #+END_SRC
 ** Go Lang
@@ -70,6 +67,24 @@ Doom splash dir and other settings for the start screen
     :return "return" :yeild "yeild"))
 
 #+END_SRC
+** Easy-hugo-mode
+#+BEGIN_SRC elisp
+
+;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
+(setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
+#+END_SRC
+
+** elfeed
+#+BEGIN_SRC elisp
+(after! elfeed
+  (setq elfeed-search-filter "@1-month-ago"))
+(setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org")))
+
+(setq elfeed-feeds
+      '("https://this-week-in-rust.org/rss.xml"
+        "http://feeds.bbci.co.uk/news/rss.xml"))
+#+END_SRC
+
 
 * Minor modes
 ** Doom Mode-line
@@ -119,12 +134,8 @@ Doom splash dir and other settings for the start screen
 #+END_SRC
 ** Major Modes
 *** markdown
-#+BEGIN_SRC elisp
-;; (map! (:when (featurep! :lang markdown)
-;;        (map! markdown-mode-map
-;;             :localleader
-;;             :desc "Live Preview" "l" #'grip-mode)))
-#+END_SRC
+
+
 * Hooks
 #+BEGIN_SRC elisp
 
