@@ -4,7 +4,7 @@
 ;;; Code:
 
 (("default" . ((user-emacs-directory . "~/.emacs.d")))
- ("mine" . ((user-emacs-directory . "~/myemacs/.emacs.d"))))    ;; my own config
+ ("mine" . ((user-emacs-directory . "~/emacs/myemacs/"))))    ;; my own config
 
 
 ;;; .emacs-profiles.el ends here
