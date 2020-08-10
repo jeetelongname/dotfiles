@@ -16,7 +16,7 @@
       company-idle-delay 0.3 ; i like my autocomplete like my tea fast and always
       prettify-symbols-mode t
 )
-
+(setq browse-url-browser-function 'eww-browse-url)
 ;; fonts
 (setq doom-font (font-spec
        :family "Inconsolata Nerd Font"
