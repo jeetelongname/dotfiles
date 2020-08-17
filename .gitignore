@@ -147,3 +147,9 @@ Videos
 /.config/vimb/history
 /chemacs/
 /emacs/
+/.config/doom/elisp/
+/.mail/
+/.mu/
+/.config/pop-shell/
+/.offlineimap/
+/.config/doom/custom.el

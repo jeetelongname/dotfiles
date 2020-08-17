@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -7,7 +7,6 @@
         <meta name="" content="Yeets Home page">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="home.css">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
 
     </head>
@@ -15,30 +14,38 @@
     <body>
         <div id="viewport">
 
-            <div class="landing page">
-                <div id="Time"></div>
-                <div id="Weather"></div>
-                <div class="BookContainer">
-                    <div class="Bookmarks">
-                        <p>yoot</p>
+            <div class="page">
+
+                <div id="time"></div>
+                <div id="weather"></div>
+
+                <div class="book-container">
+                    <div class="bookmarks">
+                        <div class ="book-title">Social</div>
                         <ul>
                             <li><a href="https://twitter.com">Twitter</a></li>
                         </ul>
                     </div>
-                    <div class="Bookmarks">
-                        <p>yeet</p>
+
+                    <div class="book-marks">
+                        <div class="book-title">yeet</div>
                         <ul>
                             <li><a href="https://github.com">Github</a></li>
                         </ul>
                     </div>
+
+                    <div class="book-marks">
+                        <div class="book-title">set2</div>
+                        <ul>
+                            <li><a href="https://github.com">Github"</a></li>
+                        </ul>
+                    </div>
+
                 </div>
-                <div>
-            </div> <!-- landing page -->
-            
-        </div> <!-- Viewport -->
+            </div>
+        </div> 
 
         <script>
-
          getTime = () => {
              let date = new Date(),
                  min = date.getMinutes(),
@@ -53,13 +60,12 @@
 
          window.onload = () => {
              // Set up the clock
-             document.getElementById("Time").innerHTML = getTime();
+             document.getElementById("time").innerHTML = getTime();
              // Set clock interval to tick clock
              setInterval( () => {
-                 document.getElementById("Time").innerHTML = getTime();
+                 document.getElementById("time").innerHTML = getTime();
              },100);
          }
-
         </script>
     </body>
 </html>

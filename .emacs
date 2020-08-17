@@ -1,1 +1,1 @@
-/home/jeet/chemacs/./.emacs
+/home/jeet/code/git-repos/chemacs/./.emacs

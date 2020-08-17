@@ -22,10 +22,6 @@
 ;;   `:built-in' BOOL | 'prefer
 ;;   )
 
-(package! org-reveal :recipe (:host github
-           :repo "yjwen/org-reveal"
-           :files ("*el")))
-
 (package! emacs-easy-hugo :recipe (:host github
                             :repo "masasam/emacs-easy-hugo"
                             :files ("*el")))
@@ -35,3 +31,5 @@
 
 (package! peep-dired)
 (package! tldr)
+(package! org-msg)
+(package! ox-reveal)
