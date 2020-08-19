@@ -39,6 +39,45 @@
 (require 'org-re-reveal)
 (setq org-re-reveal-root "file:///home/jeet/org-notes/presentations/reveal.js/")
 
+(after! org
+  (set-face-attribute 'org-link nil
+                      :weight 'normal
+                      :background nil)
+  (set-face-attribute 'org-code nil
+                      :background nil)
+  (set-face-attribute 'org-date nil
+                      :foreground "#5B6268"
+                      :background nil)
+  (set-face-attribute 'org-level-1 nil
+                      :background nil
+                      :height 1.2
+                      :weight 'normal)
+  (set-face-attribute 'org-level-2 nil
+                      :background nil
+                      :height 1.0
+                      :weight 'normal)
+  (set-face-attribute 'org-level-3 nil
+                      :background nil
+                      :height 1.0
+                      :weight 'normal)
+  (set-face-attribute 'org-level-4 nil
+                      :background nil
+                      :height 1.0
+                      :weight 'normal)
+  (set-face-attribute 'org-level-5 nil
+                      :weight 'normal)
+  (set-face-attribute 'org-level-6 nil
+                      :weight 'normal)
+  (set-face-attribute 'org-document-title nil
+                      :background nil
+                      :height 1.75
+                      :weight 'bold)
+  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
+        org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))
+
+  (require 'org-re-reveal) ;; FIXME its does not work. i may need to use `use-package'
+  (setq org-re-reveal-root "file:///home/jeet/org-notes/presentations/reveal.js/"))
+
 ;; golang
 (after! go-mode
   (set-pretty-symbols! 'go-mode
@@ -104,7 +143,8 @@
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
-
+;;
+;; mu4e and org-msg
 (setq +mu4e-backend 'offlineimap
       mail-user-agent 'mu4e-user-agent)
 
@@ -130,6 +170,20 @@
       mu4e-headers-signed-mark '("s" . " ")
       mu4e-headers-unread-mark '("u" . " "))
 
+(setq mu4e-headers-fields
+        '((:human-date . 12)
+          (:flags . 4)
+          (:from . 25)
+          (:subject))
+        )
+
+(map! :localleader ; HACK ; works but is now in all org buffers
+        :map org-mode-map
+        :desc "send and exit" "m s" #'message-send-and-exit
+        :desc "kill buffer"   "m d" #'message-kill-buffer
+        :desc "save draft"    "m S" #'message-dont-send
+        :desc "attach"        "m a" #'mail-add-attachment)
+
 (require 'org-msg)
 (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
       org-msg-startup "hidestars indent inlineimages"
@@ -142,6 +196,6 @@
 
  #+begin_signature
  -- *Jeetaditya Chatterjee* \\\\
- /One Emacs to rule them all/
+ /Sent using my text editor/
  #+end_signature")
  (org-msg-mode)
