@@ -10,7 +10,8 @@
        ;;japanese
 
        :completion
-       company             ; the ultimate code completion backend
+       (company            ; the ultimate code completion backend
+         +childframe)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy
@@ -32,7 +33,7 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
-       pretty-code         ; ligatures or substitute text with pretty symbols
+       ligatures           ; ligatures and symbols to make your code pretty again
        tabs                ; a tab bar for Emacs
        treemacs            ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
@@ -71,7 +72,7 @@
        ;;vterm              ; the best terminal emulation in Emacs
 
        :checkers
-       syntax               ; tasing you for every semicolon you forget
+       (syntax +childframe) ; tasing you for every semicolon you forget
        spell                ; tasing you for misspelling mispelling
        ;; grammar           ; tasing grammar mistake every you make
 

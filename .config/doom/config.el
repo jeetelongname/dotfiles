@@ -4,6 +4,8 @@
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
       doom-theme 'doom-horizon); pretty self explanitory
+      auth-sources '("~/.authinfo.gpg")
+
 (global-auto-revert-mode t)
 ;;
 ;; move to the split after making it (tbh should be a default)
@@ -80,13 +82,11 @@
 
 ;; golang
 (after! go-mode
-  (set-pretty-symbols! 'go-mode
+  (set-ligatures! 'go-mode
     :def "func"
     :true "true" :false "false"
     :int "int" :str "string"
     :float "float" :bool "bool"
-    :not "!"
-    :and "&&" :or "||"
     :for "for"
     :return "return" :yeild "yeild"))
 ;; easy hugo
@@ -144,7 +144,7 @@
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
 ;;
-;; mu4e and org-msg
+;; mu4e and org-msg (if it does not look like its is loaded open mu4e and all si good)
 (setq +mu4e-backend 'offlineimap
       mail-user-agent 'mu4e-user-agent)
 
@@ -154,7 +154,7 @@
     (mu4e-trash-folder      . "/gmail.com/Trash")
     (mu4e-refile-folder     . "/gmail.com/All Mail")
     (smtpmail-smtp-user     . "jeetelongname@gmail.com")
-    (user-mail-address      . "jeetelongname@gmail.com")    ;; only needed for mu < 1.4
+    (user-mail-address      . "jeetelongname@gmail.com")
     )t)
 
 (setq mu4e-use-fancy-chars t
@@ -179,10 +179,11 @@
 
 (map! :localleader ; HACK ; works but is now in all org buffers
         :map org-mode-map
-        :desc "send and exit" "m s" #'message-send-and-exit
-        :desc "kill buffer"   "m d" #'message-kill-buffer
-        :desc "save draft"    "m S" #'message-dont-send
-        :desc "attach"        "m a" #'mail-add-attachment)
+        :prefix "m"
+        :desc "send and exit" "s" #'message-send-and-exit
+        :desc "kill buffer"   "d" #'message-kill-buffer
+        :desc "save draft"    "S" #'message-dont-send
+        :desc "attach"        "a" #'mail-add-attachment)
 
 (require 'org-msg)
 (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
