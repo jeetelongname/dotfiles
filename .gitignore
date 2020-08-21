@@ -153,3 +153,6 @@ Videos
 /.config/pop-shell/
 /.offlineimap/
 /.config/doom/custom.el
+/node_modules/
+/package-lock.json
+/.authinfo.gpg
