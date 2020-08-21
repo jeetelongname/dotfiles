@@ -30,10 +30,6 @@
       doom-variable-pitch-font (font-spec
        :family "Inconsolata Nerd Font"
        :size 15)
-      ;; doom-unicode-font
-      ;; (font-spec
-      ;;  :family "Ligconsolata Regular"
-      ;;  :size 15)
 )
 
 ;;org
