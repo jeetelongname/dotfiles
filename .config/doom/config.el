@@ -3,40 +3,44 @@
 ;; personal settings
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
-      doom-theme 'doom-horizon); pretty self explanitory
+      doom-theme 'doom-horizon; pretty self explanitory
       auth-sources '("~/.authinfo.gpg")
+      ispell-dictionary "en"
+      browse-url-browser-function 'browse-url-firefox)
 
 (global-auto-revert-mode t)
-;;
+
+(use-package! discord-emacs ;; for face value discord intergration
+  :config
+  ;; (discord-emacs-run "747913611426529440") ;;mine
+  (discord-emacs-run "384815451978334208") ;;default
+  )
+
 ;; move to the split after making it (tbh should be a default)
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 
-(setq fancy-splash-image
-      (concat doom-private-dir "icons/emacs-icon.png"))
+(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 
 (setq display-line-numbers-type 'relative
-      company-idle-delay 0.3 ; i like my autocomplete like my tea fast and always
-      prettify-symbols-mode t
-)
-(setq browse-url-browser-function 'browse-url-firefox)
+      company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
+      prettify-symbols-mode t)
+
 ;; fonts
 (setq doom-font (font-spec
-       :family "Inconsolata Nerd Font"
+       :family "Inconsolata NF"
        :size 15)
       doom-big-font (font-spec
-       :family "Inconsolata Nerd Font"
-       :size 20)
+       :family "Inconsolata NF"
+       :size 25)
       doom-variable-pitch-font (font-spec
-       :family "Inconsolata Nerd Font"
-       :size 15)
-)
+       :family "Inconsolata NF"
+       :size 15))
 
 ;;org
 (setq org-directory "~/org-notes/")
 (require 'org-re-reveal)
 (setq org-re-reveal-root "file:///home/jeet/org-notes/presentations/reveal.js/")
-
 (after! org
   (set-face-attribute 'org-link nil
                       :weight 'normal
@@ -44,7 +48,7 @@
   (set-face-attribute 'org-code nil
                       :background nil)
   (set-face-attribute 'org-date nil
-                      :foreground "#5B6268"
+                      :foreground "#5b6268"
                       :background nil)
   (set-face-attribute 'org-level-1 nil
                       :background nil
@@ -75,6 +79,11 @@
 
   (require 'org-re-reveal) ;; FIXME its does not work. i may need to use `use-package'
   (setq org-re-reveal-root "file:///home/jeet/org-notes/presentations/reveal.js/"))
+(setq org-capture-templates
+      '( ("x" "Note" entry  (file+olp+datetree "journal.org")
+          "**** %T %?" :prepend t :kill-buffer t)
+         ("t" "Task" entry (file+headline "tasks.org" "Inbox")
+          "**** TODO %U %?\n%i" :prepend t :kill-buffer t)))
 
 ;; golang
 (after! go-mode
@@ -87,19 +96,20 @@
     :return "return" :yeild "yeild"))
 ;; easy hugo
 
-;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
+;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")             
 (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 ;;
 ;; elfeed
 (after! elfeed
-  (setq elfeed-search-filter "@1-week-ago"))
-(setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org")))
-(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-(require 'elfeed-goodies)
-(elfeed-goodies/setup)
+  (setq elfeed-search-filter "@1-week-ago")
+  (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org")))
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+  (require 'elfeed-goodies)
+  (elfeed-goodies/setup))
 ;;
 ;; doom modeline
-(setq doom-modeline-buffer-file-name-style 'truncate-upto-root
+(after! doom-modeline
+  (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
       doom-modeline-height 3
       doom-modeline-icon 't
       doom-modeline-modal-icon 'nil
@@ -107,7 +117,7 @@
       doom-modeline-major-mode-color-icon t
       doom-modeline-buffer-modification-icon t
       doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
-      doom-modeline-icon(display-graphic-p))
+      doom-modeline-icon(display-graphic-p)))
 
 (setq centaur-tabs-style "box"
       centaur-tabs-height 32
@@ -120,25 +130,33 @@
 (setq +treemacs-git-mode 'extended
       treemacs-width 30)
 
-(map! (:after dired (:map dired-mode-map
-     :localleader "p" #'peep-dired)))
 
-(evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file
-                                             (kbd "k") 'peep-dired-prev-file)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 (map!
- :n
-  "zw" 'save-buffer ; = :w ZZ = :wq
-
+ :n "zw" 'save-buffer ; = :w ZZ = :wq
  :leader
   :desc "Enable Coloured Values""t c" #'rainbow-mode
   :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
   :desc "Open Elfeed""o l" #'elfeed
-  )
+
+  (:after dired (:map dired-mode-map
+        :n "j" #'peep-dired-next-file
+        :n "k" #'peep-dired-prev-file
+        :localleader
+        "p" #'peep-dired))
+
+  (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
+        :n [return]
+        (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+             #'+spell/correct))))
+
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
+
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
 ;;
 ;; mu4e and org-msg (if it does not look like its is loaded open mu4e and all si good)
 (setq +mu4e-backend 'offlineimap
@@ -196,3 +214,8 @@
  /Sent using my text editor/
  #+end_signature")
  (org-msg-mode)
+
+;; python
+
+
+(setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))

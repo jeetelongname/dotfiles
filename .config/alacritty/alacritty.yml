@@ -35,6 +35,7 @@ title: Alacritty
 scrolling:
   history: 10000
   multiplier: 3
+ 
 # Font configuration
 font:
   normal:
@@ -58,7 +59,7 @@ font:
   glyph_offset:
     x: 0
     y: 0
-
+# fonts end here
 colors:
   # Default Colors (pencil dark)
   primary:
@@ -84,6 +85,7 @@ colors:
     magenta: '#6855de'
     cyan:    '#4fb8cc'
     white:   '#f1f1f1'
+
 background_opacity: 0.97
 
 # Allow terminal applications to change Alacritty's window title.

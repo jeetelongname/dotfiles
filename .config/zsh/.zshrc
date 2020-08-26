@@ -56,6 +56,7 @@ zplug "ohmyzsh/ohmyzsh", as:plugin, use:"lib/{clipboard.zsh,correction.zsh,git.z
 #zplug "zsh-users/zsh-syntax-highlighting", defer:2 # 
 zplug "zdharma/fast-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-autosuggestions", defer:2
+zplug "hlissner/zsh-autopair", defer:2
 zplug "jeetelongname/Yeet-theme", as:theme, defer:1
 
 zplug "plugins/git", from:oh-my-zsh, lazy:true

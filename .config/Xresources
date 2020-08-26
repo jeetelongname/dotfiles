@@ -85,9 +85,10 @@ Xft.rgba: rgb
 Xft.autohint: true
 Xft.hintstyle: hintfull
 Xft.lcdfilter: lcdfilter
-
+XTerm.vt100.locale: true
+XTerm.termName: xterm-256color
 !! XTerm Configuration (because i would rather have one than not)
 
 XTerm*renderFont: true
-XTerm*faceName:   xft:Inconsolata Nerd Font
-XTerm*faceSize:   10.0
+xterm*faceName: Inconsolata:size=12:antialias=true
+XTerm*utf8: 1

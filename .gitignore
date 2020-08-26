@@ -156,3 +156,4 @@ Videos
 /node_modules/
 /package-lock.json
 /.authinfo.gpg
+/.audacity-data/
