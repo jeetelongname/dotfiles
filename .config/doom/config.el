@@ -2,31 +2,17 @@
 
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
-      doom-theme 'doom-horizon; pretty self explanitory
       auth-sources '("~/.authinfo.gpg")
       ispell-dictionary "en"
+      display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
 
 (global-auto-revert-mode t)
 
-(setq evil-split-window-below t
+(setq evil-split-window-below  t
       evil-vsplit-window-right t)
 
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
-
-(setq display-line-numbers-type 'relative
-      company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
-      prettify-symbols-mode t)
-
-(setq doom-font (font-spec
-       :family "Inconsolata NF"
-       :size 15)
-      doom-big-font (font-spec
-       :family "Inconsolata NF"
-       :size 25)
-      doom-variable-pitch-font (font-spec
-       :family "Inconsolata NF"
-       :size 15))
 
 (use-package! discord-emacs ;; for face value discord intergration
   :config
@@ -34,8 +20,35 @@
   (discord-emacs-run "384815451978334208") ;;default
   )
 
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
+
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
+
+(after! company
+  (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
+        company-minimum-prefix-length 2)
+  (setq company-show-numbers t))
+
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
 
 
 
@@ -93,6 +106,18 @@
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 
+(setq doom-font (font-spec
+       :family "Inconsolata NF"
+       :size 15)
+      doom-big-font (font-spec
+       :family "Inconsolata NF"
+       :size 25)
+      doom-variable-pitch-font (font-spec
+       :family "Inconsolata NF"
+       :size 15))
+
+(setq doom-theme 'doom-horizon)
+
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
       doom-modeline-height 3
@@ -101,6 +126,7 @@
       doom-modeline-env-version t
       doom-modeline-major-mode-color-icon t
       doom-modeline-buffer-modification-icon t
+      doom-modeline-enable-word-count t
       doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
       doom-modeline-icon(display-graphic-p)
       doom-modeline-persp-name t
@@ -115,35 +141,144 @@
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
 (after! centaur-tabs
-    (setq centaur-tabs-style "box"
-      centaur-tabs-height 40
-      centaur-tabs-set-bar 'under
-      x-underline-at-descent-line t
-      centaur-tabs-close-button "×"
-      centaur-tabs-modified-marker "Ø"))
+   (setq centaur-tabs-style "box"
+     centaur-tabs-height 32
+     centaur-tabs-set-bar 'under
+     x-underline-at-descent-line t
+     centaur-tabs-close-button "×"
+     centaur-tabs-modified-marker "Ø"))
+;; (use-package! centaur-tabs
+;;  :config
+;;  (centaur-tabs-headline-match)
+;;  (setq centaur-tabs-style "box"
+;;        centaur-tabs-height 32
+;;        centaur-tabs-set-bar 'under
+;;        x-underline-at-descent-line t
+;;        centaur-tabs-close-button "×"
+;;        centaur-tabs-modified-marker "Ø")
+;;  )
 
 (setq +treemacs-git-mode 'extended
       treemacs-width 30)
 
 (after! mu4e
   (setq +mu4e-backend 'offlineimap
-        mail-user-agent 'mu4e-user-agent)
+        mail-user-agent 'mu4e-user-agent
+        mu4e-view-use-gnus t)
+
   (setq mu4e-use-fancy-chars t
-        mu4e-headers-draft-mark '("D" . " ")
-        mu4e-headers-flagged-mark '("F" . " ")
-        mu4e-headers-new-mark '("N" . " ")
-        mu4e-headers-passed-mark '("P" . " ")
-        mu4e-headers-replied-mark '("R" . " ")
-        mu4e-headers-seen-mark '("S" . " ")
-        mu4e-headers-trashed-mark '("T" . " ")
-        mu4e-headers-attach-mark '("a" . " ")
+        mu4e-headers-draft-mark     '("D" . " ")
+        mu4e-headers-flagged-mark   '("F" . " ")
+        mu4e-headers-new-mark       '("N" . " ")
+        mu4e-headers-passed-mark    '("P" . " ")
+        mu4e-headers-replied-mark   '("R" . " ")
+        mu4e-headers-seen-mark      '("S" . " ")
+        mu4e-headers-trashed-mark   '("T" . " ")
+        mu4e-headers-attach-mark    '("a" . " ")
         mu4e-headers-encrypted-mark '("x" . "")
-        mu4e-headers-signed-mark '("s" . " ")
-        mu4e-headers-unread-mark '("u" . " "))
-        (setq mu4e-headers-fields '((:human-date . 12)
-                                    (:flags . 4)
-                                    (:from . 25)
-                                    (:subject))))
+        mu4e-headers-signed-mark    '("s" . " ")
+        mu4e-headers-unread-mark    '("u" . " "))
+  (setq mu4e-headers-fields '((:human-date . 12)
+                              (:flags      . 4)
+                              (:from       . 25)
+                              (:subject))
+        mu4e-headers-date-format "%d/%m/%y"
+        mu4e-headers-time-format "%T"))
+
+;; (after! mu4e
+
+;;   (defun mu4e-header-colourise (str)
+;;     (let* ((str-sum (apply #'+ (mapcar (lambda (c) (% c 3)) str)))
+;;            (colour (nth (% str-sum (length mu4e-header-colourised-faces))
+;;                         mu4e-header-colourised-faces)))
+;;       (put-text-property 0 (length str) 'face colour str)
+;;       str))
+
+;;   (defvar mu4e-header-colourised-faces
+;;     '(all-the-icons-lblue
+;;       all-the-icons-purple
+;;       all-the-icons-blue-alt
+;;       all-the-icons-green
+;;       all-the-icons-maroon
+;;       all-the-icons-yellow
+;;       all-the-icons-orange))
+
+;;   (setq mu4e-headers-fields
+;;         '((:account . 12)
+;;           (:human-date . 8)
+;;           (:flags . 6)
+;;           (:from . 25)
+;;           (:folder . 10)
+;;           (:recipnum . 2)
+;;           (:subject))
+;;         mu4e-headers-date-format "%d/%m/%y"
+;;         mu4e-headers-time-format "%T")
+
+;;   (plist-put (cdr (assoc :flags mu4e-header-info)) :shortname " Flags") ; default=Flgs
+;;   (setq mu4e-header-info-custom
+;;         '((:account .
+;;            (:name "Account" :shortname "Account" :help "Which account this email belongs to" :function
+;;             (lambda (msg)
+;;               (let ((maildir
+;;                      (mu4e-message-field msg :maildir)))
+;;                 (mu4e-header-colourise (replace-regexp-in-string "^gmail" (propertize "g" 'face 'bold-italic)
+;;                                                                  (format "%s"
+;;                                                                          (substring maildir 1
+;;                                                                                     (string-match-p "/" maildir 1)))))))))
+;;           (:folder .
+;;            (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+;;             (lambda (msg)
+;;               (let ((maildir
+;;                      (mu4e-message-field msg :maildir)))
+;;                 (mu4e-header-colourise (replace-regexp-in-string "\\`.*/" "" maildir))))))
+;;           (:recipnum .
+;;            (:name "Number of recipients"
+;;             :shortname " ⭷"
+;;             :help "Number of recipients for this message"
+;;             :function
+;;             (lambda (msg)
+;;               (propertize (format "%2d"
+;;                                   (+ (length (mu4e-message-field msg :to))
+;;                                      (length (mu4e-message-field msg :cc))))
+;;                           'face 'mu4e-footer-face)))))))
+
+(after! mu4e
+  (defvar mu4e-min-header-frame-width 120
+    "Minimum reasonable with for the header view.")
+  (defun mu4e-widen-frame-maybe ()
+    "Expand the frame with if it's less than `mu4e-min-header-frame-width'."
+    (when (< (frame-width) mu4e-min-header-frame-width)
+      (set-frame-width (selected-frame) mu4e-min-header-frame-width)))
+  (add-hook 'mu4e-headers-mode-hook #'mu4e-widen-frame-maybe))
+
+(defadvice! mu4e~main-action-prettier-str (str &optional func-or-shortcut)
+ "Highlight the first occurrence of [.] in STR.
+If FUNC-OR-SHORTCUT is non-nil and if it is a function, call it
+when STR is clicked (using RET or mouse-2); if FUNC-OR-SHORTCUT is
+a string, execute the corresponding keyboard action when it is
+clicked."
+ :override #'mu4e~main-action-str
+ (let ((newstr
+        (replace-regexp-in-string
+         "\\[\\(..?\\)\\]"
+         (lambda(m)
+           (format "%s"
+                   (propertize (match-string 1 m) 'face '(mode-line-emphasis bold))))
+         (replace-regexp-in-string "\t\\*" "\t⚫" str)))
+       (map (make-sparse-keymap))
+       (func (if (functionp func-or-shortcut)
+                 func-or-shortcut
+               (if (stringp func-or-shortcut)
+                   (lambda()(interactive)
+                     (execute-kbd-macro func-or-shortcut))))))
+   (define-key map [mouse-2] func)
+   (define-key map (kbd "RET") func)
+   (put-text-property 0 (length newstr) 'keymap map newstr)
+   (put-text-property (string-match "[A-Za-z].+$" newstr)
+                      (- (length newstr) 1) 'mouse-face 'highlight newstr)
+   newstr))
+
+(setq evil-collection-mu4e-end-region-misc "quit")
 
 (set-email-account! "gmail.com"
                     '((mu4e-sent-folder       . "/gmail.com/Sent Mail")
@@ -152,7 +287,7 @@
                       (mu4e-refile-folder     . "/gmail.com/All Mail")
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com")
                       (user-mail-address      . "jeetelongname@gmail.com")
-                      (mu4e-compose-signature . " Regards, #+begin_signature -- *Jeetaditya Chatterjee* \\\\ /Sent using my text editor/ #+end_signature"))t)
+                      )t)
 
 (map! :localleader ; HACK ; works but is now in all org buffers
       :map org-mode-map :prefix "m"

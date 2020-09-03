@@ -61,7 +61,7 @@
        word-wrap           ; soft wrapping with language-aware indent
 
        :emacs
-       dired               ; making dired pretty [functional]
+       (dired +icons)               ; making dired pretty [functional]
        electric            ; smarter, keyword-based electric-indent
        ibuffer             ; interactive buffer management
        undo                ; persistent, smarter undo for your inevitable mistakes
@@ -128,7 +128,7 @@
        (haskell +dante)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
-       ;;json              ; At least it ain't XML
+       json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        javascript          ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB

@@ -15,11 +15,18 @@
 (package! elfeed-web)
 
 (package! peep-dired)
+
 (package! tldr)
+
 (package! org-msg)
-(package! ox-reveal)
+
+(package! emojify)
+
+(package! selectric-mode)
+
+(package! keycast :pin "038475c178...")
+
+(package! org-pretty-tags)
 
 (package! origami)
 ;; (package! org-super-agenda)
-(package! emojify)
-(package! selectric-mode)
