@@ -157,3 +157,4 @@ Videos
 /package-lock.json
 /.authinfo.gpg
 /.audacity-data/
+/.ipython/
