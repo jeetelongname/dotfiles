@@ -145,8 +145,6 @@ Videos
 /.config/vimb/search
 /.config/vimb/command
 /.config/vimb/history
-/chemacs/
-/emacs/
 /.config/doom/elisp/
 /.mail/
 /.mu/
