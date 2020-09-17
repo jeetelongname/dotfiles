@@ -2,6 +2,7 @@
 
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
+      doom-scratch-initial-major-mode 'lisp-interaction-mode
       auth-sources '("~/.authinfo.gpg")
       ispell-dictionary "en"
       display-line-numbers-type 'relative
@@ -52,7 +53,16 @@
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
 
+(after! ivy
+  (setq ivy-height 20
+        ivy-wrap nil
+        ivy-magic-slash-non-match-action t))
 
+(after! ivy-postframe
+  (setq ivy-posframe-border-width 20
+        ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
+        ivy-posframe-height-alist '((swiper . 20)(t . 40)))
+(ivy-posframe-display-at-frame-top-center))
 
 (setq org-directory "~/org-notes/")
 (after! org
@@ -91,11 +101,10 @@
   (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
         org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
 
-(setq org-capture-templates
-      '( ("x" "Note" entry  (file+olp+datetree "journal.org")
-          "**** %T %?" :prepend t :kill-buffer t)
-         ("t" "Task" entry (file+headline "tasks.org" "Inbox")
-          "**** TODO %U %?\n%i" :prepend t :kill-buffer t)))
+(after! org-capture
+    (setq org-capture-templates
+      '(("x" "Note" entry  (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t))))
 
 (after! go-mode
   (set-ligatures! 'go-mode
@@ -119,6 +128,9 @@
        :size 15))
 
 (setq doom-theme 'doom-horizon)
+;; (setq doom-theme 'doom-horizon-light-theme)
+
+(setq +doom-dashboard-name "«doom»")
 
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
@@ -394,3 +406,16 @@ clicked."
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+
+(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
+  "where to put the picture")
+(defvar yeet/paint-ask t
+  "Ask if you want to name the file if no it will be named you current buffer + picture")
+(defvar yeet/paint-cmd "gnome-paint"
+  "the program you want to use as your paint program")
+
+(defun yeet/paint-insert()
+  ""
+  (interactive)
+  (shell-command yeet/paint-cmd)
+  )

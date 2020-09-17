@@ -1,5 +1,6 @@
 #+TITLE: My configuration
 
+
 * Introduction
 This is my literate configuration for doom emacs. I barley know elisp and I have
 mostly stolen snippets for others.
@@ -9,50 +10,12 @@ Lets get this config started!
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+END_SRC
 
-** TOC :toc_nil:
-- [[#introduction][Introduction]]
-- [[#rudimentary-configuration][Rudimentary configuration]]
-- [[#packages][Packages]]
-  - [[#package-loading][Package Loading]]
-    - [[#discord-emacs][Discord emacs]]
-    - [[#elfeed][elfeed]]
-    - [[#peep-dired][peep-dired]]
-    - [[#tldr][tldr]]
-    - [[#org-msg][org-msg]]
-    - [[#emojify][emojify]]
-    - [[#selectric-mode][selectric-mode]]
-    - [[#keycast][keycast]]
-    - [[#org][Org]]
-  - [[#configuration][Configuration]]
-    - [[#discord-emacs-1][Discord emacs]]
-    - [[#peep-dired-1][Peep Dired]]
-    - [[#easy-hugo][Easy-hugo]]
-- [[#modules][Modules]]
-  - [[#completion][completion]]
-    - [[#company][company]]
-    - [[#ivy][ivy]]
-  - [[#lang][lang]]
-    - [[#org-1][Org]]
-    - [[#go][Go]]
-    - [[#python][Python]]
-  - [[#ui][ui]]
-    - [[#doom][Doom]]
-    - [[#modeline][Modeline]]
-    - [[#tabs][Tabs]]
-    - [[#treemacs][Treemacs]]
-  - [[#email][email]]
-    - [[#mu4e][mu4e]]
-  - [[#app][App]]
-    - [[#rss][rss]]
-- [[#other-stuff][Other Stuff??]]
-  - [[#keybinds][Keybinds]]
-  - [[#hooky-hooks][Hooky hooks]]
-
 * Rudimentary configuration
 This is the stuff that does not really belong in any module
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
+      doom-scratch-initial-major-mode 'lisp-interaction-mode
       auth-sources '("~/.authinfo.gpg")
       ispell-dictionary "en"
       display-line-numbers-type 'relative
@@ -179,6 +142,13 @@ I have stolen this from @tecosaur again..
 (package! origami)
 ;; (package! org-super-agenda)
 #+END_SRC
+*** +present
+#+BEGIN_SRC emacs-lisp :tangle package.el
+  (package! revealjs
+    :recipe (:host github :repo "hakimel/reveal.js"
+             :files ("css" "dist" "js" "plugin"))
+    :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
+#+END_SRC
 * Modules
 ** completion
 *** company
@@ -195,9 +165,20 @@ this is to make prescient a little more intelligent
 #+END_SRC
 *** ivy
 #+BEGIN_SRC emacs-lisp
-
-
+(after! ivy
+  (setq ivy-height 20
+        ivy-wrap nil
+        ivy-magic-slash-non-match-action t))
 #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(after! ivy-postframe
+  (setq ivy-posframe-border-width 20
+        ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
+        ivy-posframe-height-alist '((swiper . 20)(t . 40)))
+(ivy-posframe-display-at-frame-top-center))
+#+END_SRC
+
+
 ** lang
 *** Org
 #+BEGIN_SRC emacs-lisp
@@ -240,12 +221,13 @@ this is to make prescient a little more intelligent
   #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      '( ("x" "Note" entry  (file+olp+datetree "journal.org")
-          "**** %T %?" :prepend t :kill-buffer t)
-         ("t" "Task" entry (file+headline "tasks.org" "Inbox")
-          "**** TODO %U %?\n%i" :prepend t :kill-buffer t)))
+(after! org-capture
+    (setq org-capture-templates
+      '(("x" "Note" entry  (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
+
+
 *** Go
 #+BEGIN_SRC emacs-lisp
 
@@ -281,8 +263,14 @@ settings and all of that fun stuff here
        :size 15))
 #+END_SRC
 
+My theme
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme 'doom-horizon)
+;; (setq doom-theme 'doom-horizon-light-theme)
+#+END_SRC
+*** Doom Dashboard
+#+BEGIN_SRC emacs-lisp
+(setq +doom-dashboard-name "«doom»")
 #+END_SRC
 *** Modeline
 #+BEGIN_SRC emacs-lisp
@@ -605,4 +593,20 @@ These are my general keybinds (should probably split them up)
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+#+END_SRC
+** funky functions
+#+BEGIN_SRC emacs-lisp
+(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
+  "where to put the picture")
+(defvar yeet/paint-ask t
+  "Ask if you want to name the file if no it will be named you current buffer + picture")
+(defvar yeet/paint-cmd "gnome-paint"
+  "the program you want to use as your paint program")
+
+(defun yeet/paint-insert()
+  ""
+  (interactive)
+  (shell-command yeet/paint-cmd)
+  )
+
 #+END_SRC
