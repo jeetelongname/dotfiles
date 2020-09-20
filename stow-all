@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+arr=$(ls -I ".git*" -I "README.org" -I "stow-all")
+for i in $arr ; do
+    stow "${arr[i]}"
+done
