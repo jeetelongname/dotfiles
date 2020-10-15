@@ -3,16 +3,24 @@ let leader=" "
 call plug#begin('~/.config/nvim/autoload/plugged')
 Plug 'psliwka/vim-smoothie'
 Plug 'ntk148v/vim-horizon'
-Plug 'scrooloose/nerdtree'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'ap/vim-css-color'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'itchyny/lightline.vim'
 Plug 'ryanoasis/vim-devicons'
+Plug 'airblade/vim-gitgutter'
+Plug 'kana/vim-smartinput'
+Plug 'sheerun/vim-polyglot'
+Plug 'ap/vim-css-color'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-scriptease'
+Plug 'jreybert/vimagit'
 call plug#end()
 
+let g:lightline = {'colorscheme' : 'horizon'}
+colorscheme horizon
 syntax enable
+set termguicolors
 
+" lightline
 ""spaces and tabs
 set tabstop=4
 set expandtab
@@ -24,15 +32,11 @@ set showcmd
 set cursorline
 set wildmenu
 set showmatch
+set laststatus=2
+set ruler
 ""Searching
 set incsearch
 set hlsearch
 ""Folding
 set foldenable
-""Airline
-let g:airline_powerline_fonts = 1 
-let g:airline_theme='bubblegum'
-""Neotree
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-map <C-N> :NERDTreeToggle<CR>
+set noshowmode
