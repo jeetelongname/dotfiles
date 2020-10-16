@@ -1,10 +1,8 @@
 let leader=" " 
 "plugin manager"
 call plug#begin('~/.config/nvim/autoload/plugged')
-Plug 'psliwka/vim-smoothie'
 Plug 'ntk148v/vim-horizon'
 Plug 'itchyny/lightline.vim'
-Plug 'ryanoasis/vim-devicons'
 Plug 'airblade/vim-gitgutter'
 Plug 'kana/vim-smartinput'
 Plug 'sheerun/vim-polyglot'
@@ -34,6 +32,7 @@ set wildmenu
 set showmatch
 set laststatus=2
 set ruler
+set clipboard=unnamedplus
 ""Searching
 set incsearch
 set hlsearch

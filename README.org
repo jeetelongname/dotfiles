@@ -9,6 +9,7 @@ If they have quirks (or need Rewriting) then Do let me know!
     - [[https://dunst-project.org/][Dunst (barley)]]
     - [[https://herbstluftwm.org][Herbstluftwm]]
     - [[https://github.com/dylanaraps/neofetch][neofetch]]
+    - [[https://neovim.io/][Neovim]]
     - [[https://github.com/dylanaraps/pfetch][pfetch]]
     - [[https://xmobar.org/][xmobar]]
     - [[https://github.com/davatorium/rofi][rofi (not really)]]
