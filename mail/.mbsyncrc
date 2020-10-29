@@ -1,0 +1,44 @@
+#                     __
+#    __  _____  ___  / /______
+#   / / / / _ \/ _ \/ __/ ___/
+#  / /_/ /  __/  __/ /_(__  )
+#  \__, /\___/\___/\__/____/
+# /____/
+#                     _____
+#   _________  ____  / __(_)___ _
+#  / ___/ __ \/ __ \/ /_/ / __ `/
+# / /__/ /_/ / / / / __/ / /_/ /
+# \___/\____/_/ /_/_/ /_/\__, /
+#                       /____/
+#                       for mbsync
+IMAPAccount gmail
+# Address to connect to
+Host imap.gmail.com
+Port 993
+User jeetelongname@gmail.com
+PassCmd "pass show email/gmail.com | grep -v address:"
+AuthMechs LOGIN
+SSLType IMAPS
+SSLVersions SSLv3
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+SubFolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/Inbox
+
+Channel gmail
+Master :gmail-remote:
+Slave :gmail-local:
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+# Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+# Or include everything
+Patterns *
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Save the synchronization state files in the relevant directory
+SyncState *
