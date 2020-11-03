@@ -1,6 +1,6 @@
 [submodule "doom/.config/doom"]
 	path = doom/.config/doom
 	url = git@github.com:jeetelongname/.doom.git
-[submodule "zsh/.config/zsh"]
-	path = zsh/.config/zsh
+[submodule "shell/.config/zsh"]
+	path = shell/.config/zsh
 	url = git@github.com:jeetelongname/zsh.git
