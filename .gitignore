@@ -160,3 +160,4 @@ Videos
 /.local/bin/easy_install
 /.local/bin/easy_install-3.8
 /.pylint.d/
+/herbstluftwm/.config/herbstluftwm/buggy.diff

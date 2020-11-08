@@ -16,7 +16,7 @@ tags () {
     # then find the hashtag # and uses that to surround a set of characters seperated with white spaces with []
     # it then removes the hashtag
     # sending it all to stdout
-    printf '%s ' $(hc tag_status | sed 's/\.//g;s/\(#\)\([[:print:]]*\)/[\2]/;s/\(:\)\([[:print:]]*\)/\1\2:/g')
+    printf '%s ' "$(hc tag_status | sed 's/\.//g;s/\(#\)\([[:print:]]*\)/[\2]/;s/\(:\)\([[:print:]]*\)/\1\2:/g')"
     # printf '%s ' $(hc tag_status)
     echo
 }

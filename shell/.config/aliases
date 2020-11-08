@@ -5,11 +5,11 @@ alias cls='clear'
 alias q='exit'
 
 # ls switch up
-alias l='exa -lah  --color=auto --git '
-alias ls='exa -al --color=always --group-directories-first' # my preferred listing
-alias la='exa -a --color=always --group-directories-first'  # all files and dirs
-alias ll='exa -l --color=always --group-directories-first'  # long format
-alias lt='exa -aT --color=always --group-directories-first' # tree listing
+alias l= 'exa -lah --color=always --group-directories-first'
+alias ls='exa -al  --color=always --group-directories-first' # my preferred listing
+alias la='exa -a   --color=always --group-directories-first' # all files and dirs
+alias ll='exa -l   --color=always --group-directories-first' # long format
+alias lt='exa -aT  --color=always --group-directories-first' # tree listing
 
 alias shutr='shutdown -r now'
 alias shut='shutdown now'
@@ -20,7 +20,7 @@ alias ap="sudo aptitude"
 alias bat='batcat'
 alias e='devour emacsclient -c'
 ## git quick commands (because im lazy)
-alias ig="devour emacsclient -a '' -e '(magit-status)' -c"
+alias ig="emacsclient -a -nw '' -e '(magit-status)' -c"
 alias gits='git status'
 alias gitls='exa -l -a --color=auto --git --git-ignore'
 alias gitp='git push'
@@ -37,6 +37,7 @@ alias weather='curl wttr.in/$1 '
 alias h='htop'
 alias umat='unimatrix -a -f -l egGoncCskp'
 alias ipp='dig +short myip.opendns.com @resolver1.opendns.com'
+alias '$'=''
 
 if [[ $(echo $0 | grep "zsh") ]] ; then 
     alias -g ...='../..'
