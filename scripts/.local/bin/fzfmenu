@@ -1,0 +1,3 @@
+#!/bin/sh
+
+alacritty --position 550 300  -e fzf $* < /proc/$$/fd/0 > /proc/$$/fd/1
