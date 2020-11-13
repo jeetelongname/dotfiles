@@ -1,19 +1,18 @@
 #!/bin/sh
 
-xclip -h 2>/dev/null || exit 1
+xclip -h 2>/dev/null || exit 1 # check if xclip is installed
 #dmenu -l 20 -p "select emoji" 
 
-Selected=$(cut -d ';' -f1 ~/.local/share/emoji |fzf --reverse --prompt="selelct emoji >"| sed "s/ .*//")
+Selected=$(cut -d ';' -f1 ~/.local/share/emoji | fzfmenu | sed "s/ .*//")
 
 [ "$Selected" != "" ] || exit 5
 
-echo $Selected
+echo "$Selected"
 
 if [ -n "$1" ]; then
     xdotool key ctrl+v
-    notify-send -i -u low "'$Selected' thosc." && exit 5
+    notify-send -i -u low "'$Selected'" && exit 5
 else
-    echo "$Selected" | tr -d '\n' | xclip -selection clipboard & disown
+    echo "$Selected" | tr -d '\n' | xclip -selection clipboard
     notify-send -i -u  "'$Selected' copied to clipboard." &
 fi
-

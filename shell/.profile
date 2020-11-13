@@ -5,9 +5,14 @@ export XDG_DATA_HOME="$HOME/.local/share"
 ##Default programs
 # export VISUAL="emacsclient -c --eval '(setq doom-modeline-icon(display-graphic-p))'"
 export EDITOR="nvim"
+export VISUAL="emacsclient -c "
 export TERMINAL="alacritty"
 export BROWSER="firefox"
 export FILEMANAGER="nautilus"
+export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma fdm=indent' -\""
+if [ "$PAGER" = "most" ] ;then
+    PAGER="less" 
+fi
 ##cleanup
 export ZDOTDIR="$HOME/.config/zsh"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
@@ -15,7 +20,6 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export LESSHISTFILE="/dev/null"
 ##golang
-#setting the gopath
 export GOPATH=$HOME/code/go
 export GOBIN=$GOPATH/bin
 #setting paths
@@ -28,4 +32,6 @@ export PATH=$PATH:~/.config/emacs/bin
 if [ -d "$HOME/.local/bin/" ] ;then
     PATH="$HOME/.local/bin/:$PATH"
 fi
-
+#pass stuff
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
+export PASSWORD_STORE_ENABLE_EXTENSIONS="true"

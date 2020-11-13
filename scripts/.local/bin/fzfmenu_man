@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# export PAGER="most"
+export FZF_DEFAULT_OPTS="--preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man' | tr -d '()' | awk '{printf "%s ", $2} {print $1}' | xargs -r man"
+apropos . | awk '{print $1}' | fzfmenu | xargs man

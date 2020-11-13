@@ -1,0 +1,3 @@
+#!/bin/sh
+#
+fzfmenu_path | fzfmenu "$@" | ${SHELL:-"/bin/sh"} &

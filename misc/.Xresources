@@ -1,5 +1,46 @@
+!                      __
+!     __  _____  ___  / /______
+!    / / / / _ \/ _ \/ __/ ___/
+!   / /_/ /  __/  __/ /_(__  )
+!   \__, /\___/\___/\__/____/
+!  /____/
+!                      _____
+!    _________  ____  / __(_)___ _
+!   / ___/ __ \/ __ \/ /_/ / __ `/
+!  / /__/ /_/ / / / / __/ / /_/ /
+!  \___/\____/_/ /_/_/ /_/\__, /
+!                        /____/
+!                        for xterm? Xreasources?
+
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft.rgba: rgb
+Xft.autohint: true
+Xft.hintstyle: hintfull
+Xft.lcdfilter: lcdfilter
+
+XTerm*renderFont: true
+XTerm*faceName: Inconsolata Nerd Font Mono, Noto Color Emoji
+! XTerm*faceName: Noto Color Emoji
+XTerm*faceSize: 13
+XTerm*utf8: 2
+XTerm*locale: true
+
+XTerm.vt100.translations: #override \n\
+  Ctrl <Key> j: smaller-vt-font() \n\
+  Ctrl <Key> k: larger-vt-font()
 
 
+! Every shell is a login shell by default (for inclusion of all necessary environment variables)
+XTerm*loginshell: true
+
+! I like a LOT of scrollback...
+XTerm*savelines: 16384
+
+! double-click to select whole URLs :D
+XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+ 
 ! The numbers mason. what do they mean!
 ! well this is what they mean each colour
 ! has a light and dark varient the numbers in the very nice table
@@ -77,18 +118,3 @@
 *.color13:     nord15
 *.color14:     nord7
 *.color15:     nord6
-
-Xft.dpi: 96
-Xft.antialias: true
-Xft.hinting: true
-Xft.rgba: rgb
-Xft.autohint: true
-Xft.hintstyle: hintfull
-Xft.lcdfilter: lcdfilter
-XTerm.vt100.locale: true
-XTerm.termName: xterm-256color
-!! XTerm Configuration (because i would rather have one than not)
-
-XTerm*renderFont: true
-xterm*faceName: Inconsolata:size=12:antialias=true
-XTerm*utf8: 1
