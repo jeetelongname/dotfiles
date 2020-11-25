@@ -38,6 +38,7 @@ alias h='htop'
 alias umat='unimatrix -a -f -l egGoncCskp'
 alias ipp='dig +short myip.opendns.com @resolver1.opendns.com'
 alias '$'=''
+alias ip='ip --color=auto'
 
 if [[ $(echo $0 | grep "zsh") ]] ; then 
     alias -g ...='../..'

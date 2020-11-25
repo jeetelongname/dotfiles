@@ -14,7 +14,7 @@ disable = ["go", "git_repos" ,"myrepos"]
 #no_retry = true
 
 # Run inside tmux
-run_in_tmux = true
+#run_in_tmux = true
 
 # List of remote machines with Topgrade installed on them
 #remote_topgrades = ["toothless", "pi", "parnas"]
@@ -32,7 +32,7 @@ run_in_tmux = true
 #set_title = false
 
 # Cleanup temporary or old files
-#cleanup = true
+cleanup = true
 
 #[git]
 #max_concurrency = 5

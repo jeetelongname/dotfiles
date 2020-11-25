@@ -39,15 +39,15 @@ scrolling:
 # Font configuration
 font:
   normal:
-    family: Inconsolata Nerd Font
+    family: Inconsolata NF
     style: Regular
 
   bold:
-    family: Inconsolata Nerd Font
+    family: Inconsolata NF
     style: Bold
 
   italic:
-    family: Inconsolata Nerd Font
+    family: Inconsolata
     style: Italic
 
   size: 12.0

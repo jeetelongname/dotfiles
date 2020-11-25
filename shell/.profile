@@ -10,9 +10,6 @@ export TERMINAL="alacritty"
 export BROWSER="firefox"
 export FILEMANAGER="nautilus"
 export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma fdm=indent' -\""
-if [ "$PAGER" = "most" ] ;then
-    PAGER="less" 
-fi
 ##cleanup
 export ZDOTDIR="$HOME/.config/zsh"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
@@ -28,10 +25,15 @@ export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/opt/shell-color-scripts
 export PATH=$PATH:$CARGO_HOME/bin
 export PATH=$PATH:~/.config/emacs/bin
+#pass stuff
+export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
+export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
 ## PATH Variables# set PATH so it includes users private bin if it existis
 if [ -d "$HOME/.local/bin/" ] ;then
     PATH="$HOME/.local/bin/:$PATH"
 fi
-#pass stuff
-export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
-export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
+if [ "$PAGER" = "most" ] ;then
+    PAGER="less" 
+fi
+
+export PATH="$HOME/.poetry/bin:$PATH"
