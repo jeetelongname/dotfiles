@@ -5,6 +5,7 @@ directory and stow all of the directorys
 """
 import os
 import argparse
+import sys
 
 parser = argparse.ArgumentParser(
     prog="./stow-all",
@@ -12,12 +13,12 @@ parser = argparse.ArgumentParser(
     epilog="Simple wrapper that makes deplying and removing my doots simple",
 )
 
-parser.add_argument("-D", "--delete", help="remove all symlinks", metavar="<dir>")
+
 parser.add_argument("-d", "--dir", help="Specify dir", metavar="<dir>")
 parser.add_argument("-R", "--restow", help="Restow", metavar="<dir>")
 args = parser.parse_args()
-
-dirs = os.popen("ls -I '.git*' -I 'README.org' -I 'stow-all' ").read().splitlines()
+dirs = os.popen(
+    "ls -I '.git*' -I 'README.org' -I 'stow-all' ").read().splitlines()
 for i in dirs:
     os.system("stow" + " " + i)
 print("done")
