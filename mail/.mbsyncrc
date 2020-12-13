@@ -31,6 +31,20 @@ SubFolders Verbatim
 Path ~/.mail/gmail/
 Inbox ~/.mail/gmail/Inbox
 
+# IMAPAccount school
+
+# Host outlook.office365.com
+# port 993
+# User "jeetaditya.chatterj@utcreading.org.uk"
+# PassCmd "pass show email/school\ email"
+# AuthMechs LOGIN
+# SSLType IMAPS
+# SSLVersions SSLv3
+# CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+# IMAPStore outlook-remote
+# Account outlook
+
 Channel gmail
 Master :gmail-remote:
 Slave :gmail-local:
@@ -42,3 +56,4 @@ Patterns *
 Create Both
 # Save the synchronization state files in the relevant directory
 SyncState *
+
