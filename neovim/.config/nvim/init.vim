@@ -11,6 +11,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-scriptease'
 Plug 'jreybert/vimagit'
+Plug 'sherylynn/vim-elisp' "what can I say except I enjoy living in sin
 call plug#end()
 
 let g:lightline = {'colorscheme' : 'horizon'}
@@ -20,7 +21,7 @@ set termguicolors
 
 " lightline
 ""spaces and tabs
-set tabstop=4
+set tabstop=4 " 
 set expandtab
 ""UI config
 set encoding=UTF-8
