@@ -5,7 +5,8 @@
 
 (("default"   . ((user-emacs-directory . "~/.config/emacs")))
  ("mine"      . ((user-emacs-directory . "~/emacs/myemacs/")))
- ("spacemacs" . ((user-emacs-directory . "~/emacs/spacemacs"))))    ;; my own config
+ ("spacemacs" . ((user-emacs-directory . "~/emacs/spacemacs")))
+ ("nano"      . ((user-emacs-directory . "~/emacs/nano-emacs"))))    ;; my own config
 
 
 ;;; .emacs-profiles.el ends here

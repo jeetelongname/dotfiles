@@ -10,6 +10,7 @@ export TERMINAL="alacritty"
 export BROWSER="firefox"
 export FILEMANAGER="nautilus"
 export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma fdm=indent' -\""
+# export MANPAGER="/bin/sh -c \"col -b | nvim -u '~/.config/nvim/init.man.vim' -\""
 ##cleanup
 export ZDOTDIR="$HOME/.config/zsh"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
