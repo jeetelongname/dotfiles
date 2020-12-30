@@ -1,4 +1,4 @@
-let leader=" " 
+let leader=' ' 
 "plugin manager"
 call plug#begin('~/.config/nvim/autoload/plugged')
 Plug 'ntk148v/vim-horizon'
