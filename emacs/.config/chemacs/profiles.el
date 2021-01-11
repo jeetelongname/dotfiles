@@ -1,6 +1,6 @@
 ;;  package --- a bootloader configuarion for emacs
 ;;; Commentary:
-;;; yeey
+;;; This is my profiles.el found in .config/chemacs
 ;;; Code:
 
 (("default"   . ((user-emacs-directory . "~/.config/emacs.doom")))
