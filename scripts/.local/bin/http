@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+=begin
+A really simple script that executes a simple http server
+=end
+port = ARGV[0]
+dir = ARGV[1]
+exec("goexec 'http.ListenAndServe(`:#{port}`, http.FileServer(http.Dir(`#{dir}`)))'")
