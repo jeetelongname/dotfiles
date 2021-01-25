@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+sleep 3
+while true; do
+	xdotool click --delay 1500 1 # left click
+	echo "click"
+done
