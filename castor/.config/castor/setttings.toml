@@ -1,0 +1,20 @@
+[general]
+start_url = "gemini://gemini.circumlunar.space/capcom"
+max_width = 200
+
+[colors]
+h1 = "red"
+h2 = "#FF6347"
+h3 = "green"
+list = "#C71585"
+text = "#FF1493"
+background = "#FFC0CB"
+[colors.quote]
+    foreground="#e4e4e4"
+    background="grey"
+
+[characters]
+h1 = ">"
+h2 = ">>"
+h3 = ">>>"
+list = "+"
