@@ -21,7 +21,7 @@ Xft.hintstyle: hintfull
 Xft.lcdfilter: lcdfilter
 
 XTerm*renderFont: true
-XTerm*faceName: Inconsolata Nerd Font Mono, Noto Color Emoji
+XTerm*faceName: Iosevka
 ! XTerm*faceName: Noto Color Emoji
 XTerm*faceSize: 13
 XTerm*utf8: 2

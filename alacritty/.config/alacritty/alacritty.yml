@@ -38,15 +38,15 @@ scrolling:
 # Font configuration
 font:
   normal:
-    family: Inconsolata NF
+    family: Iosevka
     style: Regular
 
   bold:
-    family: Inconsolata NF
+    family: Iosevka
     style: Bold
 
   italic:
-    family: Inconsolata
+    family: Iosevka
     style: Italic
 
   size: 12.0

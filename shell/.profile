@@ -29,13 +29,17 @@ export PATH=$PATH:~/.config/emacs.doom/bin
 #pass stuff
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
+## CDPATH "sending you ~ a little less" TODO
+
 ## PATH Variables# set PATH so it includes users private bin if it existis
-if [ -d "$HOME/.local/bin/" ] ;then
-    PATH="$HOME/.local/bin/:$PATH"
+if [ -d "$HOME/.local/bin/" ]; then
+	PATH="$HOME/.local/bin/:$PATH"
 fi
-if [ "$PAGER" = "most" ] ;then
-    PAGER="less" 
+if [ "$PAGER" = "most" ]; then
+	PAGER="less"
 fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
+#Nix (need to do more with it)
 if [ -e /home/jeet/.nix-profile/etc/profile.d/nix.sh ]; then . /home/jeet/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+export PATH=$PATH:~/.nimble/bin
