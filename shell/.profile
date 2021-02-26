@@ -39,6 +39,13 @@ if [ "$PAGER" = "most" ]; then
 	PAGER="less"
 fi
 
+if [ -d $HOME/.nix-profile/etc/profile.d ]; then
+	for i in $HOME/.nix-profile/etc/profile.d/*.sh; do
+		if [ -r $i ]; then
+			. $i
+		fi
+	done
+fi
 export PATH="$HOME/.poetry/bin:$PATH"
 #Nix (need to do more with it)
 if [ -e /home/jeet/.nix-profile/etc/profile.d/nix.sh ]; then . /home/jeet/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
