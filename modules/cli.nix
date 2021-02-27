@@ -23,6 +23,9 @@
   xdg.configFile = {
     "topgrade.toml".source = ../config/cli/topgrade.toml;
     "neofetch/config.conf".source = ../config/cli/neofetch.conf;
+    "htop/htoprc".source = ../config/cli/htoprc;
+    "pulsemixer.cfg".source = ../config/cli/pulsemixer.cfg;
+
   };
 
   programs.fzf = {
