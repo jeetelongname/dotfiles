@@ -20,6 +20,11 @@
 
   ];
 
+  xdg.configFile = {
+    "topgrade.toml".source = ../config/cli/topgrade.toml;
+    "neofetch/config.conf".source = ../config/cli/neofetch.conf;
+  };
+
   programs.fzf = {
     # TODO config fzf
     enable = true;

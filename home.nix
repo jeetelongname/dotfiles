@@ -8,6 +8,7 @@
 
     modules/terminal.nix
     modules/cli.nix
+    modules/git.nix
   ];
 
   home = {

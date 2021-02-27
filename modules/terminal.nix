@@ -6,7 +6,7 @@
   xdg.configFile."alacritty/alacritty.yml".source =
     ../config/terminal/alacritty.yml;
 
-  # TODO: move more of the config into home manager
+  # TODO: move more of my tmux config into home manager
   programs.tmux = {
     enable = true;
     # config
