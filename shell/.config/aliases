@@ -15,7 +15,6 @@ alias shutr='shutdown -r now'
 alias shut='shutdown now'
 alias py='python3'
 alias ipy='ipython3'
-#alias doom='~/.emacs.d/bin/doom'
 alias ap="sudo aptitude"
 alias bat='batcat'
 alias e='devour emacsclient -c'
@@ -25,8 +24,9 @@ alias gits='git status'
 alias gitls='exa -l -a --color=auto --git --git-ignore'
 alias gitp='git push'
 alias gitl='git log'
-## not git 
+## not git
 alias caps='setxkbmap -option caps:swapescape'
+alias hm='home-manager'
 #a little bit of fun
 alias rr='curl -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
 alias c='echo your a dumbass && sleep 0.51'
@@ -40,9 +40,9 @@ alias ipp='dig +short myip.opendns.com @resolver1.opendns.com'
 alias '$'=''
 alias ip='ip --color=auto'
 
-if [[ $(echo $0 | grep "zsh") ]] ; then 
-    alias -g ...='../..'
-    alias -g .3='../../..'
-    alias -g .4='../../../..'
-    alias -g .5='../../../../..'
-fi 
+if [[ $(echo $0 | grep "zsh") ]]; then
+	alias -g ...='../..'
+	alias -g .3='../../..'
+	alias -g .4='../../../..'
+	alias -g .5='../../../../..'
+fi
