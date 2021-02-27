@@ -16,7 +16,6 @@ alias shut='shutdown now'
 alias py='python3'
 alias ipy='ipython3'
 alias ap="sudo aptitude"
-alias bat='batcat'
 alias e='devour emacsclient -c'
 ## git quick commands (because im lazy)
 alias ig="emacsclient -a -nw '' -e '(magit-status)' -c"
