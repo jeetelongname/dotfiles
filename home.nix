@@ -3,8 +3,11 @@
 {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  # imports = [
+
+  # ];
   home = {
-    packages = [ pkgs.caddy pkgs.nixfmt pkgs.shfmt ];
+    packages = with pkgs; [ caddy nixfmt shfmt ];
     # Home Manager needs a bit of information about you and the
     # paths it should manage.
     username = "jeet";
