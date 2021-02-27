@@ -39,6 +39,8 @@ if [ "$PAGER" = "most" ]; then
 	PAGER="less"
 fi
 
+export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
+
 if [ -d $HOME/.nix-profile/etc/profile.d ]; then
 	for i in $HOME/.nix-profile/etc/profile.d/*.sh; do
 		if [ -r $i ]; then
@@ -46,7 +48,8 @@ if [ -d $HOME/.nix-profile/etc/profile.d ]; then
 		fi
 	done
 fi
-export PATH="$HOME/.poetry/bin:$PATH"
 #Nix (need to do more with it)
 if [ -e /home/jeet/.nix-profile/etc/profile.d/nix.sh ]; then . /home/jeet/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+export PATH="$HOME/.poetry/bin:$PATH"
 export PATH=$PATH:~/.nimble/bin
