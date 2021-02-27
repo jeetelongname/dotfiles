@@ -2,10 +2,10 @@
 
 {
   # Let Home Manager install and manage itself.
+  nixpkgs.config.allowUnfree = true;
   programs.home-manager.enable = true;
-  # imports = [
+  imports = [ modules/terminal.nix ];
 
-  # ];
   home = {
     packages = with pkgs; [ caddy nixfmt shfmt ];
     # Home Manager needs a bit of information about you and the

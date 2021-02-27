@@ -2,6 +2,7 @@
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_DATA_DIRS=$HOME/.nix-profile/share:$XDG_DATA_DIRS:/usr/share/:"${XDG_DATA_DIRS:-/usr/local/share/:/usr/share/}"
 ##Default programs
 # export VISUAL="emacsclient -c --eval '(setq doom-modeline-icon(display-graphic-p))'"
 export EDITOR="nvim"
@@ -29,6 +30,8 @@ export PATH=$PATH:~/.config/emacs.doom/bin
 #pass stuff
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
+
+export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib"
 ## CDPATH "sending you ~ a little less" TODO
 
 ## PATH Variables# set PATH so it includes users private bin if it existis
@@ -38,7 +41,6 @@ fi
 if [ "$PAGER" = "most" ]; then
 	PAGER="less"
 fi
-
 export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 
 if [ -d $HOME/.nix-profile/etc/profile.d ]; then
