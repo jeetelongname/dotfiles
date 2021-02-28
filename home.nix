@@ -8,6 +8,7 @@
     modules/cli.nix
     modules/fun.nix
     modules/git.nix
+    modules/misc.nix
     modules/terminal.nix
 
   ];
