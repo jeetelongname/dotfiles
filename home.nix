@@ -6,6 +6,7 @@
   programs.home-manager.enable = true;
   imports = [
     modules/cli.nix
+    modules/fun.nix
     modules/git.nix
     modules/terminal.nix
 
