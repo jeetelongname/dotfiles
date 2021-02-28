@@ -2,24 +2,30 @@
 
 {
   # Let Home Manager install and manage itself.
-  nixpkgs.config.allowUnfree = true;
   programs.home-manager.enable = true;
+
+  nixpkgs.config.allowUnfree = true;
+
+  home.file.".config/nixpkgs/config.nix".text = ''
+    { allowUnfree = true; }
+  '';
+
   imports = [
     modules/cli.nix
     modules/fun.nix
     modules/git.nix
+    modules/email.nix
     modules/misc.nix
+    modules/neovim.nix
     modules/terminal.nix
 
   ];
 
   home = {
-    packages = with pkgs; [ caddy nixfmt shfmt ];
-    # Home Manager needs a bit of information about you and the
-    # paths it should manage.
     username = "jeet";
     homeDirectory = "/home/jeet";
 
+    packages = with pkgs; [ caddy nixfmt shfmt ];
     # This value determines the Home Manager release that your
     # configuration is compatible with. This helps avoid breakage
     # when a new Home Manager release introduces backwards
