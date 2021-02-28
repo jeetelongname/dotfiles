@@ -19,6 +19,7 @@
     modules/misc.nix
     modules/neovim.nix
     modules/terminal.nix
+    modules/shell.nix
 
   ];
 
@@ -26,6 +27,7 @@
     username = "jeet";
     homeDirectory = "/home/jeet";
 
+    # TODO move this out of here
     packages = with pkgs; [
       caddy
       nixfmt
