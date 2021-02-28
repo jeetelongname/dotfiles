@@ -12,6 +12,7 @@
 
   imports = [
     modules/cli.nix
+    modules/chat.nix
     modules/fun.nix
     modules/git.nix
     modules/email.nix
@@ -25,7 +26,12 @@
     username = "jeet";
     homeDirectory = "/home/jeet";
 
-    packages = with pkgs; [ caddy nixfmt shfmt ];
+    packages = with pkgs; [
+      caddy
+      nixfmt
+      shfmt
+
+    ];
     # This value determines the Home Manager release that your
     # configuration is compatible with. This helps avoid breakage
     # when a new Home Manager release introduces backwards
