@@ -161,3 +161,6 @@ Videos
 /.local/bin/easy_install-3.8
 /.pylint.d/
 /herbstluftwm/.config/herbstluftwm/buggy.diff
+/config.nix
+/config/neovim/autoload/
+/config/neovim/.netrwhist

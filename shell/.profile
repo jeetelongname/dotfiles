@@ -31,7 +31,6 @@ export PATH=$PATH:~/.config/emacs.doom/bin
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
 
-export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib"
 ## CDPATH "sending you ~ a little less" TODO
 
 ## PATH Variables# set PATH so it includes users private bin if it existis
@@ -41,6 +40,7 @@ fi
 if [ "$PAGER" = "most" ]; then
 	PAGER="less"
 fi
+
 export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 
 if [ -d $HOME/.nix-profile/etc/profile.d ]; then
