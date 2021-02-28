@@ -8,6 +8,7 @@
     bat
     fd
     neofetch
+    pfetch
     lf
     jq
     htop

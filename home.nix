@@ -5,10 +5,10 @@
   nixpkgs.config.allowUnfree = true;
   programs.home-manager.enable = true;
   imports = [
-
-    modules/terminal.nix
     modules/cli.nix
     modules/git.nix
+    modules/terminal.nix
+
   ];
 
   home = {
