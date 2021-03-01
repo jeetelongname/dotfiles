@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: \subsubsection
+# key: subsub
+# condition: t
+# --
+\subsubsection{$1}

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: tikz
+# key: tikz
+# condition: t
+# --
+\begin{tikzpicture}
+$1
+\end{tikzpicture}

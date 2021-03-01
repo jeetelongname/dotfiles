@@ -1,0 +1,14 @@
+#+TITLE:   My config of doom emacs
+#+DATE:    October 10, 2020
+#+STARTUP noindent
+
+* this is my config of [[https://github.com/hlissner/doom-emacs][doom emacs]]
+I have written quite a bit of stuff in here so there may be stuff to take. have
+a [[file:config.org][look see!]]
+* Installation
+
+#+BEGIN_SRC shell :tangle no
+git clone https://github.com/jeetelongname/.doom .config/doom
+#+END_SRC
+
+you can also install it with the rest of my [[https://github.com/jeetelongname/dotfiles][dotfiles]]

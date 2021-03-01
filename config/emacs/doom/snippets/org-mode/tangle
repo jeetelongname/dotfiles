@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: tangle
+# uuid: 
+# key:<st
+# condition: t
+# --
+
+#+begin_src $1 :tangle $2
+`%`$0
+#+end_src

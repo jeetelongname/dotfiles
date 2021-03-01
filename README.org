@@ -1,40 +1,71 @@
 #+TITLE: Me Dot files
 #+options: toc:nil
 #+HTML: <div align=center> <br> <a href="https://github.com/hlissner/doom-emacs"><img src="https://img.shields.io/badge/Made_with-Doom_Emacs-blueviolet.svg?style=flat-square&amp;logo=GNU%20Emacs&amp;logoColor=white" alt="Made with Doom Emacs"></a></div>
-
 * I used to be a productive person like you.. until I took dotfiles to the knee
-Welcome to my dotfiles. [[https://i.kym-cdn.com/entries/icons/original/000/028/021/work.jpg][It ain't much but its honest work]]
-** there is a configuration for
-    - [[https://github.com/alacritty][Alacritty]]
-    - [[https://github.com/chjj/compton][Compton]]
-    - [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
-    - [[https://dunst-project.org/][Dunst (barley)]]
-    - [[https://herbstluftwm.org][Herbstluftwm]]
-    - lf
-    - [[https://github.com/dylanaraps/neofetch][neofetch]]
-    - [[https://neovim.io/][Neovim]]
-    - offlineimap
-    - [[https://github.com/dylanaraps/pfetch][pfetch]]
-    - Various =.profile= files
-    - [[https://github.com/davatorium/rofi][rofi]]
-    - [[https://github.com/tmux/tmux/wiki][tmux]]
-    - vimb
-    - [[https://xmobar.org/][xmobar]]
-    - [[https://www.zsh.org][zsh]]
-    - probably more that I forgot about
-** Other Stuff include ...
-    - some scripts i have collected / wrote
-    - a Debian based poorly written package install script
-    - some files that probably should not be here
-** Installation
-I use stow to deploy my dotfiles you can deploy the modules you want by
-#+BEGIN_SRC shell
-stow <DIR> <ANOTHER DIR>
-#+END_SRC
-or you could use the ~stow-all~ wrapper script that stows all of the modules in
-one go!
-This is still an incomplete solution as you can't unstow your dotfiles using
-this solution
-afterwards but it should /just work™/ for deploying
+Welcome to my dotfiles! I have spent countless hours writing, stressing and
+redeploying them so I should know them like the back of my hand. That being said
+I am me and I am stupid. Hence why I am on my 3rd rewrite of them (all hail
+nix!) anyway there is a config for (split into its modules)
+
+- chat
+  installs
+  + discord
+  + element
+- cli
+  installs
+  + a bunch of stuff [[file:modules/cli.nix][(check it out!)]]
+  configures
+  + TODO lf
+  + neofetch
+  + pulsemixer
+  + topgrade
+- emacs
+  installs
+  + emacs (more on its way)
+  configures
+  + (doom)
+- email
+  installs and configures
+  + mbsync (isync)
+  + msmtp
+- fun
+  just a bunch of jokes at this point
+- git
+  Pretty much just deals with git and the github cli
+- TODO neovim
+  installs and configures
+- shell
+  + zsh (with zplug for plugins)
+    a hybrid between home manager and shell :)
+- terminal
+  + alacritty
+  + tmux
+    its another hybrid
+- misc
+  + castor
+  + libinput gestures
+
+there are also a bunch of scripts I have and some other stuff I probably have
+forgot about. Most config things are in ~config~ (duh)
+
+* Installations
+You need to install [[https://nixos.org/guides/install-nix.html][nix]]
+#+begin_src shell
+sh <(curl -L https://nixos.org/nix/install) --daemon
+#+end_src
+
+[[https://github.com/nix-community/home-manager#installation][home manager]]
+#+begin_src shell
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
+#+end_src
+
+then install my dotfiles!
+#+begin_src shell
+git clone https://github.com/jeetelongname/dotfiles ~/.config/nixpkgs
+home-manager switch
+#+end_src
+This may take a minute
 ** Any Questions email me here!
 [[mailto:jeetelongname@gmail.com][jeetelongname@gmail.com]]
