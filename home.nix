@@ -13,6 +13,7 @@
   imports = [
     modules/cli.nix
     modules/chat.nix
+    modules/emacs.nix
     modules/fun.nix
     modules/git.nix
     modules/email.nix
