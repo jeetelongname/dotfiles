@@ -48,6 +48,9 @@ nix!) anyway there is a config for (split into its modules)
 there are also a bunch of scripts I have and some other stuff I probably have
 forgot about. Most config things are in ~config~ (duh)
 
+* TODO
+I need to do some stuff
+- fix gtk apps
 * Installations
 You need to install [[https://nixos.org/guides/install-nix.html][nix]]
 #+begin_src shell

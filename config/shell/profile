@@ -12,7 +12,7 @@ export BROWSER="firefox"
 export FILEMANAGER="nautilus"
 export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma fdm=indent' -\""
 # export MANPAGER="/bin/sh -c \"col -b | nvim -u '~/.config/nvim/init.man.vim' -\""
-##cleanup
+#cleanup
 export ZDOTDIR="$HOME/.config/zsh"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
@@ -33,6 +33,7 @@ export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
 
 ## CDPATH "sending you ~ a little less" TODO
 
+export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib:/lib"
 ## PATH Variables# set PATH so it includes users private bin if it existis
 if [ -d "$HOME/.local/bin/" ]; then
 	PATH="$HOME/.local/bin/:$PATH"

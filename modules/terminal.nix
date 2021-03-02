@@ -15,6 +15,7 @@
     clock24 = false;
     historyLimit = 30000;
     keyMode = "vi";
+    secureSocket = true;
 
     extraConfig = "source-file ~/.config/nixpkgs/config/terminal/tmux.conf";
   };
