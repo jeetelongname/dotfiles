@@ -1,23 +1,36 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  unstable = import (fetchTarball
+    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") {
+      overlays = [
+        (import (builtins.fetchTarball {
+          url =
+            "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
+        }))
+      ];
+    };
+
+  emacs = (pkgs.emacsPackagesGen unstable.emacsPgtkGcc).emacsWithPackages
+    (epkgs: [ epkgs.vterm ]);
+
+in {
+
   home.packages = with pkgs; [
+    # checkers/grammer
     languagetool
+
+    # tools/format
+    nixfmt
+    shfmt
+
+    # so many
     sqlite
-
-  ];
-
-  nixpkgs.overlays = [
-    (import (builtins.fetchTarball {
-      url =
-        "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
-    }))
   ];
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacsPgtkGcc; # accidentally compiling emacs:
-    extraPackages = epkgs: [ epkgs.emacs-libvterm ];
+    package = emacs; # accidentally compiling emacs:
   };
 
   xdg.configFile = {
