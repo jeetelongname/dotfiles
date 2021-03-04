@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
 #                     __
 #    __  _____  ___  / /______
 #   / / / / _ \/ _ \/ __/ ___/
@@ -13,44 +16,40 @@
 #                 /_/
 #                 for battery stuff
 
-low () { 
-    notify-send "yeet"
-    symbol="!"
-}
+def low(capacity)
+  puts "⚠ Battery low #{capacity}"
+end
 
-full () {
-   notify-send "full" 
-   symbol=""
-}
+def full(capacity)
+  puts "🔋 Battery full #{capacity}"
+end
 
-charging () {
-   symbol="...." 
-}
+def discharging(capacity)
+  puts "🗲 Battery:#{capacity}"
+end
 
-discharging () {
-   symbol="....." 
-}
+def charging(capacity)
+  puts "🔌 Battery:#{capacity}"
+end
 
-for battery in /sys/class/power_supply/BAT? ; do
+batt = `ls /sys/class/power_supply`.scan(/BAT1/)
 
-    capacity=$(cat "$battery"/capacity) || break
-    status=$(cat "$battery"/status)
-
-    if [ "$status" = "Discharging" ] && [ "$capacity" -le 25 ]; then
-        low
-
-    elif [ "$capacity" -eq 100 ] ; then
-        full
-
-    elif [ "$capacity" -le 99 ] ;then
-
-        if [ "$status" = "Discharging" ] ; then
-            discharging
-        elif [ $status = "Charging" ] ;then
-            charging
-        fi
-
-    fi
-    # printf '%s %s %s ' "$symbol" "$status" "$capacity%" 
-    printf '%s %s ' "$symbol" "$capacity%" 
-done
+batt.each do |battery|
+  capacity = `cat /sys/class/power_supply/#{battery}/capacity`.to_i
+  status = `cat /sys/class/power_supply/#{battery}/status`.strip.to_sym
+  if capacity == 100
+    full(capacity)
+  elsif capacity.between?(25, 99)
+    if status == :Discharging
+      discharging(capacity)
+    else
+      charging(capacity)
+    end
+  elsif capacity < 25 && status == :Discharging
+    low(capacity)
+  end
+  # low(capacity)
+  # charging(capacity)
+  # discharging(capacity)
+  # full(capacity)
+end

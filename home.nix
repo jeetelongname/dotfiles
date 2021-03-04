@@ -34,6 +34,7 @@
     modules/misc.nix
     modules/nix.nix
     modules/neovim.nix
+    modules/ruby.nix
     modules/terminal.nix
     modules/shell.nix
 
