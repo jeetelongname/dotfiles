@@ -7,6 +7,7 @@
     cowsay
     figlet
     lolcat
+    moon-buggy
     sl
   ];
 }
