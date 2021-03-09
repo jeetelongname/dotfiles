@@ -50,7 +50,7 @@
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 (defun yeet/reload ()
-  "A simple cmd to make reloading m config easier"
+  "A simple cmd to make reloading my config easier"
   (interactive)
   (load! "config" doom-private-dir)
   (message "Reloaded!"))
@@ -362,20 +362,42 @@ there will be more..."
       :leader "od" #'dap-debug
       :leader "dt" #'dap-breakpoint-toggle)
 
-(doom-modeline-def-segment buffer-name
-  (concat
-   (doom-modeline-spc)
-   (doom-modeline--buffer-name)))
+(after! (pdf-tools doom-modeline)
+  (doom-modeline-def-segment pdf-icon
+    (concat
+     (doom-modeline-spc)
+     (doom-modeline-icon 'octicon "file-pdf" nil nil
+                         :face (if (doom-modeline--active)
+                                   'all-the-icons-red
+                                 'mode-line-inactive)
+                         :v-adjust 0.02)))
 
-(doom-modeline-def-modeline 'pdf
-  '(bar window-number matches pdf-pages buffer-name)
-  '(misc-info major-mode process vcs))
+  (doom-modeline-def-segment buffer-name
+    (concat
+     (doom-modeline-spc)
+     (doom-modeline--buffer-name)))
 
-(defun yeet/set-pdf-modeline ()
-  "sets the pdf modeline"
-  (doom-mode-line-set-modeline 'pdf))
+  (defun doom-modeline-update-pdf-pages ()
+    "Update PDF pages."
+    (setq doom-modeline--pdf-pages
+          (concat " P"
+                  (number-to-string (eval `(pdf-view-current-page)))
+                  (propertize (concat "/" (number-to-string (pdf-cache-number-of-pages))) 'face 'doom-modeline-buffer-minor-mode))))
 
-(add-hook pdf-tools-enabled-hook 'yeet/set-pdf-modeline)
+  (doom-modeline-def-segment pdf-pages
+    "Display PDF pages."
+    (if (doom-modeline--active) doom-modeline--pdf-pages
+      (propertize doom-modeline--pdf-pages 'face 'mode-line-inactive)))
+
+  (doom-modeline-def-modeline 'pdf
+    '(bar window-number matches pdf-pages pdf-icon buffer-name)
+    '(misc-info major-mode process vcs))
+
+  (defun doom-set-pdf-modeline ()
+    "sets the pdf modeline"
+    (doom-modeline-set-modeline 'pdf))
+
+  (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline))
 
 (setq dired-dwim-target t)
 
