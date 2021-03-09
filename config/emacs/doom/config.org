@@ -60,7 +60,8 @@ Lets get this config started!
     - [[#treemacs][Treemacs]]
   - [[#tools][tools]]
     - [[#debugger][debugger]]
-    - [[#magit][Magit]]
+    - [[#magit][magit]]
+    - [[#pdf][pdf]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
   - [[#term][term]]
@@ -339,28 +340,19 @@ I wanted to see the differences with its vim counterparts
 (package! evil-tutor)
 #+END_SRC
 *** discord rich presence
-I use discord emacs over elcord .. well because I found it first this is pretty
-much all that is needed for it to work and you can use the default client id to
-get it working right away or if you want to roll your own .you can add assets by
-calling them the file extension (go for golang py for python org for .. well you
-know)
 
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! discord-emacs
-  :recipe (:host github
-           :repo "nitros12/discord-emacs.el"
-           :files ("*.el")))
-#+END_SRC
-
+#+begin_src emacs-lisp :tangle packages.el
+(package! elcord)
+#+end_src
 I use non daemon sessions for testing I would much rather it would not be used
 (and block the closing of emacs)
-#+BEGIN_SRC emacs-lisp
+
+#+begin_src emacs-lisp
 (when (daemonp)
-  (use-package! discord-emacs ;; for face value discord intergration
+  (use-package! elcord
     :config
-    ;; (discord-emacs-run "747913611426529440") ;;mine
-    (discord-emacs-run "384815451978334208"))) ;;default
-#+END_SRC
+    (elcord-mode)))
+#+end_src
 *** org super agenda
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! origami)
@@ -799,7 +791,24 @@ this does a thing
       :leader "od" #'dap-debug
       :leader "dt" #'dap-breakpoint-toggle)
 #+end_src
-*** Magit
+*** magit
+*** pdf
+#+begin_src emacs-lisp
+(doom-modeline-def-segment buffer-name
+  (concat
+   (doom-modeline-spc)
+   (doom-modeline--buffer-name)))
+
+(doom-modeline-def-modeline 'pdf
+  '(bar window-number matches pdf-pages buffer-name)
+  '(misc-info major-mode process vcs))
+
+(defun yeet/set-pdf-modeline ()
+  "sets the pdf modeline"
+  (doom-mode-line-set-modeline 'pdf))
+
+(add-hook pdf-tools-enabled-hook 'yeet/set-pdf-modeline)
+  #+end_src
 ** emacs
 *** dired
 If I open 2 instances of dired in two different locations then move one. dired

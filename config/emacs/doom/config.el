@@ -155,10 +155,9 @@
   (parrot-start-animation))
 
 (when (daemonp)
-  (use-package! discord-emacs ;; for face value discord intergration
+  (use-package! elcord
     :config
-    ;; (discord-emacs-run "747913611426529440") ;;mine
-    (discord-emacs-run "384815451978334208"))) ;;default
+    (elcord-mode)))
 
 (use-package! dired-dragon
   :after dired
@@ -362,6 +361,21 @@ there will be more..."
 (map! :leader "od" nil
       :leader "od" #'dap-debug
       :leader "dt" #'dap-breakpoint-toggle)
+
+(doom-modeline-def-segment buffer-name
+  (concat
+   (doom-modeline-spc)
+   (doom-modeline--buffer-name)))
+
+(doom-modeline-def-modeline 'pdf
+  '(bar window-number matches pdf-pages buffer-name)
+  '(misc-info major-mode process vcs))
+
+(defun yeet/set-pdf-modeline ()
+  "sets the pdf modeline"
+  (doom-mode-line-set-modeline 'pdf))
+
+(add-hook pdf-tools-enabled-hook 'yeet/set-pdf-modeline)
 
 (setq dired-dwim-target t)
 

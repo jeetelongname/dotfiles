@@ -17,6 +17,7 @@
     xdotool
     pandoc
     pass
+    pulsemixer
     tree
 
   ];

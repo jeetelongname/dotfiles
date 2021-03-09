@@ -17,10 +17,7 @@
 
 (package! evil-tutor)
 
-(package! discord-emacs
-  :recipe (:host github
-           :repo "nitros12/discord-emacs.el"
-           :files ("*.el")))
+(package! elcord)
 
 (package! origami)
 ;; (package! org-super-agenda)
