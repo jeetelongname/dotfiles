@@ -11,7 +11,7 @@ let
       ];
     };
 
-  emacs = (pkgs.emacsPackagesGen unstable.emacsPgtkGcc).emacsWithPackages
+  emacspgtkgcc = (pkgs.emacsPackagesGen unstable.emacsPgtkGcc).emacsWithPackages
     (epkgs: [ epkgs.vterm ]);
 
 in {
@@ -30,7 +30,7 @@ in {
 
   programs.emacs = {
     enable = true;
-    package = emacs; # accidentally compiling emacs:
+    package = emacspgtkgcc; # accidentally compiling emacs:
   };
 
   xdg.configFile = {

@@ -681,12 +681,13 @@ I can use...
 
 *** Doom Dashboard
 
-now this is my fancy splash image I need to move over to
+my splash image can be found [[https://github.com/jeetelongname/doom-banners ][here]]
 #+BEGIN_SRC emacs-lisp
-(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
+(setq fancy-splash-image "~/code/doom-banners/splashes/emacs/emacs-gnu-logo.png")
 #+END_SRC
 
 I am starting to experimenting with adding stuff to the dashboard
+(its not working)
 #+begin_src emacs-lisp
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))

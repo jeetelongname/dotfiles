@@ -294,7 +294,7 @@ there will be more..."
       (setq doom-theme 'doom-horizon))
   (setq doom-theme 'doom-horizon))
 
-(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
+(setq fancy-splash-image "~/code/doom-banners/splashes/emacs/emacs-gnu-logo.png")
 
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))
