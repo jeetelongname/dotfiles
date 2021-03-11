@@ -19,37 +19,55 @@ vim.api.nvim_exec([[
 local use = require('packer').use
 local packer = require('packer')
 packer.startup(function()
+   -- package managment
    use {'wbthomason/packer.nvim', opt = true} 
+
+   -- theme
    use 'ntk148v/vim-horizon'
    use 'itchyny/lightline.vim'
-   use 'airblade/vim-gitgutter'
-   use 'kana/vim-smartinput'
+   -- language support
    use 'sheerun/vim-polyglot'
+   use 'sherylynn/vim-elisp' -- what can I say except I enjoy living in sin
+   -- utilitys
+   use 'kana/vim-smartinput'
    use 'ap/vim-css-color'
    use 'tpope/vim-surround'
    use 'tpope/vim-commentary'
    use 'tpope/vim-scriptease'
+   use {
+  'nvim-telescope/telescope.nvim',
+  requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}}
+   -- git
+   use 'airblade/vim-gitgutter'
+   use 'tpope/vim-fugitive'
    use 'TimUntersberger/neogit'
    use 'jreybert/vimagit'
-   use 'sherylynn/vim-elisp' -- what can I say except I enjoy living in sin
 end)
+
+local o = vim.o
+local g = vim.g
+
+g.mapleader = ' '
+
+o.termguicolors = true
+vim.cmd("colorscheme horizon")
+
+g.lightline = { colorscheme = 'horizon'; active = { left = { { 'mode', 'paste' },
+   { 'gitbranch', 'readonly', 'filename', 'modified' }}};
+   component_function = { gitbranch = 'fugitive#head', };}
+
+vim.o.tabstop = 4
+o.expandtab = true
+o.encoding = 'UTF-8'
+o.relativenumber = true
+o.number = true
 
 vim.api.nvim_exec(
   [[
-let leader=' ' 
-let g:lightline = {'colorscheme' : 'horizon'}
-colorscheme horizon
 syntax enable
-set termguicolors
-
-" lightline
-""spaces and tabs
-set tabstop=4 " 
-set expandtab
-""UI config
-set encoding=UTF-8
-set relativenumber
 set nu
+set relativenumber
+""UI config
 set showcmd
 set cursorline
 set wildmenu

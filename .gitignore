@@ -2,3 +2,4 @@
 /config/neovim/autoload/
 /config/neovim/.netrwhist
 /config/emacs/doom/custom.el
+/config/neovim/plugin/
