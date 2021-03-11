@@ -11,13 +11,11 @@
     homeDirectory = "/home/jeet";
 
     # TODO move this out of here
-    packages = with pkgs; [
-      caddy
-      nixfmt
-      shfmt
-      gimp
+    packages = with pkgs;
+      [
+        gimp
 
-    ];
+      ];
 
     stateVersion = "21.05";
   };
@@ -37,7 +35,15 @@
     modules/ruby.nix
     modules/terminal.nix
     modules/shell.nix
+    modules/web.nix
 
   ];
 
+  # autoOptimiseStore = true;
+  # gc.automatic = true;
+  # gc.dates = "weekly";
+  # gc.options = "--delete-older-than 7d";
+
+  # optimise.automatic = true;
+  # optimise.dates = [ "weekly" ];
 }
