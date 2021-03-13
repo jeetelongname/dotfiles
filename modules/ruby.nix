@@ -6,6 +6,7 @@
     rake
     rubocop
     rufo
+    solargraph
 
   ];
 }
