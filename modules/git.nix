@@ -27,6 +27,7 @@
     extraConfig = {
       github.user = "jeetelongname";
       color.ui = "auto";
+      init.defaultBranch = "senpai"; # because I am a child
 
     };
 
