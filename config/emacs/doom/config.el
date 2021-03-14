@@ -258,7 +258,7 @@ there will be more..."
   :after org)
 
 (after! company
-  (setq company-idle-delay 0.7 ; I like my autocomplete like my tea fast not oftern but still there
+  (setq company-idle-delay 2 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 
