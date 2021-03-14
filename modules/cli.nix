@@ -2,23 +2,23 @@
 
 # for all the cli programs I use
 {
-  home.packages = with pkgs; [
-    # all the cli apps I use
-    ripgrep
+  home.packages = with pkgs; [ # all the cli apps I use
     bat
+    bitwarden-cli
     fd
-    neofetch
-    pfetch
-    lf
-    jq
     htop
-    topgrade
-    xdo
-    xdotool
+    jq
+    lf
+    neofetch
     pandoc
     pass
+    pfetch
     pulsemixer
+    ripgrep
+    topgrade
     tree
+    xdo
+    xdotool
 
   ];
 
