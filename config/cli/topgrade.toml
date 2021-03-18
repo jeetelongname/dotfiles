@@ -2,10 +2,10 @@
 assume_yes = true
 
 # Disable specific steps - same options as the command line flag
-disable = ["go", "git_repos" ,"myrepos"]
+disable = ["git_repos" ,"myrepos", "emacs"]
 
 # Ignore failures for these steps
-#ignore_failures = ["powershell"]
+ignore_failures = ["ruby"] # if ruby fails then Ill have to deal with it anyway. don't bother asking me
 
 # Run specific steps - same options as the command line flag
 #only = ["system", "emacs"]
