@@ -20,7 +20,7 @@
       expireDuplicatesFirst = true;
       ignoreDups = true;
       ignoreSpace = true;
-      path = "~/.cache/zsh/zsh_history";
+      path = ".cache/zsh/zsh_history";
       save = 10000;
       share = true;
       size = 10000;

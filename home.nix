@@ -11,30 +11,27 @@
     homeDirectory = "/home/jeet";
 
     # TODO move this out of here
-    packages = with pkgs;
-      [
-        gimp
-
-      ];
+    packages = with pkgs; [ gimp ];
 
     stateVersion = "21.05";
   };
 
   imports = [
-    modules/cli.nix
     modules/chat.nix
+    modules/cli.nix
     modules/emacs.nix
     modules/email.nix
     modules/fun.nix
     modules/git.nix
     # modules/gtk.nix # I would rather have my de handle this
+    modules/guile.nix
     modules/latex.nix
     modules/misc.nix
-    modules/nix.nix
     modules/neovim.nix
+    modules/nix.nix
     modules/ruby.nix
-    modules/terminal.nix
     modules/shell.nix
+    modules/terminal.nix
     modules/web.nix
 
   ];
