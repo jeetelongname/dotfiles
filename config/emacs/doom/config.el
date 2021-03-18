@@ -107,6 +107,8 @@
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
+(type-break-mode 1)
+
 (use-package! caddyfile-mode
   :mode (("Caddyfile\\'" . caddyfile-mode)
          ("caddy\\.conf\\'" . caddyfile-mode)))
@@ -258,7 +260,7 @@ there will be more..."
   :after org)
 
 (after! company
-  (setq company-idle-delay 2 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
+  (setq company-idle-delay 4 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 

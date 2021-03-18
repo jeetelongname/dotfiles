@@ -18,8 +18,9 @@ Lets get this config started!
   - [[#keybinds][Keybinds]]
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
+  - [[#random-modes][Random modes]]
 - [[#packages][Packages]]
-  - [[#language-edditions][Language edditions]]
+  - [[#language-editions][Language editions]]
     - [[#caddy][Caddy]]
     - [[#vim][vim]]
   - [[#package-edditons][Package edditons]]
@@ -123,7 +124,6 @@ spawn emacs somewhat in the center of my screen
             `(height text-pixels ,height)))
 #+END_SRC
 ** Quick fixes
-
 ** Keybinds
 These are my general keybinds they should not belong to any module. thus they
 get stuck here
@@ -233,6 +233,11 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 #+end_src
+** Random modes
+
+#+begin_src emacs-lisp
+(type-break-mode 1)
+#+end_src
 
 * Packages
 I have quite a few packages that I use. These are the packages and there
@@ -242,7 +247,7 @@ A nice little header
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
-** Language edditions
+** Language editions
 *** Caddy
 #+begin_src emacs-lisp :tangle packages.el
 (package! caddyfile-mode)
@@ -612,7 +617,7 @@ mu4e, some are small like dired. some are well sized. They are all loved tho!
 *** company
 #+BEGIN_SRC emacs-lisp
 (after! company
-  (setq company-idle-delay 2 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
+  (setq company-idle-delay 4 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 #+END_SRC
