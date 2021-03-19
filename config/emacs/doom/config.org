@@ -561,14 +561,22 @@ By virtue of these things I seem to have 3 different sidebars (4 if you include
 treemacs) that I have taken a liking to so they get there own sub genre
 
 #+begin_src emacs-lisp
-(defun yeet/sidebar ()
-  "Wrappoer for multiple sidebars
-there will be more..."
+(defun yeet/dired-sidebar-toggle ()
+  "Wrapper for dired-sidebar."
   (interactive)
   (require 'dired-sidebar)
+  (dired-sidebar-toggle-sidebar)) ;
+
+(defun yeet/sidebar-toggle ()
+  "toggle both ibuffer and dired sidebars"
+  (interactive)
   (require 'ibuffer-sidebar)
   (ibuffer-sidebar-toggle-sidebar)
-  (dired-sidebar-toggle-sidebar)) ;; order matters
+  (call-interactively #'yeet/dired-sidebar-toggle))
+
+(map! :leader "o p" nil
+      :leader "o p" #'yeet/dired-sidebar-toggle
+      :leader "o P" #'yeet/sidebar-toggle)
 #+end_src
 *** Dired sidebar
 this is a replacement for treemacs. Now don't get me wrong. I like treemacs. Its
@@ -577,15 +585,15 @@ do and more importantly preserves keys which is nice
 #+begin_src emacs-lisp :tangle packages.el
 (package! dired-sidebar)
 #+end_src
+
 #+begin_src emacs-lisp
-(after! dired (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
+;; (after! dired-sidebar (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
 
 (use-package dired-sidebar
   :defer t
   :config
   (setq dired-sidebar-use-custom-modeline t
         dired-sidebar-should-follow-file t))
-(map! :leader "o p" nil :leader "o p" #'yeet/sidebar)
 #+end_src
 *** Ibuffer sidebar
 this is the same thing as above made by the same [[https://github.com/jojojames][author]] and it works just like

@@ -235,23 +235,30 @@
   :config
   (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
 
-(defun yeet/sidebar ()
-  "Wrappoer for multiple sidebars
-there will be more..."
+(defun yeet/dired-sidebar-toggle ()
+  "Wrapper for dired-sidebar."
   (interactive)
   (require 'dired-sidebar)
+  (dired-sidebar-toggle-sidebar)) ;
+
+(defun yeet/sidebar-toggle ()
+  "toggle both ibuffer and dired sidebars"
+  (interactive)
   (require 'ibuffer-sidebar)
   (ibuffer-sidebar-toggle-sidebar)
-  (dired-sidebar-toggle-sidebar)) ;; order matters
+  (call-interactively #'yeet/dired-sidebar-toggle))
 
-(after! dired (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
+(map! :leader "o p" nil
+      :leader "o p" #'yeet/dired-sidebar-toggle
+      :leader "o P" #'yeet/sidebar-toggle)
+
+;; (after! dired-sidebar (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
 
 (use-package dired-sidebar
   :defer t
   :config
   (setq dired-sidebar-use-custom-modeline t
         dired-sidebar-should-follow-file t))
-(map! :leader "o p" nil :leader "o p" #'yeet/sidebar)
 
 (use-package! ibuffer-sidebar
   :defer t)
