@@ -17,18 +17,19 @@
   };
 
   imports = [
+    # modules/gtk.nix # I would rather have my de handle this
     modules/chat.nix
     modules/cli.nix
     modules/emacs.nix
     modules/email.nix
     modules/fun.nix
     modules/git.nix
-    # modules/gtk.nix # I would rather have my de handle this
     modules/guile.nix
     modules/latex.nix
     modules/misc.nix
     modules/neovim.nix
     modules/nix.nix
+    modules/python.nix
     modules/ruby.nix
     modules/shell.nix
     modules/terminal.nix
