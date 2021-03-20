@@ -34,6 +34,7 @@ packer.startup(function()
    -- utilitys
    use 'mhinz/vim-startify' -- a nice start page
    use 'kana/vim-smartinput' -- auto close delimiters
+   use 'Raimondi/delimitMate' -- auto close delimeter
    use 'ap/vim-css-color'  -- highlights colour values
    use 'Chiel92/vim-autoformat' -- thats enough <space> thank you very much
    use 'wellle/targets.vim' -- all the text objects
@@ -41,8 +42,8 @@ packer.startup(function()
    requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}}
 
    -- snippets -- why should you type when you can get your minions to do it for you?
-   use 'sirver/ultisnips' -- the engine 
-   use 'honza/vim-snippets' -- the coal (the actuall snippets)
+   use 'sirver/ultisnips' -- the engine
+   use 'honza/vim-snippets' -- the coal (the actual snippets)
 
    -- tpope plugins -- he is an artist
    use 'tpope/vim-commentary' -- comment and uncomment things with ease
@@ -236,7 +237,7 @@ lspconfig.texlab.setup{} -- latex
 o.termguicolors = true
 vim.cmd("colorscheme horizon")
 
--- custom lightline 
+-- custom lightline
 g.lightline = { colorscheme = 'horizon'; active = { left = { { 'mode', 'paste' },
    { 'gitbranch', 'readonly', 'filename', 'modified' }}};
 component_function = { gitbranch = 'fugitive#head', };}
@@ -260,13 +261,12 @@ g.header = {
 }
 
 vim.cmd([[
-let g:startify_custom_header = startify#center(g:header) 
+let g:startify_custom_header = startify#center(g:header)
 ]]) -- centers the startpage banner
 
 -- misc stuff
-g.discord_activate_on_enter = 1 
+g.discord_activate_on_enter = 1
 
 -- and thats it. thats my config. This should hopefully prove to people a noob (that can code)
 -- can configure neovim to a very usable state. if you want to read more of this config (and check me out)
 -- https://github.com/jeetelongname/dotfiles is the place to look
--- and we have reached 269 lines. Nice
