@@ -57,7 +57,7 @@ packer.startup(function()
    -- git
    use 'airblade/vim-gitgutter' -- get your mind out of the sidebar!
    use 'tpope/vim-fugitive' -- mostly for the nice branch in the modeline
-   use 'TimUntersberger/neogit' -- emacs is dead, long live emacs!
+   use 'TimUntersberger/neogit' -- emacs is dead, long live emacs! FIXME
 
    -- other stuff
    use 'aurieh/discord.nvim' -- whats the point in using vim if your not telling the world?
@@ -161,7 +161,7 @@ key('n', '<leader>qh', -- open startify (home)
 
 -- open
 key('n', '<leader>o-',  -- open dired.. I mean Explore
-   cmdM("Explore"),
+   cmdM("vertical Explore"),
    opts)
 
 -- code
