@@ -25,6 +25,7 @@
     modules/fun.nix
     modules/git.nix
     modules/guile.nix
+    # modules/keyboard.nix
     modules/latex.nix
     modules/misc.nix
     modules/neovim.nix
