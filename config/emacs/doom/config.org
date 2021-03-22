@@ -912,8 +912,7 @@ it
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/org-notes/")
 (after! org
-  (setq
-        org-agenda-files (list org-directory)
+  (setq org-agenda-files (list org-directory)
         org-hide-emphasis-markers t)
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
@@ -943,11 +942,11 @@ directly
 
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
-    (setq org-capture-templates
-      '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
-        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-        ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
-        ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
+  (setq org-capture-templates
+        '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+          ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
+          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
+          ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 **** Roam
 #+begin_src emacs-lisp
