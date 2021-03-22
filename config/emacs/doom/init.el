@@ -3,7 +3,7 @@
 ;; This file controls what Doom modules are enabled and what order they load
 ;; in. Remember to run 'doom sync' (SPC h r r)) after modifying it!
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
 
 (doom! :input
        ;;chinese
