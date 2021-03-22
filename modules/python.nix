@@ -2,9 +2,9 @@
 
 {
   home.packages = with pkgs; [
-    poetry
-    python38Packages.ipython
-    python38Packages.python-language-server
+    poetry # dep manager
+    python38Packages.ipython # repl
+    python38Packages.python-language-server # ls
 
   ];
 }

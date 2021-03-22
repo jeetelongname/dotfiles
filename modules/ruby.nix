@@ -2,11 +2,12 @@
 
 {
   home.packages = with pkgs; [
-    rake
-    rubocop
-    ruby
-    rufo
-    solargraph
+    pry # repl
+    rake # ruby make
+    rubocop # linter
+    ruby # the language
+    rufo # formatter
+    solargraph # ls
 
   ];
 }
