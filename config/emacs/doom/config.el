@@ -109,6 +109,9 @@
 
 (type-break-mode 1)
 
+(when (boundp 'comp-async-jobs-number)
+  (setq comp-async-jobs-number 4))
+
 (use-package! caddyfile-mode
   :mode (("Caddyfile\\'" . caddyfile-mode)
          ("caddy\\.conf\\'" . caddyfile-mode)))
@@ -139,15 +142,15 @@
 (use-package! nyan-mode
   :defer t
   :config
-  (setq nyan-bar-length 20
+  (setq nyan-bar-length 15
         nyan-wavy-trail t))
 
 (use-package! parrot
   :defer t
   :config
-  (parrot-set-parrot-type 'rotating))
-;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
-;; (parrot-set-parrot-type (nth (random (length birds)) birds)))
+  ;; (parrot-set-parrot-type 'rotating))
+  (defvar birds '(default confused emacs nyan rotating science thumbsup))
+  (parrot-set-parrot-type (nth (random (length birds)) birds)))
 
 
 (after! doom-modeline
@@ -186,19 +189,27 @@
 
   (atomic-chrome-start-server))
 
-(use-package! eaf
-  :defer t
-  :config
-  ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-  (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
-  (setq eaf-browser-default-search-engine "duckduckgo")
-  (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+(use-package! hackernews :defer t)
 
-(use-package! eaf-evil ;; evil bindings in my browser
-  :after eaf
-  :config
-  (setq eaf-evil-leader-keymap doom-leader-map)
-  (setq eaf-evil-leader-key "SPC"))
+(unless pgtk-initialized
+  (use-package! eaf
+    :defer t
+    :init
+    (use-package! epc :defer t)
+    (use-package! ctable :defer t)
+    (use-package! deferred :defer t)
+    (use-package! s :defer t)
+    :config
+    (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
+    (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
+    (setq eaf-browser-default-search-engine "duckduckgo")
+    (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+
+  (use-package! eaf-evil ;; evil bindings in my browser
+    :after eaf
+    :config
+    (setq eaf-evil-leader-keymap doom-leader-map)
+    (setq eaf-evil-leader-key "spc")))
 
 (use-package! carbon-now-sh
   :config

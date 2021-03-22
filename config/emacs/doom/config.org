@@ -1,5 +1,5 @@
 #+TITLE: My configuration
-#+STARTUP: content
+#+  STARTUP: content
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
 mostly stolen snippets from others. This config is [[elisp:(call-interactively #'count-words)][this many]] words, lines and
@@ -19,6 +19,7 @@ Lets get this config started!
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
   - [[#random-modes][Random modes]]
+  - [[#vars][Vars]]
 - [[#packages][Packages]]
   - [[#language-editions][Language editions]]
     - [[#caddy][Caddy]]
@@ -36,7 +37,9 @@ Lets get this config started!
   - [[#outside-influence][Outside Influence]]
     - [[#tldr-integration][tldr integration]]
     - [[#atomic-chrome][atomic chrome]]
-    - [[#emacs-application-framework][emacs application framework]]
+    - [[#hacker-news][Hacker news]]
+    - [[#deprecated-emacs-application-framework][DEPRECATED emacs application framework]]
+    - [[#emacs-webkit][emacs webkit]]
     - [[#pretty-code-shots][pretty code shots]]
     - [[#matrix][matrix]]
   - [[#fun][fun!]]
@@ -238,6 +241,11 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 #+begin_src emacs-lisp
 (type-break-mode 1)
 #+end_src
+** Vars
+#+begin_src emacs-lisp
+(when (boundp 'comp-async-jobs-number)
+  (setq comp-async-jobs-number 4))
+#+end_src
 
 * Packages
 I have quite a few packages that I use. These are the packages and there
@@ -322,15 +330,15 @@ moment it slows me down so its defered for the time being
 (use-package! nyan-mode
   :defer t
   :config
-  (setq nyan-bar-length 20
+  (setq nyan-bar-length 15
         nyan-wavy-trail t))
 
 (use-package! parrot
   :defer t
   :config
-  (parrot-set-parrot-type 'rotating))
-;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
-;; (parrot-set-parrot-type (nth (random (length birds)) birds)))
+  ;; (parrot-set-parrot-type 'rotating))
+  (defvar birds '(default confused emacs nyan rotating science thumbsup))
+  (parrot-set-parrot-type (nth (random (length birds)) birds)))
 
 
 (after! doom-modeline
@@ -397,10 +405,6 @@ this was for a terminal  experiment that did not work
 (unpin! doom-themes)
 #+end_src
 
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! rose-pine-emacs :recipe (:host github :repo "Caelie/rose-pine-emacs"))
-#+end_src
 ** Outside Influence
 *** tldr integration
 Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
@@ -433,7 +437,22 @@ button on a keybind in my browser)
 
   (atomic-chrome-start-server))
 #+end_src
-*** emacs application framework
+*** Hacker news
+#+begin_src emacs-lisp :tangle packages.el
+(package! hackernews)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! hackernews :defer t)
+#+end_src
+
+*** DEPRECATED emacs application framework
+#+begin_quote
+EAF does not work with pgtk. due to reasons I don't understand [[https://github.com/manateelazycat/emacs-application-framework/issues/449][check out this
+issue for more info]]
+I will be moving to emacs webkit because /I need my emacs browser/
+#+end_quote
+
 eaf is an application framework for writing pyqt applications in emacs. Its
 really cool!
 https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revisit
@@ -441,41 +460,61 @@ You need a few dependencies for this to work. I don't recommend installing from
 pip as it can be buggy
 
 #+begin_src shell :tangle no
-sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
 #+end_src
 
 #+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! eaf :recipe
-  (:host github
-   :repo "manateelazycat/emacs-application-framework"
-   :files ("*.el" "*.py" "core" "app")
-   :build (:not compile)))
+  (package! eaf :recipe
+    (:host github
+     :repo "manateelazycat/emacs-application-framework"
+     :files ("*")
+     :build (:not compile)))
+
+  (package! epc)
+  (package! ctable)
+  (package! deferred)
 #+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp
-(use-package! eaf
-  :defer t
-  :config
-  ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-  (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
-  (setq eaf-browser-default-search-engine "duckduckgo")
-  (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+(unless pgtk-initialized
+  (use-package! eaf
+    :defer t
+    :init
+    (use-package! epc :defer t)
+    (use-package! ctable :defer t)
+    (use-package! deferred :defer t)
+    (use-package! s :defer t)
+    :config
+    (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
+    (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
+    (setq eaf-browser-default-search-engine "duckduckgo")
+    (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
 
-(use-package! eaf-evil ;; evil bindings in my browser
-  :after eaf
-  :config
-  (setq eaf-evil-leader-keymap doom-leader-map)
-  (setq eaf-evil-leader-key "SPC"))
-#+END_SRC
+  (use-package! eaf-evil ;; evil bindings in my browser
+    :after eaf
+    :config
+    (setq eaf-evil-leader-keymap doom-leader-map)
+    (setq eaf-evil-leader-key "spc")))
+#+end_src
+
+*** TODO emacs webkit
+because my emacs addiction is getting worse
+#+begin_src emacs-lisp :tangle packages.el
+(package! webkit :recipe
+  (:host github :repo "akirakyle/emacs-webkit"
+   :branch "main"
+   :files (:defaults "*")))
+#+end_src
+
 *** pretty code shots
-I missed the ability to make pretty code shots inside vscode now its come back to
+i missed the ability to make pretty code shots inside vscode now its come back to
 me through this package. its pretty cool and works well (it only does one thing)
 #+begin_src emacs-lisp :tangle packages.el
 (package! carbon-now-sh)
 #+end_src
 
-I wanted to work with these code images directly in emacs so I brought in eaf to
-help. Do note that there is a bug in the pypi version of the qtwebengine that
+i wanted to work with these code images directly in emacs so i brought in eaf to
+help. do note that there is a bug in the pypi version of the qtwebengine that
 basically segfaults if you open carbon (and probably other sites) if you install
 from the repos tho this problem goes away
 #+begin_src emacs-lisp

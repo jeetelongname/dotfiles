@@ -31,17 +31,27 @@
 (package! horizon-theme)
 (unpin! doom-themes)
 
-(package! rose-pine-emacs :recipe (:host github :repo "Caelie/rose-pine-emacs"))
-
 (package! tldr)
 
 (package! atomic-chrome)
 
-(package! eaf :recipe
-  (:host github
-   :repo "manateelazycat/emacs-application-framework"
-   :files ("*.el" "*.py" "core" "app")
-   :build (:not compile)))
+(package! hackernews)
+
+(unless pgtk-initialized ;; only load on non pgtk emacs
+  (package! eaf :recipe
+    (:host github
+     :repo "manateelazycat/emacs-application-framework"
+     :files ("*")
+     :build (:not compile)))
+
+  (package! epc)
+  (package! ctable)
+  (package! deferred))
+
+(package! webkit :recipe
+  (:host github :repo "akirakyle/emacs-webkit"
+   :branch "main"
+   :files (:defaults "*")))
 
 (package! carbon-now-sh)
 
