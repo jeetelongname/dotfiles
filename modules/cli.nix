@@ -14,6 +14,7 @@
     pass
     pfetch
     pulsemixer
+    qrencode
     ripgrep
     topgrade
     tree
