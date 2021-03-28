@@ -170,8 +170,13 @@ key('n', '<leader>cf', -- format the code
    opts)
 
 key('n', '<leader>hrc',
-   cmdM('luafile init.lua'),
+   cmdM('luafile $XDG_CONFIG_HOME/nvim/init.lua'),
    opts)
+
+-- file 
+key('n', '<leader>fs',
+   cmdM('write'), opts)
+
 -- snippets -----------------------------------------------------
 g.UltiSnipsExpandTrigger="<tab>" -- expand snippet on tab
 g.UltiSnipsJumpForwardTrigger="<c-b>"
