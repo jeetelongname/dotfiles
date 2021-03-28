@@ -3,6 +3,7 @@
 ;; This file controls what Doom modules are enabled and what order they load
 ;; in. Remember to run 'doom sync' (SPC h r r)) after modifying it!
 
+;; I add it to the list early.. for no reason. put in your config.el
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
 
 (doom! :input
@@ -23,8 +24,9 @@
        doom                ; what makes DOOM look the way it does
        doom-dashboard      ; a nifty splash screen for Emacs
        doom-quit           ; DOOM quit-message prompts when you quit Emacs
-       (emoji +unicode
-              +github)     ; 🙂
+       (emoji              ; 🙂
+        +unicode
+        +github)
        ;; fill-column      ; a `fill-column' indicator
        hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
@@ -61,11 +63,12 @@
        word-wrap           ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +icons       ; making dired pretty [functional]
-              -ranger)
+       (dired              ; making dired pretty [functional]
+        +icons)
+
        electric            ; smarter, keyword-based electric-indent
        ibuffer             ; interactive buffer management
-       (undo +tree)                ; persistent, smarter undo for your inevitable mistakes
+       (undo +tree)        ; persistent, smarter undo for your inevitable mistakes
        vc                  ; version-control and Emacs, sitting in a tree
 
        :term
@@ -103,7 +106,7 @@
        ;;upload            ; map local to remote projects via ssh/ftp
 
        :os
-       (:if IS-MAC macos)  ; improve compatibility with macOS
+       ;;macos             ; improve compatibility with macOS *me, using macos, Ha!*
        tty                 ; improve the terminal Emacs experience
 
        :lang
@@ -148,11 +151,11 @@
        ;;ocaml             ; an objective camel
        (org                ; organize your plain life in plain text
         +dragndrop
+        +journal           ; Only `M-x'`doctor' can save me now
+        +noter
         +pandoc
         +present
-        ;; -pretty
-        +noter
-        +roam
+        +roam              ; so that I can map my insanity
         )
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
@@ -184,10 +187,10 @@
 
        :app
        calendar
-       everywhere        ; *leave* Emacs!? You must be joking
-       irc               ; how neckbeards socialize
-       (rss +org)        ; emacs as an RSS reader
-       twitter           ; twitter client https://twitter.com/vnought
+       everywhere          ; *leave* Emacs!? You must be joking
+       irc                 ; how neckbeards socialize
+       (rss +org)          ; emacs as an RSS reader
+       twitter             ; twitter client https://twitter.com/vnought
 
        :config
        literate
@@ -196,3 +199,6 @@
        :private
        ;; fzf
        )
+
+
+;; wow
