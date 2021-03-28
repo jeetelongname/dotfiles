@@ -1,17 +1,12 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 (setq user-full-name "Jeetaditya Chatterjee"
-      user-mail-address "jeetelongname@gmail.com"
+      user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
       auth-sources '("~/.authinfo.gpg")
       ispell-dictionary "en"
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
-
-(global-auto-revert-mode t)
-
-(setq evil-split-window-below  t
-      evil-vsplit-window-right t)
 
 (setq-default header-line-format
         (concat (propertize " " 'display '((space :align-to 0)))
@@ -32,13 +27,7 @@
  :leader
  :desc "Enable Coloured Values""t c" #'rainbow-mode
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed
-
-
- (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
-                   :n [return]
-                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
-                          #'+spell/correct))))
+ :desc "Open Elfeed""o l" #'elfeed)
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
@@ -58,23 +47,11 @@
 (map! :leader
       "h r c" #'yeet/reload)
 
-(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
-  "where to put the picture")
-(defvar yeet/paint-ask t
-  "Ask if you want to name the file if no it will be named you current buffer + picture")
-(defvar yeet/paint-cmd "gnome-paint"
-  "the program you want to use as your paint program")
-
-(defun yeet/paint-insert()
-  ""
-  (interactive)
-  (shell-command yeet/paint-cmd))
-
 (defun henlo ()
   "henlo."
   (interactive)
   (message "\"henlo\""))
-(henlo)
+(henlo) ;; oh wait thats how
 
 (defun stop ()
   (interactive)
@@ -86,26 +63,26 @@
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
 
 (type-break-mode 1)
 
@@ -150,7 +127,7 @@
   :config
   ;; (parrot-set-parrot-type 'rotating))
   (defvar birds '(default confused emacs nyan rotating science thumbsup))
-  (parrot-set-parrot-type (nth (random (length birds)) birds)))
+  (parrot-set-parrot-type (nth (random (length birds)) birds))) ;; this chooses a random bird on startup
 
 
 (after! doom-modeline
@@ -164,6 +141,8 @@
     :config
     (elcord-mode)))
 
+(use-package! org-super-agenda :defer t)
+
 (use-package! dired-dragon
   :after dired
   :config
@@ -175,7 +154,7 @@
 
 (use-package! tldr
   :config
-  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
+  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
   (setq tldr-enabled-categories '("common" "linux")))
 
 (use-package! atomic-chrome
@@ -242,10 +221,6 @@
                   :weight bold))
   (map! :leader "tk" #'keycast-mode))
 
-(use-package! snow
-  :config
-  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
-
 (defun yeet/dired-sidebar-toggle ()
   "Wrapper for dired-sidebar."
   (interactive)
@@ -290,6 +265,9 @@
 
 (setq-default history-length 10000)
 (setq-default prescient-history-length 10000)
+
+(setq evil-split-window-below  t
+      evil-vsplit-window-right t)
 
 (setq! doom-font
        (font-spec :family "Iosevka" :size 16)
@@ -347,7 +325,9 @@
 
 (add-hook! 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
-(custom-set-faces! '(doom-modeline-persp-name :foreground "#e95678" :weight bold ))
+(custom-set-faces! `(doom-modeline-persp-name :foreground ,(doom-color 'red) :weight bold )
+  `(doom-modeline-buffer-modified   :foreground ,(doom-color 'orange))
+  `(doom-modeline-buffer-major-mode :foreground ,(doom-color 'blue)))
 
 ;; (set-popup-rule! ".+"
 ;;   :side 'right
@@ -419,15 +399,25 @@
 
   (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline))
 
+(after! evil
+  (evil-ex-define-cmd "run" #'+tmux:run))
+
 (setq dired-dwim-target t)
 
+(add-hook! 'dired-mode-hook #'dired-hide-details-mode)
+
 (set-eshell-alias!
- "cls" "clear")
+ "cls" "clear") ; this is what I use in my regular shell
+
+(map! (:after spell-fu
+       (:map override ;; HACK spell-fu does not define a modemap
+        :n [return]
+        (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+               #'+spell/correct))))
 
 (setq org-directory "~/org-notes/")
 (after! org
-  (setq
-        org-agenda-files (list org-directory)
+  (setq org-agenda-files (list org-directory)
         org-hide-emphasis-markers t)
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
@@ -445,14 +435,18 @@
   '(org-level-6 :foreground "#90dfe0":weight normal))
 
 (after! org-capture
-    (setq org-capture-templates
-      '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
-        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-        ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
-        ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
+  (setq org-capture-templates
+        '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+          ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
+          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
+          ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
 (setq org-roam-directory (concat org-directory "roam/")
       org-roam-db-location (concat org-roam-directory ".org-roam.db"))
+
+(after! org-journal
+  (setq org-journal-enable-encryption t
+        org-journal-encrypt-journal t))
 
 (after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
   (set-ligatures! 'go-mode
@@ -469,7 +463,7 @@
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 
-(setq +latex-viewers '(pdf-tools))
+(setq +latex-viewers '(pdf-tools)) ;; don't be going to those filthy third party apps
 
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
@@ -533,3 +527,7 @@
 ;; (use-package! elfeed-goodies
 ;;   :config
 ;;   (elfeed-goodies/setup))
+
+(after! emacs-everywhere
+  (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
+  (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))

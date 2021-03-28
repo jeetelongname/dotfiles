@@ -19,8 +19,8 @@
 
 (package! elcord)
 
-(package! origami)
-;; (package! org-super-agenda)
+;; (package! origami)
+(package! org-super-agenda)
 
 (package! elfeed-goodies)
 (package! elfeed-web)
@@ -37,7 +37,6 @@
 
 (package! hackernews)
 
-(unless pgtk-initialized ;; only load on non pgtk emacs
   (package! eaf :recipe
     (:host github
      :repo "manateelazycat/emacs-application-framework"
@@ -46,7 +45,7 @@
 
   (package! epc)
   (package! ctable)
-  (package! deferred))
+  (package! deferred)
 
 (package! webkit :recipe
   (:host github :repo "akirakyle/emacs-webkit"
@@ -64,8 +63,6 @@
 ;; (package! emacs-2048
 ;;   :recipe (:host github
 ;;            :repo "sprang/emacs-2048"))
-
-(package! snow)
 
 (package! dired-sidebar)
 

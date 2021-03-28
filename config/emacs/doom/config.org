@@ -1,10 +1,16 @@
 #+TITLE: My configuration
-#+  STARTUP: content
+#+STARTUP: content
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
 mostly stolen snippets from others. This config is [[elisp:(call-interactively #'count-words)][this many]] words, lines and
 characters long. Its a lot of blood sweat and tears so I hope you like it as much
 as I tolerate it!
+
+#+begin_quote
+Do note I don't try to explain how things work but I do try to explain my
+motivation behand my config. I was told this is not the norm but this is my
+config and =C-h f= exists so you can go have a look
+#+end_quote
 
 Lets get this config started!
 #+BEGIN_SRC emacs-lisp
@@ -14,7 +20,6 @@ Lets get this config started!
 ** Table of Contents :TOC_3:
 - [[#introduction][Introduction]]
 - [[#rudimentary-configuration][Rudimentary configuration]]
-  - [[#quick-fixes][Quick fixes]]
   - [[#keybinds][Keybinds]]
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
@@ -46,7 +51,6 @@ Lets get this config started!
     - [[#keycast][keycast]]
     - [[#selectric-mode][selectric-mode]]
     - [[#games][Games]]
-    - [[#snow][snow]]
   - [[#sidebars][Sidebars]]
     - [[#dired-sidebar][Dired sidebar]]
     - [[#ibuffer-sidebar][Ibuffer sidebar]]
@@ -55,6 +59,8 @@ Lets get this config started!
   - [[#completion][completion]]
     - [[#company][company]]
     - [[#ivy][ivy]]
+  - [[#editor][editor]]
+    - [[#evil][evil]]
   - [[#ui][ui]]
     - [[#doom][Doom]]
     - [[#doom-dashboard][Doom Dashboard]]
@@ -64,12 +70,14 @@ Lets get this config started!
     - [[#treemacs][Treemacs]]
   - [[#tools][tools]]
     - [[#debugger][debugger]]
-    - [[#magit][magit]]
     - [[#pdf][pdf]]
+    - [[#tmux][tmux]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
   - [[#term][term]]
     - [[#eshell][eshell]]
+  - [[#checkers][checkers]]
+    - [[#spell][spell]]
   - [[#lang][lang]]
     - [[#org][Org]]
     - [[#go][Go]]
@@ -81,30 +89,19 @@ Lets get this config started!
   - [[#app][App]]
     - [[#irc][irc]]
     - [[#rss][rss]]
+    - [[#everywhere][everywhere]]
 - [[#epilogue][Epilogue]]
 
 * Rudimentary configuration
 This is the stuff that does not really belong in any module but is useful
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Jeetaditya Chatterjee"
-      user-mail-address "jeetelongname@gmail.com"
+      user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
       auth-sources '("~/.authinfo.gpg")
       ispell-dictionary "en"
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
-#+END_SRC
-if a file has changed on disk I dont want that old file sticking around. that
-can mess me up
-#+BEGIN_SRC emacs-lisp
-(global-auto-revert-mode t)
-#+END_SRC
-
-Frankly I don't know why this is not default
-(it automatically switches to a split)
-#+BEGIN_SRC emacs-lisp
-(setq evil-split-window-below  t
-      evil-vsplit-window-right t)
 #+END_SRC
 
 I like a little separation so I put an empty line at the top of my emacs
@@ -114,6 +111,7 @@ instance (I may put something in it later)
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
 #+END_SRC
+
 spawn emacs somewhat in the center of my screen
 #+BEGIN_SRC emacs-lisp
 (let ((width  500)
@@ -126,9 +124,8 @@ spawn emacs somewhat in the center of my screen
             `(width text-pixels ,width)
             `(height text-pixels ,height)))
 #+END_SRC
-** Quick fixes
 ** Keybinds
-These are my general keybinds they should not belong to any module. thus they
+These are my global keybinds they should not belong to any module. thus they
 get stuck here
 #+BEGIN_SRC emacs-lisp
 (map!
@@ -136,16 +133,12 @@ get stuck here
  :leader
  :desc "Enable Coloured Values""t c" #'rainbow-mode
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed
-
-
- (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
-                   :n [return]
-                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
-                          #'+spell/correct))))
+ :desc "Open Elfeed""o l" #'elfeed)
 #+END_SRC
 
 ** Hooky hooks
+hl-line and rainbow mode don't play all too well so if one is on the other
+should be off
 #+begin_src emacs-lisp
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
@@ -174,28 +167,13 @@ on save)
       "h r c" #'yeet/reload)
 #+END_SRC
 
-This was the begining of a paint intergration so that I could draw-in notes. I
-could not find a program featurefull yet commandline enough to get it working, but
-one day
-#+BEGIN_SRC emacs-lisp
-(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
-  "where to put the picture")
-(defvar yeet/paint-ask t
-  "Ask if you want to name the file if no it will be named you current buffer + picture")
-(defvar yeet/paint-cmd "gnome-paint"
-  "the program you want to use as your paint program")
-
-(defun yeet/paint-insert()
-  ""
-  (interactive)
-  (shell-command yeet/paint-cmd))
-#+END_SRC
+some how this function is run on startup? not that I am complaining
 #+BEGIN_SRC emacs-lisp
 (defun henlo ()
   "henlo."
   (interactive)
   (message "\"henlo\""))
-(henlo)
+(henlo) ;; oh wait thats how
 #+END_SRC
 
 I don't have a problem ok I can =M-x stop= at any time
@@ -215,26 +193,26 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
 #+end_src
 ** Random modes
 
@@ -250,13 +228,13 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 * Packages
 I have quite a few packages that I use. These are the packages and there
 subsequent configurations
-A nice little header
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
 ** Language editions
 *** Caddy
+Caddy is a webserver with its own file format
 #+begin_src emacs-lisp :tangle packages.el
 (package! caddyfile-mode)
 #+end_src
@@ -284,6 +262,7 @@ support as well so this may be a fun project to take on
 
 ** Package edditons
 *** Hugo support
+I blog! [[https://jeetelongname.github.io/blog][Sometimes.. When I can.. Not really]]
 This is mostly just for the time stamp but it does come in handy
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! emacs-easy-hugo
@@ -338,7 +317,7 @@ moment it slows me down so its defered for the time being
   :config
   ;; (parrot-set-parrot-type 'rotating))
   (defvar birds '(default confused emacs nyan rotating science thumbsup))
-  (parrot-set-parrot-type (nth (random (length birds)) birds)))
+  (parrot-set-parrot-type (nth (random (length birds)) birds))) ;; this chooses a random bird on startup
 
 
 (after! doom-modeline
@@ -348,12 +327,16 @@ moment it slows me down so its defered for the time being
   (parrot-start-animation))
 #+end_src
 
+#+RESULTS:
+: t
+
 *** Evil tutor
-I wanted to see the differences with its vim counterparts
+I wanted to see the differences with its vim counterparts (its a litle nicer)
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! evil-tutor)
 #+END_SRC
 *** discord rich presence
+Why use emacs when you can't tell everyone your using emacs?
 I am now using elcord because.. peer pressure? I don't know but the config is
 nice
 #+begin_src emacs-lisp :tangle packages.el
@@ -370,9 +353,13 @@ I use non daemon sessions for testing I would much rather it would not be used
 #+end_src
 *** TODO org super agenda
 #+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! origami)
-;; (package! org-super-agenda)
+;; (package! origami)
+(package! org-super-agenda)
 #+END_SRC
+
+#+begin_src emacs-lisp
+(use-package! org-super-agenda :defer t)
+#+end_src
 
 *** elfeed-goodies
 I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
@@ -416,7 +403,7 @@ a lot of useless information and .. no information. Now in emacs!
 #+begin_src emacs-lisp
 (use-package! tldr
   :config
-  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
+  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
   (setq tldr-enabled-categories '("common" "linux")))
 #+end_src
 *** atomic chrome
@@ -438,6 +425,7 @@ button on a keybind in my browser)
   (atomic-chrome-start-server))
 #+end_src
 *** Hacker news
+I am a hacker.. I like news (sometimes) Now in emacs!
 #+begin_src emacs-lisp :tangle packages.el
 (package! hackernews)
 #+end_src
@@ -584,17 +572,6 @@ Some games I will probably add
 ;;            :repo "sprang/emacs-2048"))
 
 #+end_src
-*** snow
-#+begin_src emacs-lisp :tangle packages.el
-(package! snow)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! snow
-  :config
-  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
-#+end_src
-
 ** TODO Sidebars
 By virtue of these things I seem to have 3 different sidebars (4 if you include
 treemacs) that I have taken a liking to so they get there own sub genre
@@ -662,6 +639,7 @@ These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
 ** completion
 *** company
+
 #+BEGIN_SRC emacs-lisp
 (after! company
   (setq company-idle-delay 4 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
@@ -683,6 +661,14 @@ this is to make prescient a little more intelligent
 (setq-default prescient-history-length 10000)
 #+END_SRC
 
+** editor
+*** evil
+Frankly I don't know why this is not default
+(it automatically switches to a split)
+#+BEGIN_SRC emacs-lisp
+(setq evil-split-window-below  t
+      evil-vsplit-window-right t)
+#+END_SRC
 ** ui
 *** Doom
 This is the main module to say what Doom looks like! I put all of my font
@@ -746,6 +732,7 @@ I am starting to experimenting with adding stuff to the dashboard
 #+end_src
 
 *** Modeline
+My modeline does a lot...
 #+BEGIN_SRC emacs-lisp
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'auto
@@ -785,13 +772,15 @@ get something that is not normal
                           (eq buffer-file-coding-system 'utf-8)))))
 
 (add-hook! 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
-
 #+END_SRC
 
 the persp name was too dark for my liking
 #+begin_src emacs-lisp
-(custom-set-faces! '(doom-modeline-persp-name :foreground "#e95678" :weight bold ))
+(custom-set-faces! `(doom-modeline-persp-name :foreground ,(doom-color 'red) :weight bold )
+  `(doom-modeline-buffer-modified   :foreground ,(doom-color 'orange))
+  `(doom-modeline-buffer-major-mode :foreground ,(doom-color 'blue)))
 #+end_src
+
 *** FIXME Popup
 this is my default pop up rule, all my popups are beaten into submission
 #+BEGIN_SRC emacs-lisp
@@ -846,9 +835,9 @@ this does a thing
       :leader "od" #'dap-debug
       :leader "dt" #'dap-breakpoint-toggle)
 #+end_src
-*** magit
 *** pdf
-custom modeline for pdf files stolen from tecosaur and hopefully it will be
+custom modeline for pdf files stolen from tecosaur and hopefully it will become
+a default
 
 #+begin_src emacs-lisp
 (after! (pdf-tools doom-modeline)
@@ -889,6 +878,13 @@ custom modeline for pdf files stolen from tecosaur and hopefully it will be
   (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline))
   #+end_src
 
+*** tmux
+Sadly I can't live in emacs entirely. I have to use an outside terminal
+this just makes it a little easier to orchestrate  my life in emacs
+#+begin_src emacs-lisp
+(after! evil
+  (evil-ex-define-cmd "run" #'+tmux:run))
+#+end_src
 ** emacs
 *** dired
 If I open 2 instances of dired in two different locations then move one. dired
@@ -896,13 +892,33 @@ will point the move to the other location
 #+begin_src emacs-lisp
 (setq dired-dwim-target t)
 #+end_src
+
+I don't need all the file information all the time. thus I hide it by default
+I may configure it too show some but not all (like the date)
+
+#+begin_quote
+Do note you can use =(= to toggle the information
+#+end_quote
+
+#+begin_src emacs-lisp
+(add-hook! 'dired-mode-hook #'dired-hide-details-mode)
+#+end_src
 ** term
 *** eshell
 eshell is a repl like shell. it works like a shell but you can use elisp in line
 and it does not handle tui apps (like htop) usually defering to ~ansi-term~
 #+begin_src emacs-lisp
 (set-eshell-alias!
- "cls" "clear")
+ "cls" "clear") ; this is what I use in my regular shell
+#+end_src
+** checkers
+*** spell
+#+begin_src emacs-lisp
+(map! (:after spell-fu
+       (:map override ;; HACK spell-fu does not define a modemap
+        :n [return]
+        (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+               #'+spell/correct))))
 #+end_src
 
 ** lang
@@ -948,11 +964,25 @@ directly
           ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
+
+Below you will see a configuration for roam and journal. The reason I have both
+is because I make 2 kinds of notes. one is for my head (which are linear) and
+the other is for my school (which are non linear) roam has been a god sent for
+note taking while journal has been a god sent for just getting my thoughts out
+on paper I recommend both
 **** Roam
 #+begin_src emacs-lisp
 (setq org-roam-directory (concat org-directory "roam/")
       org-roam-db-location (concat org-roam-directory ".org-roam.db"))
 #+end_src
+**** Journal
+I don't need people snooping into my thoughts
+#+begin_src emacs-lisp
+(after! org-journal
+  (setq org-journal-enable-encryption t
+        org-journal-encrypt-journal t))
+#+end_src
+
 *** Go
 Go and lsp have not been behaving like they should. the file watchers have been
 misbehaving and now they have been disabled for go mode. That fixes the issue
@@ -979,13 +1009,16 @@ Python is great is it not 🐍
 
 *** LaTeX
 turns out doom has support for latexmk already
+
 #+BEGIN_SRC emacs-lisp
-(setq +latex-viewers '(pdf-tools))
+(setq +latex-viewers '(pdf-tools)) ;; don't be going to those filthy third party apps
 #+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
 #+END_SRC
+
 *** TODO Web
 I just find the tidy formatter indent functionality annoying and redundant. so
 I changed it
@@ -1003,7 +1036,7 @@ gnu-emacs: yes
 ** email
 *** mu4e
 Whats better than email? email in emacs! mu4e has been fine for me so I dont
-think I will
+think I will be switching to notmuch or what notj
 
 Setting my email using ~set-email-acount~. its a simple affair If you are stuck
 on the folders remember that they come from what you set in your [[https://github.com/jeetelongname/dotfiles/blob/master/mail/.mbsyncrc#L31][mail fetcher config]]
@@ -1021,7 +1054,6 @@ on the folders remember that they come from what you set in your [[https://githu
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 #+END_SRC
-
 
 I use msmtp to send my mail as its a little faster and has room for expansion
 #+begin_src emacs-lisp
@@ -1095,6 +1127,14 @@ I have not used it in months but i will probably revise it some point
 ;;   :config
 ;;   (elfeed-goodies/setup))
 #+END_SRC
+*** everywhere
+I prefer to write in the language that is going to be posted so markdown mode
+makes more sense to be the default (which is org)
+#+begin_src emacs-lisp
+(after! emacs-everywhere
+  (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
+  (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
+#+end_src
 
 * Epilogue
 And that was my config! I hope you liked it! If you did not then you can make an
