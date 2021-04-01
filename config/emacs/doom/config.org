@@ -24,14 +24,12 @@ Lets get this config started!
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
   - [[#random-modes][Random modes]]
-  - [[#vars][Vars]]
 - [[#packages][Packages]]
   - [[#language-editions][Language editions]]
     - [[#caddy][Caddy]]
     - [[#vim][vim]]
   - [[#package-edditons][Package edditons]]
     - [[#hugo-support][Hugo support]]
-    - [[#dired-previews-peep-dired][dired previews (peep-dired)]]
     - [[#modeline-fun][modeline fun]]
     - [[#evil-tutor][Evil tutor]]
     - [[#discord-rich-presence][discord rich presence]]
@@ -102,6 +100,9 @@ This is the stuff that does not really belong in any module but is useful
       ispell-dictionary "en"
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
+
+(when (boundp 'comp-async-jobs-number)
+  (setq comp-async-jobs-number 6))
 #+END_SRC
 
 I like a little separation so I put an empty line at the top of my emacs
@@ -114,15 +115,15 @@ instance (I may put something in it later)
 
 spawn emacs somewhat in the center of my screen
 #+BEGIN_SRC emacs-lisp
-(let ((width  500)
-      (height 250)
-      (display-height (display-pixel-height))
-      (display-width  (display-pixel-width)))
-  (pushnew! initial-frame-alist
-            `(left . ,(- (/ display-width 2) (/ width 2)))
-            `(top . ,(- (/ display-height 2) (/ height 2)))
-            `(width text-pixels ,width)
-            `(height text-pixels ,height)))
+;; (let ((width  500)
+;;       (height 250)
+;;       (display-height (display-pixel-height))
+;;       (display-width  (display-pixel-width)))
+;;   (pushnew! initial-frame-alist
+;;             `(left . ,(- (/ display-width 2) (/ width 2)))
+;;             `(top . ,(- (/ display-height 2) (/ height 2)))
+;;             `(width text-pixels ,width)
+;;             `(height text-pixels ,height)))
 #+END_SRC
 ** Keybinds
 These are my global keybinds they should not belong to any module. thus they
@@ -217,14 +218,12 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 ** Random modes
 
 #+begin_src emacs-lisp
-(type-break-mode 1)
+(use-package! type-break
+  :config
+  (setq type-break-interval 1800 ;; half an hour between type breaks
+        type-break-keystroke-threshold (cons 1000  7000)) ;; I set the thresholds lower because I need to take more breaks
+  (type-break-mode 1))
 #+end_src
-** Vars
-#+begin_src emacs-lisp
-(when (boundp 'comp-async-jobs-number)
-  (setq comp-async-jobs-number 4))
-#+end_src
-
 * Packages
 I have quite a few packages that I use. These are the packages and there
 subsequent configurations
@@ -244,7 +243,7 @@ Caddy is a webserver with its own file format
   :mode (("Caddyfile\\'" . caddyfile-mode)
          ("caddy\\.conf\\'" . caddyfile-mode)))
 #+end_src
-*** vim
+*** TODO vim
 because sacrilege is fun
 (this is mostly a mental exercise but it does work...) I can (alleged) also get lsp
 support as well so this may be a fun project to take on
@@ -255,9 +254,8 @@ support as well so this may be a fun project to take on
 #+begin_src emacs-lisp
 (use-package! vimrc-mode
   :mode "\\.vim\\'"
-  :config
-  (sp-with-modes 'vimrc-mode
-    (sp-local-pair "\"" :action nil)))
+  :config)
+;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
 #+end_src
 
 ** Package edditons
@@ -278,26 +276,6 @@ This is mostly just for the time stamp but it does come in handy
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 #+END_SRC
-*** TODO dired previews (peep-dired)
-this is meant to give me a preview of the file in dired (or a peep). at the
-moment it slows me down so its defered for the time being
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! peep-dired)
-#+END_SRC
-
-#+begin_src emacs-lisp
-(use-package! peep-dired
-  ;; :after dired
-  :defer t
-  :config
-  (setq peep-dired-cleanup-on-disable t)
-  (map! (:after dired (:map dired-mode-map
-                       :n "j" #'peep-dired-next-file
-                       :n "k" #'peep-dired-prev-file
-                       :localleader
-                       "p" #'peep-dired))))
-#+end_src
-
 *** modeline fun
 /whats life without a little colour?/
 #+begin_src emacs-lisp :tangle packages.el
@@ -501,28 +479,29 @@ me through this package. its pretty cool and works well (it only does one thing)
 (package! carbon-now-sh)
 #+end_src
 
-i wanted to work with these code images directly in emacs so i brought in eaf to
-help. do note that there is a bug in the pypi version of the qtwebengine that
-basically segfaults if you open carbon (and probably other sites) if you install
-from the repos tho this problem goes away
++i wanted to work with these code images directly in emacs so i brought in eaf to+
++help. do note that there is a bug in the pypi version of the qtwebengine that+
++basically segfaults if you open carbon (and probably other sites) if you install
+from the repos tho this problem goes away+
+
+I just went back to firefox since eaf is deprecated in my config
 #+begin_src emacs-lisp
 (use-package! carbon-now-sh
   :config
   (defun yeet/carbon-use-eaf ()
     (interactive)
     (split-window-right)
-    (let ((browse-url-browser-function 'eaf-open-browser))
+    (let ((browse-url-browser-function 'browse-url-firefox))
       (browse-url (concat carbon-now-sh-baseurl "?code="
                           (url-hexify-string (carbon-now-sh--region))))))
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
 #+end_src
 
-*** matrix
+*** TODO matrix
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
 #+end_src
 
-#+end_src
 ** fun!
 *** TODO keycast
 I have stolen this from @tecosaur again..
@@ -639,7 +618,8 @@ These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
 ** completion
 *** company
-
+Deals with completions something I like. I elect for manual completion but
+defer the idle delay for those real brain fart seconds
 #+BEGIN_SRC emacs-lisp
 (after! company
   (setq company-idle-delay 4 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
@@ -709,12 +689,11 @@ this will load up 2 different themes one for the terminal and one for the gui.
 turns out that the emacs client works differently so this is not something that
 I can use...
 #+BEGIN_SRC emacs-lisp
-;; (require 'rose-pine-theme-moon)
-(if (not (daemonp))
-    (if (not (display-graphic-p))
-        (setq doom-theme 'horizon)
-      (setq doom-theme 'doom-horizon))
-  (setq doom-theme 'doom-horizon))
+(if (daemonp)
+    (setq doom-theme 'doom-horizon)
+  (if (display-graphic-p)
+      (setq doom-theme 'doom-horizon)
+    (setq doom-theme 'horizon)))
 #+end_src
 
 *** Doom Dashboard
@@ -989,17 +968,19 @@ misbehaving and now they have been disabled for go mode. That fixes the issue
 but means lsp will not watch files in the workspace (a small price to pay imo)
 #+BEGIN_SRC emacs-lisp
 (after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
-  (set-ligatures! 'go-mode
-                  :def "func"
-                  :true "true" :false "false"
-                  :int "int" :str "string"
-                  :float "float" :bool "bool"
-                  :for "for"
-                  :return "return" )
-  )
+  (when (featurep! :ui ligatures)
+    (set-ligatures! 'go-mode
+                    :def "func"
+                    :true "true" :false "false"
+                    :int "int" :str "string"
+                    :float "float" :bool "bool"
+                    :for "for"
+                    :return "return" )))
+
 (setq-hook! 'go-mode-hook
   lsp-enable-file-watchers nil)
 #+END_SRC
+
 *** Python
 Python is great is it not 🐍
 #+BEGIN_SRC emacs-lisp
@@ -1008,8 +989,6 @@ Python is great is it not 🐍
 #+END_SRC
 
 *** LaTeX
-turns out doom has support for latexmk already
-
 #+BEGIN_SRC emacs-lisp
 (setq +latex-viewers '(pdf-tools)) ;; don't be going to those filthy third party apps
 #+END_SRC
@@ -1123,9 +1102,9 @@ I have not used it in months but i will probably revise it some point
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package! elfeed-goodies
-;;   :config
-;;   (elfeed-goodies/setup))
+(use-package! elfeed-goodies
+  :config
+  (elfeed-goodies/setup))
 #+END_SRC
 *** everywhere
 I prefer to write in the language that is going to be posted so markdown mode

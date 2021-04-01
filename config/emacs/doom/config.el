@@ -8,19 +8,22 @@
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
 
+(when (boundp 'comp-async-jobs-number)
+  (setq comp-async-jobs-number 6))
+
 (setq-default header-line-format
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
 
-(let ((width  500)
-      (height 250)
-      (display-height (display-pixel-height))
-      (display-width  (display-pixel-width)))
-  (pushnew! initial-frame-alist
-            `(left . ,(- (/ display-width 2) (/ width 2)))
-            `(top . ,(- (/ display-height 2) (/ height 2)))
-            `(width text-pixels ,width)
-            `(height text-pixels ,height)))
+;; (let ((width  500)
+;;       (height 250)
+;;       (display-height (display-pixel-height))
+;;       (display-width  (display-pixel-width)))
+;;   (pushnew! initial-frame-alist
+;;             `(left . ,(- (/ display-width 2) (/ width 2)))
+;;             `(top . ,(- (/ display-height 2) (/ height 2)))
+;;             `(width text-pixels ,width)
+;;             `(height text-pixels ,height)))
 
 (map!
  :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
@@ -84,10 +87,11 @@
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
-(type-break-mode 1)
-
-(when (boundp 'comp-async-jobs-number)
-  (setq comp-async-jobs-number 4))
+(use-package! type-break
+  :config
+  (setq type-break-interval 1800 ;; half an hour between type breaks
+        type-break-keystroke-threshold (cons 1000  7000)) ;; I set the thresholds lower because I need to take more breaks
+  (type-break-mode 1))
 
 (use-package! caddyfile-mode
   :mode (("Caddyfile\\'" . caddyfile-mode)
@@ -95,26 +99,14 @@
 
 (use-package! vimrc-mode
   :mode "\\.vim\\'"
-  :config
-  (sp-with-modes 'vimrc-mode
-    (sp-local-pair "\"" :action nil)))
+  :config)
+;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
 
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (use-package! emacs-easy-hugo
   :after markdown
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
-
-(use-package! peep-dired
-  ;; :after dired
-  :defer t
-  :config
-  (setq peep-dired-cleanup-on-disable t)
-  (map! (:after dired (:map dired-mode-map
-                       :n "j" #'peep-dired-next-file
-                       :n "k" #'peep-dired-prev-file
-                       :localleader
-                       "p" #'peep-dired))))
 
 (use-package! nyan-mode
   :defer t
@@ -195,7 +187,7 @@
   (defun yeet/carbon-use-eaf ()
     (interactive)
     (split-window-right)
-    (let ((browse-url-browser-function 'eaf-open-browser))
+    (let ((browse-url-browser-function 'browse-url-firefox))
       (browse-url (concat carbon-now-sh-baseurl "?code="
                           (url-hexify-string (carbon-now-sh--region))))))
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
@@ -285,12 +277,11 @@
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 
-;; (require 'rose-pine-theme-moon)
-(if (not (daemonp))
-    (if (not (display-graphic-p))
-        (setq doom-theme 'horizon)
-      (setq doom-theme 'doom-horizon))
-  (setq doom-theme 'doom-horizon))
+(if (daemonp)
+    (setq doom-theme 'doom-horizon)
+  (if (display-graphic-p)
+      (setq doom-theme 'doom-horizon)
+    (setq doom-theme 'horizon)))
 
 (setq fancy-splash-image "~/code/doom-banners/splashes/emacs/emacs-gnu-logo.png")
 
@@ -449,14 +440,15 @@
         org-journal-encrypt-journal t))
 
 (after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
-  (set-ligatures! 'go-mode
-                  :def "func"
-                  :true "true" :false "false"
-                  :int "int" :str "string"
-                  :float "float" :bool "bool"
-                  :for "for"
-                  :return "return" )
-  )
+  (when (featurep! :ui ligatures)
+    (set-ligatures! 'go-mode
+                    :def "func"
+                    :true "true" :false "false"
+                    :int "int" :str "string"
+                    :float "float" :bool "bool"
+                    :for "for"
+                    :return "return" )))
+
 (setq-hook! 'go-mode-hook
   lsp-enable-file-watchers nil)
 
@@ -524,9 +516,9 @@
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update))
 
-;; (use-package! elfeed-goodies
-;;   :config
-;;   (elfeed-goodies/setup))
+(use-package! elfeed-goodies
+  :config
+  (elfeed-goodies/setup))
 
 (after! emacs-everywhere
   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)

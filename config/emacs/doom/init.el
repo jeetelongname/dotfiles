@@ -27,19 +27,20 @@
        (emoji              ; 🙂
         +unicode
         +github)
-       ;; fill-column      ; a `fill-column' indicator
-       hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       ;;fill-column       ; a `fill-column' indicator
+       hl-todo             ; highlight todo/fixme/note/deprecated/hack/review
        hydra
        ;;indent-guides     ; highlighted indent columns
        ;;minimap           ; show a map of the code on the side
        modeline            ; snazzy, Atom-inspired modeline, plus API
        nav-flash           ; blink cursor line after big motions
-       ;; neotree          ; a project drawer, like NERDTree for vim
+       ;;neotree           ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;(ligatures +extra); ligatures and symbols to make your code pretty again
        ;; tabs             ; a tab bar for Emacs
        treemacs            ; a project drawer, like neotree but cooler
+       ;;treesitter        ; FIXME syntax and parsing, sitting in a tree...
        ;;unicode           ; extended unicode support for various languages
        vc-gutter           ; vcs diff in the fringe
        vi-tilde-fringe     ; fringe tildes to mark beyond EOB
@@ -153,7 +154,7 @@
         +dragndrop
         +journal           ; Only `M-x'`doctor' can save me now
         +noter
-        +pandoc
+        +pandoc            ; See all the file formats from the magic of org
         +present
         +roam              ; so that I can map my insanity
         )
@@ -181,7 +182,7 @@
        yaml                ; JSON, but readable
 
        :email
-       (mu4e +gmail +org)
+       (mu4e +gmail +org) ; The emacs experience is not complete without email
        ;;notmuch
        ;;(wanderlust +gmail)
 
