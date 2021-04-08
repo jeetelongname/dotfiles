@@ -17,6 +17,9 @@ let
 in {
 
   home.packages = with pkgs; [
+    # package dev
+    cask
+
     # checkers/grammer
     languagetool
 

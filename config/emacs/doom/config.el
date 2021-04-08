@@ -98,9 +98,12 @@
          ("caddy\\.conf\\'" . caddyfile-mode)))
 
 (use-package! vimrc-mode
-  :mode "\\.vim\\'"
+  :mode "\\.vim$\\'"
   :config)
 ;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
+
+(use-package! feature-mode
+  :mode "\.feature$")
 
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (use-package! emacs-easy-hugo

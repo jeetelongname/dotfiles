@@ -5,6 +5,8 @@
 
 (package! vimrc-mode)
 
+(package! feature-mode)
+
 (package! emacs-easy-hugo
   :recipe (:host github
            :repo "masasam/emacs-easy-hugo"

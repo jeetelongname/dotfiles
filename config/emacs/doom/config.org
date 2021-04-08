@@ -28,6 +28,7 @@ Lets get this config started!
   - [[#language-editions][Language editions]]
     - [[#caddy][Caddy]]
     - [[#vim][vim]]
+    - [[#unit-tests][unit tests]]
   - [[#package-edditons][Package edditons]]
     - [[#hugo-support][Hugo support]]
     - [[#modeline-fun][modeline fun]]
@@ -253,11 +254,22 @@ support as well so this may be a fun project to take on
 
 #+begin_src emacs-lisp
 (use-package! vimrc-mode
-  :mode "\\.vim\\'"
+  :mode "\\.vim$\\'"
   :config)
 ;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
 #+end_src
+*** TODO unit tests
+While I am in fact an incompitant programmer I do enjoy the sysiphisan task of
+writing tests thanks in no small part to the ease that cucumber makes it
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! feature-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! feature-mode
+  :mode "\.feature$")
+#+end_src
 ** Package edditons
 *** Hugo support
 I blog! [[https://jeetelongname.github.io/blog][Sometimes.. When I can.. Not really]]
