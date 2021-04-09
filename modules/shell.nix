@@ -46,7 +46,7 @@
         }
         {
           name = "jeetelongname/Yeet-theme";
-          tags = [ "as:theme" "defer:1" "dir:~/code/git-repos/yeet-theme" ];
+          tags = [ "as:theme" "defer:1" "dir:~/code/shell/yeet-theme" ];
         }
         {
           name = "plugins/alias-finder";
