@@ -18,6 +18,7 @@
 
   imports = [
     # modules/gtk.nix # I would rather have my de handle this
+    modules/cc.nix
     modules/chat.nix
     modules/cli.nix
     modules/emacs.nix
