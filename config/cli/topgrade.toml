@@ -2,7 +2,7 @@
 assume_yes = true
 
 # Disable specific steps - same options as the command line flag
-disable = ["git_repos" ,"myrepos", "emacs", "home_manager", "gem"]
+disable = ["git_repos" ,"myrepos", "emacs", "home_manager", "nix", "gem"]
 
 # Ignore failures for these steps
 # ignore_failures = [] 
