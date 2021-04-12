@@ -3,3 +3,7 @@
 /config/neovim/.netrwhist
 /config/emacs/doom/custom.el
 /config/neovim/plugin/
+/config/linked/doom/custom.el
+/config/linked/neovim/.netrwhist
+/config/linked/neovim/autoload/
+/config/linked/neovim/plugin/
