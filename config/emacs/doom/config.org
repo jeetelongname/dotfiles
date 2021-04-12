@@ -29,16 +29,17 @@ Lets get this config started!
     - [[#caddy][Caddy]]
     - [[#vim][vim]]
     - [[#unit-tests][unit tests]]
+    - [[#emacs-lisp-edditions][Emacs lisp edditions]]
   - [[#package-edditons][Package edditons]]
     - [[#hugo-support][Hugo support]]
     - [[#modeline-fun][modeline fun]]
     - [[#evil-tutor][Evil tutor]]
-    - [[#discord-rich-presence][discord rich presence]]
     - [[#org-super-agenda][org super agenda]]
     - [[#elfeed-goodies][elfeed-goodies]]
     - [[#dired-drag-and-drop][dired drag and drop]]
     - [[#themes][themes]]
   - [[#outside-influence][Outside Influence]]
+    - [[#discord-rich-presence][discord rich presence]]
     - [[#tldr-integration][tldr integration]]
     - [[#atomic-chrome][atomic chrome]]
     - [[#hacker-news][Hacker news]]
@@ -78,6 +79,7 @@ Lets get this config started!
   - [[#checkers][checkers]]
     - [[#spell][spell]]
   - [[#lang][lang]]
+    - [[#cc][cc]]
     - [[#org][Org]]
     - [[#go][Go]]
     - [[#python][Python]]
@@ -270,6 +272,20 @@ writing tests thanks in no small part to the ease that cucumber makes it
 (use-package! feature-mode
   :mode "\.feature$")
 #+end_src
+*** Emacs lisp edditions
+this adds a sybilance of a namespace in elisp
+#+begin_src emacs-lisp :tangle packages.el
+(package! nameless)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! nameless
+  :defer t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
+  (setq nameless-global-aliases '(("d" . "doom"))
+        nameless-private-prefix t))
+#+end_src
 ** Package edditons
 *** Hugo support
 I blog! [[https://jeetelongname.github.io/blog][Sometimes.. When I can.. Not really]]
@@ -325,22 +341,6 @@ I wanted to see the differences with its vim counterparts (its a litle nicer)
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! evil-tutor)
 #+END_SRC
-*** discord rich presence
-Why use emacs when you can't tell everyone your using emacs?
-I am now using elcord because.. peer pressure? I don't know but the config is
-nice
-#+begin_src emacs-lisp :tangle packages.el
-(package! elcord)
-#+end_src
-I use non daemon sessions for testing I would much rather it would not be used
-(and block the closing of emacs)
-
-#+begin_src emacs-lisp
-(when (daemonp)
-  (use-package! elcord
-    :config
-    (elcord-mode)))
-#+end_src
 *** TODO org super agenda
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 ;; (package! origami)
@@ -383,6 +383,26 @@ this was for a terminal  experiment that did not work
 #+end_src
 
 ** Outside Influence
+*** discord rich presence
+Why use emacs when you can't tell everyone your using emacs?
+I am now using elcord because.. peer pressure? I don't know but the config is
+nice
+#+begin_src emacs-lisp :tangle packages.el
+(package! elcord)
+#+end_src
+I use non daemon sessions for testing I would much rather it would not be used
+(and block the closing of emacs)
+
+#+begin_src emacs-lisp
+(when (daemonp)
+  (use-package! elcord
+    :config
+    (quiet! (elcord-mode +1)))) ;; elcord is a noisy bitch. I don't need all of the output
+#+end_src
+
+#+RESULTS:
+: t
+
 *** tldr integration
 Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
 a lot of useless information and .. no information. Now in emacs!
@@ -509,6 +529,14 @@ I just went back to firefox since eaf is deprecated in my config
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
 #+end_src
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! screenshot. :recipe
+  (:host github :repo "tecosaur/screenshot"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! screenshot)
+#+end_src
 *** TODO matrix
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
@@ -617,12 +645,13 @@ dired sidebar.. for Ibuffer
 this does a bunch of org stuff like break stuff down into headings. there is a
 bit of work to be done
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-sidebar)
+;; (package! org-sidebar)
 #+end_src
 
+
 #+begin_src emacs-lisp
-(use-package! org-sidebar
-  :after org)
+;; (use-package! org-sidebar
+;;   :after org)
 #+end_src
 
 * Modules
@@ -712,7 +741,7 @@ I can use...
 
 my splash image can be found [[https://github.com/jeetelongname/doom-banners ][here]]
 #+BEGIN_SRC emacs-lisp
-(setq fancy-splash-image "~/code/doom-banners/splashes/emacs/emacs-gnu-logo.png")
+(setq fancy-splash-image "~/code/other/doom-banners/splashes/emacs/emacs-gnu-logo.png")
 #+END_SRC
 
 I am starting to experimenting with adding stuff to the dashboard
@@ -722,6 +751,99 @@ I am starting to experimenting with adding stuff to the dashboard
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))
 #+end_src
 
+This is again stolen from Tecosaur. All it does is insert a little message from
+a couple of online apis.
+#+begin_src emacs-lisp
+(defvar phrase-api-url
+  (nth (random 3)
+       '(("https://corporatebs-generator.sameerkumar.website/" :phrase)
+         ("https://useless-facts.sameerkumar.website/api" :data)
+         ("https://dev-excuses-api.herokuapp.com/" :text))))
+
+(defmacro phrase-generate-callback (token &optional format-fn ignore-read-only callback buffer-name)
+  `(lambda (status)
+     (unless (plist-get status :error)
+       (goto-char url-http-end-of-headers)
+       (let ((phrase (plist-get (json-parse-buffer :object-type 'plist) (cadr phrase-api-url)))
+             (inhibit-read-only ,(when (eval ignore-read-only) t)))
+         (setq phrase-last (cons phrase (float-time)))
+         (with-current-buffer ,(or (eval buffer-name) (buffer-name (current-buffer)))
+           (save-excursion
+             (goto-char (point-min))
+             (when (search-forward ,token nil t)
+               (with-silent-modifications
+                 (replace-match "")
+                 (insert ,(if format-fn format-fn 'phrase)))))
+           ,callback)))))
+
+(defvar phrase-last nil)
+(defvar phrase-timeout 5)
+
+(defmacro phrase-insert-async (&optional format-fn token ignore-read-only callback buffer-name)
+  `(let ((inhibit-message t))
+     (if (and phrase-last
+              (> phrase-timeout (- (float-time) (cdr phrase-last))))
+         (let ((phrase (car phrase-last)))
+           ,(if format-fn format-fn 'phrase))
+       (url-retrieve (car phrase-api-url)
+                     (phrase-generate-callback ,(or token "\ufeff") ,format-fn ,ignore-read-only ,callback ,buffer-name))
+       ;; For reference, \ufeff = Zero-width no-break space / BOM
+       ,(or token "\ufeff"))))
+
+(defun doom-dashboard-phrase ()
+  (phrase-insert-async
+   (progn
+     (setq-local phrase-position (point))
+     (mapconcat
+      (lambda (line)
+        (+doom-dashboard--center
+         +doom-dashboard--width
+         (with-temp-buffer
+           (insert-text-button
+            line
+            'action
+            (lambda (_)
+              (setq phrase-last nil)
+              (+doom-dashboard-reload t))
+            'face 'doom-dashboard-menu-title
+            'mouse-face 'doom-dashboard-menu-title
+            'help-echo "Random phrase"
+            'follow-link t)
+           (buffer-string))))
+      (split-string
+       (with-temp-buffer
+         (insert phrase)
+         (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
+         (fill-region (point-min) (point-max))
+         (buffer-string))
+       "\n")
+      "\n"))
+   nil t
+   (progn
+     (goto-char phrase-position)
+     (forward-whitespace 1))
+   +doom-dashboard-name))
+
+(defadvice! doom-dashboard-widget-loaded-with-phrase ()
+  :override #'doom-dashboard-widget-loaded
+  (setq line-spacing 0.2)
+  (insert
+   "\n\n"
+   (propertize
+    (+doom-dashboard--center
+     +doom-dashboard--width
+     (doom-display-benchmark-h 'return))
+    'face 'doom-dashboard-loaded)
+   "\n"
+   (doom-dashboard-phrase)
+   "\n"))
+#+end_src
+
+I removed the helpful menu. I only use it for.. nothing. lets make it C L E A N
+#+begin_src emacs-lisp
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+#+end_src
 *** Modeline
 My modeline does a lot...
 #+BEGIN_SRC emacs-lisp
@@ -913,6 +1035,24 @@ and it does not handle tui apps (like htop) usually defering to ~ansi-term~
 #+end_src
 
 ** lang
+*** cc
+#+begin_src emacs-lisp
+  ;; (set-formatter!
+  ;;   'clang-format
+  ;;   '("clang-format"
+  ;;     ("-assume-filename=%S" (or buffer-file-name mode-result ""))
+  ;;     ("--style=gnu"))
+  ;;   :modes
+  ;;   '((c-mode ".c")
+  ;;     (c++-mode ".cpp")
+  ;;     (java-mode ".java")
+  ;;     (objc-mode ".m")
+  ;;     (protobuf-mode ".proto")))
+#+end_src
+
+#+RESULTS:
+: clang-format
+
 *** TODO Org
 Org mode. our favorite plain text markup format! these are my configurations for
 it

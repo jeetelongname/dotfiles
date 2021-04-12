@@ -7,6 +7,8 @@
 
 (package! feature-mode)
 
+(package! nameless)
+
 (package! emacs-easy-hugo
   :recipe (:host github
            :repo "masasam/emacs-easy-hugo"
@@ -16,8 +18,6 @@
 (package! parrot)
 
 (package! evil-tutor)
-
-(package! elcord)
 
 ;; (package! origami)
 (package! org-super-agenda)
@@ -31,21 +31,23 @@
 (package! horizon-theme)
 (unpin! doom-themes)
 
+(package! elcord)
+
 (package! tldr)
 
 (package! atomic-chrome)
 
 (package! hackernews)
 
-(package! eaf :recipe
-  (:host github
-   :repo "manateelazycat/emacs-application-framework"
-   :files ("*")
-   :build (:not compile)))
+  (package! eaf :recipe
+    (:host github
+     :repo "manateelazycat/emacs-application-framework"
+     :files ("*")
+     :build (:not compile)))
 
-(package! epc)
-(package! ctable)
-(package! deferred)
+  (package! epc)
+  (package! ctable)
+  (package! deferred)
 
 (package! webkit :recipe
   (:host github :repo "akirakyle/emacs-webkit"
@@ -53,6 +55,9 @@
    :files (:defaults "*")))
 
 (package! carbon-now-sh)
+
+(package! screenshot. :recipe
+  (:host github :repo "tecosaur/screenshot"))
 
 ;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
 
@@ -68,6 +73,6 @@
 
 (package! ibuffer-sidebar)
 
-(package! org-sidebar)
+;; (package! org-sidebar)
 
 (package! mu4e-alert :disable t)
