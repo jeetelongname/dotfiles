@@ -66,7 +66,6 @@
        :emacs
        (dired              ; making dired pretty [functional]
         +icons)
-
        electric            ; smarter, keyword-based electric-indent
        ibuffer             ; interactive buffer management
        (undo +tree)        ; persistent, smarter undo for your inevitable mistakes
@@ -95,7 +94,7 @@
        (lookup
         +docset)           ; navigate your code and its documentation
        (lsp +peek)
-       (magit +forge)      ; a git porcelain for Emacs
+       (magit -forge)      ; a git porcelain for Emacs
        make                ; run make tasks from Emacs
        pass                ; password manager for nerds
        pdf                 ; pdf enhancements
@@ -112,6 +111,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
+       ;;beancount         ; the accounting system in Emacs
        (cc +lsp)           ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
@@ -162,7 +162,8 @@
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python +lsp        ; beautiful is better than ugly
-               +poetry)
+               +poetry
+               -pyright)
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6

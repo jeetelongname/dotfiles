@@ -172,25 +172,25 @@
 
 (use-package! hackernews :defer t)
 
-(unless pgtk-initialized
-  (use-package! eaf
-    :defer t
-    :init
-    (use-package! epc :defer t)
-    (use-package! ctable :defer t)
-    (use-package! deferred :defer t)
-    (use-package! s :defer t)
-    :config
-    (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-    (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
-    (setq eaf-browser-default-search-engine "duckduckgo")
-    (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+;; (unless pgtk-initialized
+;;   (use-package! eaf
+;;     :defer t
+;;     :init
+;;     (use-package! epc :defer t)
+;;     (use-package! ctable :defer t)
+;;     (use-package! deferred :defer t)
+;;     (use-package! s :defer t)
+;;     :config
+;;     (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
+;;     (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
+;;     (setq eaf-browser-default-search-engine "duckduckgo")
+;;     (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
 
-  (use-package! eaf-evil ;; evil bindings in my browser
-    :after eaf
-    :config
-    (setq eaf-evil-leader-keymap doom-leader-map)
-    (setq eaf-evil-leader-key "spc")))
+;;   (use-package! eaf-evil ;; evil bindings in my browser
+;;     :after eaf
+;;     :config
+;;     (setq eaf-evil-leader-keymap doom-leader-map)
+;;     (setq eaf-evil-leader-key "spc")))
 
 (use-package! carbon-now-sh
   :config
@@ -202,7 +202,7 @@
                           (url-hexify-string (carbon-now-sh--region))))))
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
 
-(use-package! screenshot)
+;; (use-package! screenshot :defer)
 
 (use-package! keycast
   :commands keycast-mode
@@ -500,17 +500,17 @@
         (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
                #'+spell/correct))))
 
-  ;; (set-formatter!
-  ;;   'clang-format
-  ;;   '("clang-format"
-  ;;     ("-assume-filename=%S" (or buffer-file-name mode-result ""))
-  ;;     ("--style=gnu"))
-  ;;   :modes
-  ;;   '((c-mode ".c")
-  ;;     (c++-mode ".cpp")
-  ;;     (java-mode ".java")
-  ;;     (objc-mode ".m")
-  ;;     (protobuf-mode ".proto")))
+;; (set-formatter!
+;;   'clang-format
+;;   '("clang-format"
+;;     ("-assume-filename=%S" (or buffer-file-name mode-result ""))
+;;     ("--style=gnu"))
+;;   :modes
+;;   '((c-mode ".c")
+;;     (c++-mode ".cpp")
+;;     (java-mode ".java")
+;;     (objc-mode ".m")
+;;     (protobuf-mode ".proto")))
 
 (setq org-directory "~/org-notes/")
 (after! org
@@ -559,6 +559,7 @@
   lsp-enable-file-watchers nil)
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
+(setq lsp-python-ms-nupkg-channel "beta")
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 
 (setq +latex-viewers '(pdf-tools)) ;; don't be going to those filthy third party apps
@@ -569,6 +570,8 @@
 (setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
 (setq +format-on-save-enabled-modes
       '(not web-mode))
+
+;; (defun +css/)
 
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")

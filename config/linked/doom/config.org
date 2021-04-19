@@ -71,6 +71,7 @@ Lets get this config started!
   - [[#tools][tools]]
     - [[#debugger][debugger]]
     - [[#pdf][pdf]]
+    - [[#magit][magit]]
     - [[#tmux][tmux]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
@@ -457,42 +458,39 @@ https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to rev
 You need a few dependencies for this to work. I don't recommend installing from
 pip as it can be buggy
 
-#+begin_src shell :tangle no
-#+end_src
-
 #+BEGIN_SRC emacs-lisp :tangle packages.el
-  (package! eaf :recipe
-    (:host github
-     :repo "manateelazycat/emacs-application-framework"
-     :files ("*")
-     :build (:not compile)))
+  ;; (package! eaf :recipe
+  ;;   (:host github
+  ;;    :repo "manateelazycat/emacs-application-framework"
+  ;;    :files ("*")
+  ;;    :build (:not compile)))
 
-  (package! epc)
-  (package! ctable)
-  (package! deferred)
+  ;; (package! epc)
+  ;; (package! ctable)
+  ;; (package! deferred)
 #+END_SRC
 
 
 #+BEGIN_SRC emacs-lisp
-(unless pgtk-initialized
-  (use-package! eaf
-    :defer t
-    :init
-    (use-package! epc :defer t)
-    (use-package! ctable :defer t)
-    (use-package! deferred :defer t)
-    (use-package! s :defer t)
-    :config
-    (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-    (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
-    (setq eaf-browser-default-search-engine "duckduckgo")
-    (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+;; (unless pgtk-initialized
+;;   (use-package! eaf
+;;     :defer t
+;;     :init
+;;     (use-package! epc :defer t)
+;;     (use-package! ctable :defer t)
+;;     (use-package! deferred :defer t)
+;;     (use-package! s :defer t)
+;;     :config
+;;     (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
+;;     (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
+;;     (setq eaf-browser-default-search-engine "duckduckgo")
+;;     (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
 
-  (use-package! eaf-evil ;; evil bindings in my browser
-    :after eaf
-    :config
-    (setq eaf-evil-leader-keymap doom-leader-map)
-    (setq eaf-evil-leader-key "spc")))
+;;   (use-package! eaf-evil ;; evil bindings in my browser
+;;     :after eaf
+;;     :config
+;;     (setq eaf-evil-leader-keymap doom-leader-map)
+;;     (setq eaf-evil-leader-key "spc")))
 #+end_src
 
 *** TODO emacs webkit
@@ -530,12 +528,12 @@ I just went back to firefox since eaf is deprecated in my config
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! screenshot. :recipe
-  (:host github :repo "tecosaur/screenshot"))
+;; (package! screenshot. :recipe
+;;   (:host github :repo "tecosaur/screenshot"))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! screenshot)
+;; (use-package! screenshot :defer)
 #+end_src
 *** TODO matrix
 #+begin_src emacs-lisp :tangle packages.el
@@ -986,6 +984,10 @@ a default
   (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline))
   #+end_src
 
+*** magit
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! forge)
+#+end_src
 *** tmux
 Sadly I can't live in emacs entirely. I have to use an outside terminal
 this just makes it a little easier to orchestrate  my life in emacs
@@ -1132,6 +1134,7 @@ but means lsp will not watch files in the workspace (a small price to pay imo)
 Python is great is it not 🐍
 #+BEGIN_SRC emacs-lisp
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
+(setq lsp-python-ms-nupkg-channel "beta")
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 #+END_SRC
 
@@ -1154,10 +1157,8 @@ I changed it
       '(not web-mode))
 #+end_src
 
-#+begin_src conf :tangle tidy.conf
-indent: no  
-indent-spaces: 4
-gnu-emacs: yes
+#+begin_src emacs-lisp
+;; (defun +css/)
 #+end_src
 ** email
 *** mu4e

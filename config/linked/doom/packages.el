@@ -39,15 +39,15 @@
 
 (package! hackernews)
 
-  (package! eaf :recipe
-    (:host github
-     :repo "manateelazycat/emacs-application-framework"
-     :files ("*")
-     :build (:not compile)))
+;; (package! eaf :recipe
+;;   (:host github
+;;    :repo "manateelazycat/emacs-application-framework"
+;;    :files ("*")
+;;    :build (:not compile)))
 
-  (package! epc)
-  (package! ctable)
-  (package! deferred)
+;; (package! epc)
+;; (package! ctable)
+;; (package! deferred)
 
 (package! webkit :recipe
   (:host github :repo "akirakyle/emacs-webkit"
@@ -56,8 +56,8 @@
 
 (package! carbon-now-sh)
 
-(package! screenshot. :recipe
-  (:host github :repo "tecosaur/screenshot"))
+;; (package! screenshot. :recipe
+;;   (:host github :repo "tecosaur/screenshot"))
 
 ;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
 
@@ -74,5 +74,7 @@
 (package! ibuffer-sidebar)
 
 ;; (package! org-sidebar)
+
+(unpin! forge)
 
 (package! mu4e-alert :disable t)
