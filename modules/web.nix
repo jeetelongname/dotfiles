@@ -2,8 +2,9 @@
 
 {
   home.packages = with pkgs; [
-    firefox
     caddy
+    firefox
+    nodePackages.sass
     yarn
 
   ];

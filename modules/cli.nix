@@ -5,6 +5,7 @@
   home.packages = with pkgs; [ # all the cli apps I use
     bat
     bitwarden-cli
+    dragon-drop
     fd
     htop
     jq
@@ -16,6 +17,7 @@
     pulsemixer
     qrencode
     ripgrep
+    stow
     topgrade
     tree
     xdo
