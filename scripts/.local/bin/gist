@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# relys on the gh cli awk and fzf
+# TODO: pretty print the list output
+gist=$(gh gist list | awk '{print $2, $1 }' | fzf | awk '{print $2}')
+
+gh gist edit "$gist"
