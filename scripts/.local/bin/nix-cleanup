@@ -28,5 +28,5 @@ if ans == 'y'
     # p cmd
   end
 else
-  exit
+  exit 1
 end
