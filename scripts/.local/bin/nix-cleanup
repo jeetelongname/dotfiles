@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+lb = 7
+cmds = []
+# home manager
+if `home-manager generations | wc -l`.to_i >= lb
+  gens = `home-manager generations`.split("\n").map do |el|
+    el.split(' ')[4]
+  end[2..-1].join(' ')
+
+  cmds.append("home-manager remove-generations #{gens}")
+end
+
+# nix
+cmds.append('nix-env --delete-generations +5') if `nix-env --list-generations | wc -l`.to_i >= lb
+cmds.append('nix-collect-garbage')
+
+puts 'the commadands'
+puts cmds
+puts 'will be run. do you confirm'
+ans = gets.chomp
+
+if ans == 'y'
+  cmds.each do |cmd|
+    exec cmd
+    # p cmd
+  end
+else
+  exit
+end
