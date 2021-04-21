@@ -5,7 +5,7 @@
     caddy
     firefox
     nodePackages.sass
-    yarn
+    nodePackages.yarn
 
   ];
 }

@@ -1,31 +1,70 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# TODO: Add in a dryrun and -y flag
+require 'getoptlong'
+
+opts = GetoptLong.new(
+  ['--help', '-h', GetoptLong::NO_ARGUMENT],
+  ['--yes', '-y', GetoptLong::NO_ARGUMENT],
+  ['--dryrun', '-d', GetoptLong::NO_ARGUMENT]
+)
+
+yes = false
+dryrun = false
+opts.each do |opt, _arg|
+  case opt
+  when '--help'
+    puts <<~HELP
+      nix-cleanup [OPTIONS]
+      #{'      '}
+      --help, -h:
+      show this help message and exit
+      #{'      '}
+      --yes, -y:
+      don't ask for confirmation
+      #{'      '}
+      --dryrun, -d:
+      perform all operations on paper
+    HELP
+    exit
+  when '--yes'
+    yes = true
+  when '--dryrun'
+    dryrun = true
+  end
+end
+
 lb = 7
 cmds = []
 # home manager
 if `home-manager generations | wc -l`.to_i >= lb
-  gens = `home-manager generations`.split("\n").map do |el|
-    el.split(' ')[4]
-  end[2..-1].join(' ')
+  gens = begin
+    `home-manager generations`.split("\n").map do |el|
+      el.split(' ')[4]
+    end[0..-1].join(' ')
+  rescue StandardError
+    nil
+  end
 
-  cmds.append("home-manager remove-generations #{gens}")
+  cmds.append("home-manager remove-generations #{gens} #{dryrun == true ? '--dryrun' : ''}") unless gens.nil?
 end
 
 # nix
-cmds.append('nix-env --delete-generations +5') if `nix-env --list-generations | wc -l`.to_i >= lb
+if `nix-env --list-generations | wc -l`.to_i >= lb
+  cmds.append("nix-env --delete-generations +5 #{dryrun == true ? '--dryrun' : ''}")
+end
 cmds.append('nix-collect-garbage')
 
-puts 'the commadands'
+puts 'these commands will be run'
 puts cmds
-puts 'will be run. do you confirm'
-ans = gets.chomp
-
-if ans == 'y'
+unless yes == true
+  puts 'do you confirm'
+  ans = gets.chomp
+end
+if ans == 'y' || yes == true
   cmds.each do |cmd|
-    exec cmd
-    # p cmd
+    puts "executing #{cmd}"
+    system cmd
   end
 else
   exit 1
