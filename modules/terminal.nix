@@ -1,10 +1,17 @@
 { config, lib, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ alacritty ];
+  home.packages = with pkgs;
+    [
+      alacritty
+      # termite
 
-  xdg.configFile."alacritty/alacritty.yml".source =
-    ../config/terminal/alacritty.yml;
+    ];
+
+  xdg.configFile = {
+    "alacritty/alacritty.yml".source = ../config/terminal/alacritty.yml;
+    # "termite/config".source = ../config/terminal/termite.conf;
+  };
 
   # TODO: move more of my tmux config into home manager
   programs.tmux = {
@@ -17,6 +24,6 @@
     keyMode = "vi";
     secureSocket = true;
 
-    extraConfig = "source-file ~/.config/nixpkgs/config/terminal/tmux.conf";
+    extraConfig = "source-file ~/.dotfiles/config/terminal/tmux.conf";
   };
 }
