@@ -26,6 +26,7 @@
     modules/editors/neovim.nix
     modules/languages/cc.nix
     modules/languages/guile.nix
+    modules/languages/haskell.nix
     modules/languages/python.nix
     modules/languages/ruby.nix
     modules/chat.nix
