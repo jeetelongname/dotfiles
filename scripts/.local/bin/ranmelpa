@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'json'
+require 'net/http'
+
+# TODO: colour readme and get .org files working
+# wrapper for getter that caches the file
+class HTTPCacher
+  def initialize(base_dir)
+    @base_dir = base_dir
+  end
+
+  def get(url, key)
+    cached_path = "#{@base_dir}/#{key}"
+    if File.exist?(cached_path)
+      puts "Getting file #{key} from cache"
+      IO.read(cached_path)
+    else
+      puts "Getting file #{key} from URL #{url}"
+      data = Net::HTTP.get_response(URI.parse(url)).body
+      File.open(cached_path, 'w') { |f| f.puts data }
+      data
+    end
+  end
+end
+
+getter = HTTPCacher.new('/home/jeet/.cache')
+packages_hash = JSON.parse(getter.get('https://melpa.org/recipes.json', 'recipes.json'))
+package = packages_hash.keys.sample(1)[0]
+current_package = packages_hash[package]
+
+readme_options = ['.md', '.org']
+i = 0
+if current_package['fetcher'] == 'github'
+  while (readme = Net::HTTP.get_response(
+    URI.parse("https://raw.githubusercontent.com/#{current_package['repo']}/master/README#{readme_options[i]}")
+  ).body) == '404: Not Found'
+    i += 1
+  end
+  puts readme
+else
+  puts('not on github')
+end
+
+puts "package #{package}, data #{current_package}"
