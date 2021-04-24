@@ -6,6 +6,6 @@
     clang-tools
     clang_12
     cmake
-    rtags
+
   ];
 }

@@ -37,7 +37,7 @@ in {
   };
 
   xdg.configFile = {
-    "chemacs/profiles.el".source = ../config/emacs/profiles.el;
+    "chemacs/profiles.el".source = ../../config/emacs/profiles.el;
     # "doom".source = ../config/emacs/doom;
   };
 }
