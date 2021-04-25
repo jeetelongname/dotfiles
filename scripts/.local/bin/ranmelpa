@@ -5,7 +5,7 @@
 require 'json'
 require 'net/http'
 
-# TODO: colour readme and get .org files working
+# TODO: colour readme
 # wrapper for getter that caches the file
 class HTTPCacher
   def initialize(base_dir)
@@ -15,7 +15,6 @@ class HTTPCacher
   def get(url, key)
     cached_path = "#{@base_dir}/#{key}"
     if File.exist?(cached_path)
-      puts "Getting file #{key} from cache"
       IO.read(cached_path)
     else
       puts "Getting file #{key} from URL #{url}"
@@ -26,22 +25,36 @@ class HTTPCacher
   end
 end
 
-getter = HTTPCacher.new('/home/jeet/.cache')
-packages_hash = JSON.parse(getter.get('https://melpa.org/recipes.json', 'recipes.json'))
+packages_hash = JSON.parse(HTTPCacher.new('/home/jeet/.cache').get('https://melpa.org/recipes.json', 'recipes.json'))
+
 package = packages_hash.keys.sample(1)[0]
+
 current_package = packages_hash[package]
 
-readme_options = ['.md', '.org']
-i = 0
-if current_package['fetcher'] == 'github'
-  while (readme = Net::HTTP.get_response(
-    URI.parse("https://raw.githubusercontent.com/#{current_package['repo']}/master/README#{readme_options[i]}")
-  ).body) == '404: Not Found'
-    i += 1
-  end
-  puts readme
-else
-  puts('not on github')
-end
+branch = current_package['branch'].nil? ? 'master' : current_package['branch']
+
+readme_options = ['.md', '.org', '.markdown']
+itr = 0
+url_strings = { github:
+                  "https://raw.githubusercontent.com/#{current_package['repo']}/#{branch}/README#{readme_options[itr]}",
+                gitlab:
+                  "https://gitlab.com/#{current_package['repo']}/-/raw/#{branch}/README#{readme_options[itr]}" }
 
 puts "package #{package}, data #{current_package}"
+
+def find_readme(url_string, itr, readme_options)
+  while (readme = Net::HTTP.get_response(
+    URI.parse(url_string)
+  ).body) == '404: Not Found' && itr != readme_options.length
+
+    itr += 1
+  end
+  puts readme
+end
+
+case current_package['fetcher']
+when 'github'
+  find_readme url_strings[:github], itr, readme_options
+when 'gitlab'
+  find_readme url_strings[:gitlab], itr, readme_options
+end
