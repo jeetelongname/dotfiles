@@ -25,7 +25,8 @@ class HTTPCacher
   end
 end
 
-packages_hash = JSON.parse(HTTPCacher.new('/home/jeet/.cache').get('https://melpa.org/recipes.json', 'recipes.json'))
+packages_hash = JSON.parse(HTTPCacher.new("/home/#{ENV['USER']}/.cache").get('https://melpa.org/recipes.json',
+                                                                             'recipes.json'))
 
 package = packages_hash.keys.sample(1)[0]
 
