@@ -2,6 +2,12 @@
 
 # frozen_string_literal: true
 
+# a script that choses a random package from melpa.org and brings up its readme
+# if you want too add a markup then add it as a string too `readme_options`
+# if you want too add a fetcher url then add a similar url too too the `url_strings` hash map
+# with the corresponding key. this is meant for centralised repositorys
+# you will also need too add an entry too the final case statement (this may be streamlined in the furture)
+
 require 'json'
 require 'net/http'
 
