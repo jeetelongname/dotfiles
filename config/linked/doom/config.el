@@ -90,7 +90,7 @@
 (use-package! type-break
   :config
   (setq type-break-interval 1800 ;; half an hour between type breaks
-        type-break-keystroke-threshold (cons 1000  7000)) ;; I set the thresholds lower because I need to take more breaks
+        type-break-keystroke-threshold (cons 2000  14000))
   (type-break-mode 1))
 
 (use-package! caddyfile-mode
@@ -127,7 +127,6 @@
 (use-package! parrot
   :defer t
   :config
-  ;; (parrot-set-parrot-type 'rotating))
   (defvar birds '(default confused emacs nyan rotating science thumbsup))
   (parrot-set-parrot-type (nth (random (length birds)) birds))) ;; this chooses a random bird on startup
 
@@ -232,8 +231,8 @@
   (dired-sidebar-toggle-sidebar))
 
 (map! :leader "o p" nil
-      :leader "o p" #'dired-sidebar-toggle-sidebar
-      :leader "o P" #'yeet/sidebar-toggle)
+      :leader "o p" #'dired-sidebar-toggle-sidebar ;; this is more useful most of the time
+      :leader "o P" #'yeet/sidebar-toggle) ;; this is when I need too do some buffer management
 
 ;; (after! dired-sidebar (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
 
@@ -252,7 +251,7 @@
 ;;   :after org)
 
 (after! company
-  (setq company-idle-delay 4 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
+  (setq company-idle-delay 6 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 
@@ -436,16 +435,16 @@
   (setq +treemacs-git-mode 'extended
         treemacs-width 30))
 
-(after! dap-mode
-  (setq dap-auto-configure-features '(sessions locals controls tooltip)
-        dap-python-executable "python3"))
+;; (after! dap-mode
+;;   (setq dap-auto-configure-features '(sessions locals controls tooltip)
+;;         dap-python-executable "python3"))
 
-(add-hook 'dap-stopped-hook
-          (lambda () (call-interactively #'dap-hydra)))
+;; (add-hook 'dap-stopped-hook
+;;           (lambda () (call-interactively #'dap-hydra)))
 
-(map! :leader "od" nil
-      :leader "od" #'dap-debug
-      :leader "dt" #'dap-breakpoint-toggle)
+;; (map! :leader "od" nil
+;;       :leader "od" #'dap-debug
+;;       :leader "dt" #'dap-breakpoint-toggle)
 
 (after! (pdf-tools doom-modeline)
   (doom-modeline-def-segment pdf-icon
@@ -499,18 +498,6 @@
         :n [return]
         (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
                #'+spell/correct))))
-
-;; (set-formatter!
-;;   'clang-format
-;;   '("clang-format"
-;;     ("-assume-filename=%S" (or buffer-file-name mode-result ""))
-;;     ("--style=gnu"))
-;;   :modes
-;;   '((c-mode ".c")
-;;     (c++-mode ".cpp")
-;;     (java-mode ".java")
-;;     (objc-mode ".m")
-;;     (protobuf-mode ".proto")))
 
 (setq org-directory "~/org-notes/")
 (after! org
@@ -571,7 +558,33 @@
 (setq +format-on-save-enabled-modes
       '(not web-mode))
 
-;; (defun +css/)
+(defun yeet/scss-start ()
+  "Get sass watching my scss files."
+  (interactive)
+  (start-process-shell-command
+   "sass-compile" "*sass-compile-log*"
+   (concat "sass --watch "
+           (concat (projectile-acquire-root) "css/scss") ":"
+           (concat (projectile-acquire-root) "css" )))
+  (message "Sass Killed"))
+
+
+(defun yeet/scss-build ()
+  "Get sass building my scss files."
+  (interactive)
+  (start-process-shell-command
+   "sass-compile" "*sass-compile-log*"
+   (concat "sass "
+           (concat (projectile-acquire-root) "css/scss") ":"
+           (concat (projectile-acquire-root) "css" )))
+  (message "Compiled!"))
+
+(map! (:map 'scss-mode-map
+       :localleader
+       "b" nil
+       (:prefix ("s" . "sass")
+        "b" #'yeet/scss-build
+        "c" #'yeet/scss-start)))
 
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
