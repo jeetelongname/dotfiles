@@ -12,6 +12,8 @@ require 'json'
 require 'net/http'
 
 # TODO: colour readme
+# TODO: truncate readme if its too long
+# TODO: clean up the case statement too use a hashmap and a call statement
 # wrapper for getter that caches the file
 class HTTPCacher
   def initialize(base_dir)
