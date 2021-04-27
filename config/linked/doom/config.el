@@ -558,26 +558,24 @@
 (setq +format-on-save-enabled-modes
       '(not web-mode))
 
-(defun yeet/scss-start ()
-  "Get sass watching my scss files."
-  (interactive)
-  (start-process-shell-command
-   "sass-compile" "*sass-compile-log*"
-   (concat "sass --watch "
-           (concat (projectile-acquire-root) "css/scss") ":"
-           (concat (projectile-acquire-root) "css" )))
-  (message "Sass Killed"))
-
-
-(defun yeet/scss-build ()
-  "Get sass building my scss files."
-  (interactive)
+(defun yeet/scss-compile (watch)
+  "Get sass compiling my scss files."
   (start-process-shell-command
    "sass-compile" "*sass-compile-log*"
    (concat "sass "
+           (if watch "--watch" "")
+           " "
            (concat (projectile-acquire-root) "css/scss") ":"
-           (concat (projectile-acquire-root) "css" )))
-  (message "Compiled!"))
+           (concat (projectile-acquire-root) "css" ))))
+
+(defun yeet/scss-build ()
+  (interactive)
+  (yeet/scss-compile nil)
+  (message "SCSS Compiled!"))
+
+(defun yeet/scss-start ()
+  (yeet/scss-compile t)
+  (message "Sass process killed"))
 
 (map! (:map 'scss-mode-map
        :localleader
