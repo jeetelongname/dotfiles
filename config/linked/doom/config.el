@@ -563,18 +563,25 @@
   (start-process-shell-command
    "sass-compile" "*sass-compile-log*"
    (concat "sass "
-           (if watch "--watch" "")
-           " "
+           (if watch "--watch " " ")
            (concat (projectile-acquire-root) "css/scss") ":"
            (concat (projectile-acquire-root) "css" ))))
 
 (defun yeet/scss-build ()
+  "Build Scss files in directory."
   (interactive)
   (yeet/scss-compile nil)
   (message "SCSS Compiled!"))
 
 (defun yeet/scss-start ()
-  (yeet/scss-compile t)
+  "Watch Scss file in directory."
+  (interactive)
+  (yeet/scss-compile t))
+
+(defun yeet/scss-stop ()
+  "Kill any current scss processes"
+  (interactive)
+  (delete-process "sass-compile")
   (message "Sass process killed"))
 
 (map! (:map 'scss-mode-map
@@ -582,7 +589,8 @@
        "b" nil
        (:prefix ("s" . "sass")
         "b" #'yeet/scss-build
-        "c" #'yeet/scss-start)))
+        "c" #'yeet/scss-start
+        "C" #'yeet/scss-stop)))
 
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
