@@ -435,6 +435,21 @@
   (setq +treemacs-git-mode 'extended
         treemacs-width 30))
 
+(defadvice! rigor/which-key-show-workspace (orig-fun &rest pages-obj)
+  "Show my workspaces in the echo thingy"
+  :around #'which-key--process-page
+  (let ((out (apply orig-fun pages-obj))
+        (prefix-title (which-key--pages-prefix-title (car pages-obj))))
+    (if (not (string-equal prefix-title "workspace"))
+        out
+      (cons (car out)
+            (lambda ()
+              (funcall (cdr out))
+              (which-key--echo (concat (current-message) " " (+workspace--tabline))))))))
+
+(map! :leader "TAB TAB" nil
+      :leader "TAB TAB" #'+workspace/switch-to)
+
 ;; (after! dap-mode
 ;;   (setq dap-auto-configure-features '(sessions locals controls tooltip)
 ;;         dap-python-executable "python3"))
