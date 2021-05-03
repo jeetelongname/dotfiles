@@ -272,7 +272,7 @@
        doom-big-font
        (font-spec :family "Iosevka" :size 25)
        doom-variable-pitch-font
-       (font-spec :family "LibreBaskerville" :size 17))
+       (font-spec :family "Input" :size 17))
 
 (after! doom-themes
   (setq! doom-themes-enable-bold t
@@ -288,6 +288,13 @@
   (if (display-graphic-p)
       (setq doom-theme 'doom-horizon)
     (setq doom-theme 'horizon)))
+
+(use-package! tao-theme ; messing around with tao
+  :defer
+  :config
+  (setq tao-theme-use-sepia nil))
+
+;; (setq doom-theme 'tao-yang)
 
 (setq fancy-splash-image "~/code/other/doom-banners/splashes/emacs/emacs-gnu-logo.png")
 

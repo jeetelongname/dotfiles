@@ -30,6 +30,7 @@
 
 (package! horizon-theme)
 (unpin! doom-themes)
+(package! tao-theme)
 
 (package! elcord)
 

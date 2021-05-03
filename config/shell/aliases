@@ -11,6 +11,7 @@ alias la='exa -a   --color=always --group-directories-first' # all files and dir
 alias ll='exa -l   --color=always --group-directories-first' # long format
 alias lt='exa -aT  --color=always --group-directories-first' # tree listing
 
+alias vim='nvim'
 alias shutr='shutdown -r now'
 alias shut='shutdown now'
 alias py='python3'
@@ -36,10 +37,10 @@ alias weather='curl wttr.in/$1 '
 alias h='htop'
 alias umat='unimatrix -a -f -l egGoncCskp'
 alias ipp='dig +short myip.opendns.com @resolver1.opendns.com'
-alias '$'=''
 alias ip='ip --color=auto'
 
 if [[ $(echo $0 | grep "zsh") ]]; then
+	alias '$'=''
 	alias -g ...='../..'
 	alias -g .3='../../..'
 	alias -g .4='../../../..'

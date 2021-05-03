@@ -383,6 +383,7 @@ this was for a terminal  experiment that did not work
 #+begin_src emacs-lisp :tangle packages.el
 (package! horizon-theme)
 (unpin! doom-themes)
+(package! tao-theme)
 #+end_src
 
 ** Outside Influence
@@ -703,7 +704,7 @@ Iosevka is my new best friend
        doom-big-font
        (font-spec :family "Iosevka" :size 25)
        doom-variable-pitch-font
-       (font-spec :family "LibreBaskerville" :size 17))
+       (font-spec :family "Input" :size 17))
 #+end_src
 
 the comments for horizon are borderline unreadable so now we have brighter
@@ -725,13 +726,20 @@ I wanted my comments and keywords to be italics. I may need to change fonts..
 My theme
 this will load up 2 different themes one for the terminal and one for the gui.
 turns out that the emacs client works differently so this is not something that
-I can use...
+I can use... still works tho
 #+BEGIN_SRC emacs-lisp
 (if (daemonp)
     (setq doom-theme 'doom-horizon)
   (if (display-graphic-p)
       (setq doom-theme 'doom-horizon)
     (setq doom-theme 'horizon)))
+
+(use-package! tao-theme ; messing around with tao
+  :defer
+  :config
+  (setq tao-theme-use-sepia nil))
+
+;; (setq doom-theme 'tao-yang)
 #+end_src
 
 *** Doom Dashboard

@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: website
+# key: web
+# condition: t
+# --
+
+@MISC{WEBSITE:$1,
+  HOWPUBLISHED    = "\url{$2}",
+  AUTHOR          = "$3",
+  TITLE           = "$4"
+}
+
+`%`$0

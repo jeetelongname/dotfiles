@@ -39,7 +39,7 @@
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;(ligatures +extra); ligatures and symbols to make your code pretty again
        ;; tabs             ; a tab bar for Emacs
-       treemacs            ; a project drawer, like neotree but cooler
+       (treemacs +lsp)     ; a project drawer, like neotree but cooler
        ;;treesitter        ; FIXME syntax and parsing, sitting in a tree...
        ;;unicode           ; extended unicode support for various languages
        vc-gutter           ; vcs diff in the fringe
