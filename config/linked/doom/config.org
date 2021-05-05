@@ -24,6 +24,7 @@ Lets get this config started!
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
   - [[#random-modes][Random modes]]
+    - [[#type-break-mode][Type break mode]]
 - [[#packages][Packages]]
   - [[#language-editions][Language editions]]
     - [[#caddy][Caddy]]
@@ -221,15 +222,18 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
           (if this-win-2nd (other-window 1))))))
 #+end_src
 ** Random modes
+*** TODO Type break mode
 Type break reminds you too take a break once a certain threshold of keys has
 been met. Its nice if its not too frequent
 #+begin_src emacs-lisp
 (use-package! type-break
+  :defer
   :config
   (setq type-break-interval 1800 ;; half an hour between type breaks
         type-break-keystroke-threshold (cons 2000  14000))
   (type-break-mode 1))
 #+end_src
+
 * Packages
 I have quite a few packages that I use. These are the packages and there
 subsequent configurations

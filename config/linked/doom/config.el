@@ -88,6 +88,7 @@
           (if this-win-2nd (other-window 1))))))
 
 (use-package! type-break
+  :defer
   :config
   (setq type-break-interval 1800 ;; half an hour between type breaks
         type-break-keystroke-threshold (cons 2000  14000))
