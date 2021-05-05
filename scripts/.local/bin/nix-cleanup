@@ -38,16 +38,12 @@ lb = 7
 cmds = []
 # home manager
 if `home-manager generations | wc -l`.to_i >= lb
-  gens = begin
-    `home-manager generations`.split("\n").map do |el|
-      el.split(' ')[4]
-    end[0..-1].join(' ')
-  rescue StandardError
-    nil
-  end
-
-  cmds.append("home-manager remove-generations #{gens} #{dryrun == true ? '--dryrun' : ''}") unless gens.nil?
+  gens = `home-manager generations`.split("\n").map do |el|
+           el.split(' ')[4]
+         end[5..-1].join(' ')
 end
+
+cmds.append("home-manager remove-generations #{gens} #{dryrun == true ? '--dryrun' : ''}") unless gens.nil?
 
 # nix
 if `nix-env --list-generations | wc -l`.to_i >= lb
@@ -59,7 +55,12 @@ puts 'these commands will be run'
 puts cmds
 unless yes == true
   puts 'do you confirm'
-  ans = gets.chomp
+  begin
+    ans = gets.chomp
+  rescue Interrupt
+    puts "\nRude much"
+    exit 1
+  end
 end
 if ans == 'y' || yes == true
   cmds.each do |cmd|
