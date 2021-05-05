@@ -6,6 +6,7 @@
     bat
     bitwarden-cli
     dragon-drop
+    exa
     fd
     htop
     jq
