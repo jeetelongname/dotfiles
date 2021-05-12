@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 # relys on the gh cli awk and fzf
-# TODO: pretty print the list output
-gist=$(gh gist list | awk '{print $2, $1 }' | fzf | awk '{print $2}')
+gist_list=$(gh gist list)
 
-gh gist edit "$gist"
+gh gist edit "$(echo "$gist_list" |
+	grep "$(echo "$gist_list" | awk '{print $2}' | fzf --layout=reverse)" |
+	awk '{print $1}')"
