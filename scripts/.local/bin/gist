@@ -2,6 +2,8 @@
 # relys on the gh cli awk and fzf
 gist_list=$(gh gist list)
 
-gh gist edit "$(echo "$gist_list" |
-	grep "$(echo "$gist_list" | awk '{print $2}' | fzf --layout=reverse)" |
-	awk '{print $1}')"
+gh gist edit "$(
+	echo "$gist_list" |
+		grep "$(echo "$gist_list" | awk '{print $2}' | fzf --layout=reverse)" |
+		awk '{print $1}'
+)"
