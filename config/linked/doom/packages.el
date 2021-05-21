@@ -76,6 +76,6 @@
 
 ;; (package! org-sidebar)
 
-(unpin! forge)
+;; (unpin! forge)
 
 (package! mu4e-alert :disable t)

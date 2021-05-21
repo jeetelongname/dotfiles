@@ -8,8 +8,8 @@
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
 
-(when (boundp 'comp-async-jobs-number)
-  (setq comp-async-jobs-number 6))
+(when (boundp 'native-comp-async-jobs-number)
+  (setq native-comp-async-jobs-number 6))
 
 (setq-default header-line-format
         (concat (propertize " " 'display '((space :align-to 0)))

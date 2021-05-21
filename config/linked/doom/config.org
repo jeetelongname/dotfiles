@@ -1024,7 +1024,7 @@ a default
 
 *** magit
 #+begin_src emacs-lisp :tangle packages.el
-(unpin! forge)
+;; (unpin! forge)
 #+end_src
 *** tmux
 Sadly I can't live in emacs entirely. I have to use an outside terminal
