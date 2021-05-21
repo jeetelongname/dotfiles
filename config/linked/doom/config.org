@@ -106,8 +106,8 @@ This is the stuff that does not really belong in any module but is useful
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
 
-(when (boundp 'comp-async-jobs-number)
-  (setq comp-async-jobs-number 6))
+(when (boundp 'native-comp-async-jobs-number)
+  (setq native-comp-async-jobs-number 6))
 #+END_SRC
 
 I like a little separation so I put an empty line at the top of my emacs

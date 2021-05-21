@@ -22,7 +22,6 @@
     modules/devel/git.nix
     modules/devel/latex.nix
     modules/devel/shell.nix
-    modules/editors/emacs.nix
     modules/editors/neovim.nix
     modules/languages/cc.nix
     modules/languages/guile.nix
@@ -37,6 +36,7 @@
     modules/nix.nix
     modules/terminal.nix
     modules/web.nix
+    modules/editors/emacs.nix
   ];
 
   # autoOptimiseStore = true;
