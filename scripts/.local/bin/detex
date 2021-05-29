@@ -1,0 +1,22 @@
+#!/usr/bin/env awk -f
+# -*- mode: Awk -*-
+
+BEGIN {
+    print "cleaning latex file"
+}
+
+/\\autocite[.+]{.+}/ {
+    gsub(/\\autocite[.+]{.+}/ "", $0)
+}
+
+/^\\.+/ {
+    d = ""
+    for (i = 2; i <= NF; ++i) {
+        printf("%s%s", d, $f)
+    };
+    printf("\n")
+}
+
+{
+    print $0
+}
