@@ -265,6 +265,13 @@
 (setq-default history-length 10000)
 (setq-default prescient-history-length 10000)
 
+(use-package! affe
+  :after orderless
+  :config
+  ;; Configure Orderless
+  (setq affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless-highlight-matches))
+
 (setq evil-split-window-below  t
       evil-vsplit-window-right t)
 

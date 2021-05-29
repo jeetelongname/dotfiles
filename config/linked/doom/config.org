@@ -59,7 +59,8 @@ Lets get this config started!
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
-    - [[#ivy][ivy]]
+    - [[#deprecated-ivy][DEPRECATED ivy]]
+    - [[#selectrum][selectrum]]
   - [[#editor][editor]]
     - [[#evil][evil]]
   - [[#ui][ui]]
@@ -669,7 +670,7 @@ defer the idle delay for those real brain fart seconds
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 #+END_SRC
-*** ivy
+*** DEPRECATED ivy
 #+BEGIN_SRC emacs-lisp
 (after! ivy
   (setq ivy-height 20
@@ -683,6 +684,22 @@ this is to make prescient a little more intelligent
 (setq-default history-length 10000)
 (setq-default prescient-history-length 10000)
 #+END_SRC
+*** selectrum
+#+begin_src emacs-lisp :tangle packages.el
+(package! affe)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! affe
+  :after orderless
+  :config
+  ;; Configure Orderless
+  (setq affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless-highlight-matches))
+#+end_src
+
+#+RESULTS:
+: t
 
 ** editor
 *** evil
