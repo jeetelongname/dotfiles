@@ -2,14 +2,17 @@
 
 # for all the cli programs I use
 {
-  home.packages = with pkgs; [ # all the cli apps I use
+  home.packages = with pkgs; [
+    # all the cli apps I use
     bat
     bitwarden-cli
+    calc
     dragon-drop
     exa
     fd
     htop
     jq
+    heroku
     lf
     neofetch
     pandoc
@@ -21,6 +24,7 @@
     stow
     topgrade
     tree
+    tty-clock
     xdo
     xdotool
 

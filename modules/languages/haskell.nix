@@ -4,7 +4,8 @@
   home.packages = with pkgs; [
     ghc
     cabal-install
-    haskellPackages.brittany
+    haskell-language-server
+    # haskellPackages.brittany
 
   ];
 }

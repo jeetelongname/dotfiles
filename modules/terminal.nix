@@ -24,6 +24,12 @@
     keyMode = "vi";
     secureSocket = true;
 
-    extraConfig = "source-file ~/.dotfiles/config/terminal/tmux.conf";
+    plugins = with pkgs; [
+    { plugin = tmuxPlugins.yank; }
+      { plugin = tmuxPlugins.battery; }
+      { plugin = tmuxPlugins.open; }
+      { plugin = tmuxPlugins.prefix-highlight; }
+    ];
+   extraConfig = "source-file ~/.dotfiles/config/terminal/tmux.conf";
   };
 }

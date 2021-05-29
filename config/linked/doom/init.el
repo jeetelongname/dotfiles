@@ -15,8 +15,9 @@
         +childframe)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy
-        +prescient)        ; a search engine for love and life
+       ;;(ivy +prescient)  ; a search engine for love and life
+       selectrum           ; a search engine worthy of my love and life
+
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -36,7 +37,7 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
-       ligatures           ; ligatures and symbols to make your code pretty again
+       ;;ligatures         ; ligatures and symbols to make your code pretty again
        ;; tabs             ; a tab bar for Emacs
        (treemacs +lsp)     ; a project drawer, like neotree but cooler
        ;;treesitter        ; FIXME syntax and parsing, sitting in a tree...
@@ -83,7 +84,7 @@
 
        :tools
        ;;ansible
-       (debugger +lsp)     ; FIXME stepping through code, to help you add bugs
+       ;; (debugger +lsp)     ; FIXME stepping through code, to help you add bugs
        ;;direnv
        ;;docker
        editorconfig        ; let someone else argue about tabs vs spaces
@@ -92,7 +93,7 @@
        gist                ; interacting with github gists
        (lookup
         +docset)           ; navigate your code and its documentation
-       (lsp +peek)
+       (lsp -eglot)
        (magit -forge)      ; a git porcelain for Emacs
        make                ; run make tasks from Emacs
        pass                ; password manager for nerds
@@ -129,12 +130,12 @@
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;gdscript          ; the language you waited for
        (go +lsp)           ; the hipster dialect
-       (haskell +dante)    ; a language that's lazier than I am
+       (haskell +lsp)      ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        json                ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       javascript          ; all(hope(abandon(ye(who(enter(here))))))
+       (javascript +lsp)   ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun

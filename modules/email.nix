@@ -7,8 +7,10 @@
     # mbsync.enable = true; # errors out on me :(
   };
   home.file = {
-    ".mbsyncrc".source = ../config/email/mbsyncrc;
-    ".msmtprc".source = ../config/email/msmtprc;
+    ".mbsyncrc".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/email/mbsyncrc;
+    ".msmtprc".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/email/msmtprc;
 
   };
 

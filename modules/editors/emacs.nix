@@ -26,6 +26,8 @@ in {
     # tools/format
     nixfmt
     shfmt
+    # tools/editorconfig
+    editorconfig-core-c
 
     # so many
     sqlite
