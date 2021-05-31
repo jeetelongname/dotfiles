@@ -52,8 +52,7 @@ if [ -d $HOME/.nix-profile/etc/profile.d ]; then
 		fi
 	done
 fi
-#Nix (need to do more with it)
-if [ -e /home/jeet/.nix-profile/etc/profile.d/nix.sh ]; then . /home/jeet/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-export PATH="$HOME/.poetry/bin:$PATH"
-export PATH=$PATH:~/.nimble/bin
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
+	. ~/.nix-profile/etc/profile.d/nix.sh
+fi # added by Nix installer

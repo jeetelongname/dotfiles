@@ -4,6 +4,8 @@
   home.packages = with pkgs;
     [
       alacritty
+      # abduco
+      # dvtm-unstable
       # termite
 
     ];
@@ -25,11 +27,11 @@
     secureSocket = true;
 
     plugins = with pkgs; [
-    { plugin = tmuxPlugins.yank; }
+      { plugin = tmuxPlugins.yank; }
       { plugin = tmuxPlugins.battery; }
       { plugin = tmuxPlugins.open; }
       { plugin = tmuxPlugins.prefix-highlight; }
     ];
-   extraConfig = "source-file ~/.dotfiles/config/terminal/tmux.conf";
+    extraConfig = "source-file ~/.dotfiles/config/terminal/tmux.conf";
   };
 }

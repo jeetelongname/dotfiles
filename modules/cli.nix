@@ -15,6 +15,7 @@
     heroku
     lf
     neofetch
+    nmap
     pandoc
     pass
     pfetch

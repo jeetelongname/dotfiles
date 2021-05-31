@@ -243,7 +243,9 @@ o.termguicolors = true
 vim.cmd("colorscheme horizon")
 
 -- custom lightline
-g.lightline = { colorscheme = 'horizon'; active = { left = { { 'mode', 'paste' },
+g.lightline = { 
+   colorscheme = 'horizon'; 
+   active = { left = { { 'mode', 'paste' },
    { 'gitbranch', 'readonly', 'filename', 'modified' }}};
 component_function = { gitbranch = 'fugitive#head', };}
 
