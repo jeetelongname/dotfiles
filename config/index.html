@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>New Tab</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src= "https://unpkg.com/lucide@latest"></script>
+    </head>
+
+    <style>
+     :root { /* this will be replaced on window load it does not matter what goes in here */
+         --back: beige;
+         --text: black;
+         --hover: teal;
+     }
+
+     body {
+         background-color: var(--back);
+     }
+
+     div {
+         position: absolute;
+         color: var(--text);
+         font-family: "helvetica";
+     }
+     div.info {
+         font-size: 3em;
+         top: 10%;
+         left: 10%;
+     }
+
+     div.links {
+         bottom: 5%;
+         right: 20px;
+         font-size: 1.3em;
+     }
+
+     div#switcher {
+         color: var(--text);
+         top: 40px;
+         right: 20px;
+     }
+
+     div#switcher:hover {
+         color: var(--hover);
+     }
+
+     a, a:visited {
+         color: var(--text);
+     }
+
+     a:hover {
+         color: var(--hover);
+     }
+
+     ul {
+         list-style: none;
+     }
+
+     li {
+         padding: 10px 0px 10px 0px ;
+     }
+
+    </style>
+
+    <body>
+        <div class='info'>
+            <h1 id='time'></h1>
+            <h3 id='date'></h3>
+            <h5>Hello</h5>
+
+        </div>
+
+        <div id='switcher'>
+            <i icon-name='moon'></i>
+        </div>
+
+        <div class='links'>
+            <ul>
+                <li>
+                    <a href="https://www.jeetelongname.net">
+                        <i icon-name="globe-2" title="website"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://github.com/jeetelongname">
+                        <i icon-name="github" title="Github"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://twitch.tv/jeetelongname">
+                        <i icon-name="twitch" title="twitch"></i>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </body>
+
+    <script type="text/javascript">
+     lucide.createIcons();
+    </script>
+
+    <script type="text/javascript">
+     const timeCaller = (date) => {
+         date = new Date
+
+         h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+         m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+         s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+
+         document.getElementById('time').innerHTML = `${h}:${m}:${s}`
+     }
+
+     const dateCaller = (date) => {
+         date = new Date
+         document.getElementById("date").innerHTML = `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`
+     }
+
+     timeCaller();
+     setInterval(timeCaller, 1000)
+
+     dateCaller();
+     setInterval(dateCaller, 100000)
+    </script>
+
+
+    <script type="text/javascript">
+     const style = document.styleSheets[0]
+
+     let darkTheme = {
+         back: "black",
+         text: "white",
+         hover: "orange"
+     }
+
+     let lightTheme = {
+         back: "beige",
+         text: "black",
+         hover: "teal"
+     }
+
+     const switchTheme = (cssObj) => {
+         style.deleteRule(0)
+         style.insertRule(`:root { --back: ${cssObj.back}; --text: ${cssObj.text}; --hover: ${cssObj.hover}}`, 0)
+     }
+
+    switchTheme(lightTheme)
+
+
+     let dark = false
+
+     document.getElementById('switcher').addEventListener("click", () => {
+         if (dark) {
+             switchTheme(lightTheme)
+             document.getElementById('switcher').innerHTML = `<i icon-name='moon'></i>`
+             dark = false
+         } else {
+             switchTheme(darkTheme)
+             document.getElementById('switcher').innerHTML = `<i icon-name='sun'></i>`
+             dark = true
+         }
+         lucide.createIcons();
+     })
+
+    </script>
+</html>
