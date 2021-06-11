@@ -64,6 +64,8 @@
 
 (package! keycast)
 
+(package! power-mode :recipe (:host github :repo "elizagamedev/power-mode.el"))
+
 (package! selectric-mode)
 
 ;; (package! emacs-2048
@@ -78,6 +80,6 @@
 
 (package! affe)
 
-;; (unpin! forge)
+(unpin! forge)
 
 (package! mu4e-alert :disable t)

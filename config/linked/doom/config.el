@@ -225,6 +225,9 @@
                   :weight bold))
   (map! :leader "tk" #'keycast-mode))
 
+(use-package! power-mode
+  :defer t)
+
 (defun yeet/sidebar-toggle ()
   "toggle both ibuffer and dired sidebars"
   (interactive)
@@ -507,11 +510,11 @@
     '(bar window-number matches pdf-pages pdf-icon buffer-name)
     '(misc-info major-mode process vcs))
 
-  (defun doom-set-pdf-modeline ()
+  (defun doom-set-pdf-modeline-h ()
     "sets the pdf modeline"
     (doom-modeline-set-modeline 'pdf))
 
-  (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline))
+  (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline-h))
 
 (after! evil
   (evil-ex-define-cmd "run" #'+tmux:run))
@@ -670,9 +673,9 @@
                      :channels ("#emacs"))))
 
 (after! elfeed
-  (setq elfeed-search-filter "@1-week-ago")
+  (setq elfeed-search-filter "@3-week-ago")
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
-  (add-hook! 'elfeed-search-mode-hook 'elfeed-update))
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
 
 (use-package! elfeed-goodies
   :config
