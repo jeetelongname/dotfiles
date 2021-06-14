@@ -36,7 +36,6 @@ Lets get this config started!
     - [[#modeline-fun][modeline fun]]
     - [[#evil-tutor][Evil tutor]]
     - [[#org-super-agenda][org super agenda]]
-    - [[#elfeed-goodies][elfeed-goodies]]
     - [[#dired-drag-and-drop][dired drag and drop]]
     - [[#themes][themes]]
   - [[#outside-influence][Outside Influence]]
@@ -370,12 +369,6 @@ I wanted to see the differences with its vim counterparts (its a litle nicer)
 (use-package! org-super-agenda :defer t)
 #+end_src
 
-*** elfeed-goodies
-I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! elfeed-goodies)
-(package! elfeed-web)
-#+END_SRC
 *** dired drag and drop
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
 wellish
@@ -1344,6 +1337,25 @@ Elfeed is great. I just need more blogs
   (setq elfeed-search-filter "@3-week-ago")
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
+#+END_SRC
+
+There have been times where I wanted to share a link to an interesting blog or a
+comic that made me laugh. this just automated that process
+#+begin_src emacs-lisp
+(defun yeet/elfeed-copy-link ()
+  "Copy current link to clipboard for easy sharing"
+  (interactive)
+  (let ((link (elfeed-entry-link elfeed-show-entry)))
+    (when link
+      (kill-new link)
+      (message "Copied %s to clipboard" link))))
+#+end_src
+
+**** elfeed-goodies
+I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! elfeed-goodies)
+(package! elfeed-web)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp

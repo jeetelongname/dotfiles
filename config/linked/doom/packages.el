@@ -22,9 +22,6 @@
 ;; (package! origami)
 (package! org-super-agenda)
 
-(package! elfeed-goodies)
-(package! elfeed-web)
-
 ;; (package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
 (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
 
@@ -40,15 +37,15 @@
 
 (package! hackernews)
 
-;; (package! eaf :recipe
-;;   (:host github
-;;    :repo "manateelazycat/emacs-application-framework"
-;;    :files ("*")
-;;    :build (:not compile)))
+  ;; (package! eaf :recipe
+  ;;   (:host github
+  ;;    :repo "manateelazycat/emacs-application-framework"
+  ;;    :files ("*")
+  ;;    :build (:not compile)))
 
-;; (package! epc)
-;; (package! ctable)
-;; (package! deferred)
+  ;; (package! epc)
+  ;; (package! ctable)
+  ;; (package! deferred)
 
 (package! webkit :recipe
   (:host github :repo "akirakyle/emacs-webkit"
@@ -83,3 +80,6 @@
 (unpin! forge)
 
 (package! mu4e-alert :disable t)
+
+(package! elfeed-goodies)
+(package! elfeed-web)

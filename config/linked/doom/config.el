@@ -677,6 +677,14 @@
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
 
+(defun yeet/elfeed-copy-link ()
+  "Copy current link to clipboard for easy sharing"
+  (interactive)
+  (let ((link (elfeed-entry-link elfeed-show-entry)))
+    (when link
+      (kill-new link)
+      (message "Copied %s to clipboard" link))))
+
 (use-package! elfeed-goodies
   :config
   (elfeed-goodies/setup))
