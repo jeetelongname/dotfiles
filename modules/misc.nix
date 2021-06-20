@@ -4,6 +4,9 @@
   home.packages = with pkgs; [
     castor # TODO: fix castor
     firefox
+    screenkey
+    audacity
+    gimp
   ];
 
   xdg.configFile = {
