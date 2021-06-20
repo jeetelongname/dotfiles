@@ -119,6 +119,8 @@
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 
+(defvar birds '(default confused emacs nyan rotating science thumbsup))
+
 (use-package! nyan-mode
   :defer t
   :config
@@ -128,7 +130,6 @@
 (use-package! parrot
   :defer t
   :config
-  (defvar birds '(default confused emacs nyan rotating science thumbsup))
   (parrot-set-parrot-type (nth (random (length birds)) birds))) ;; this chooses a random bird on startup
 
 
@@ -137,6 +138,26 @@
   (nyan-start-animation)
   (parrot-mode)
   (parrot-start-animation))
+
+;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
+
+;; (defun bird-annotations (cand)
+;;   "Takes a CANDidate (which is a bird) and returns a description of said bird"
+;;   (defvar birds+annotations (-zip birds '("default bird is best bird"
+;;                                           "they have got the spirit"
+;;                                           "EMACS BIRD EMACS BIRD"
+;;                                           "nananananan"
+;;                                           "you spin me right round right round like a record baby"
+;;                                           "science bitch!"
+;;                                           "He is just happy to be here")))
+;;    (cdr (assoc cand birds+annotations)))
+
+;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
+
+(defun yeet/select-bird (bird)
+  "Select BIRD from birds"
+  (interactive (list (completing-read "Select bird: " birds)))
+  (parrot-set-parrot-type bird))
 
 (use-package! org-super-agenda :defer t)
 
@@ -275,6 +296,20 @@
   (setq affe-regexp-function #'orderless-pattern-compiler
         affe-highlight-function #'orderless-highlight-matches))
 
+(defun yeet/face-annotator (cand)
+    "Annotate faces with dummy text and face documentation"
+    (when-let (sym (intern-soft cand))
+      (marginalia--fields
+       ("The Quick Brown Fox Jumped Over The Lazy Dog" :face sym)
+       ((documentation-property sym 'face-documentation)
+        :truncate marginalia-truncate-width :face 'marginalia-documentation))))
+
+(after! marginalia
+  (add-to-list 'marginalia-prompt-categories '("\\<face\\>" . face))
+
+  (add-to-list 'marginalia-annotator-registry
+               '(face yeet/face-annotator marginalia-annotate-face builtin none)))
+
 (setq evil-split-window-below  t
       evil-vsplit-window-right t)
 
@@ -288,7 +323,8 @@
 (after! doom-themes
   (setq! doom-themes-enable-bold t
          doom-themes-enable-italic t
-         doom-horizon-brighter-comments t))
+         doom-horizon-brighter-comments t
+         doom-flatwhite-brighter-modeline t))
 
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
@@ -674,6 +710,7 @@
 
 (after! elfeed
   (setq elfeed-search-filter "@3-week-ago")
+
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
 
@@ -685,8 +722,23 @@
       (kill-new link)
       (message "Copied %s to clipboard" link))))
 
+;; not actually useful as you can just use =title to filter by title
+(defun yeet/search-feeds-by-title (feed-title)
+  (interactive (list (completing-read "Select Feed" (let (feed-titles)
+                                                (dolist (feed elfeed-feeds feed-titles)
+                                                  (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
+                                                              (car feed))
+                                                        feed-titles))))))
+  (message "%s"  feed-title))
+
+(map! (:map elfeed-show-mode-map
+       :n "gc" nil
+       :n "gc" #'yeet/elfeed-copy-link))
+
 (use-package! elfeed-goodies
+  :after elfeed
   :config
+  (setq elfeed-goodies/powerline-default-separator 'bar)
   (elfeed-goodies/setup))
 
 (after! emacs-everywhere
