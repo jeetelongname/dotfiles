@@ -30,7 +30,9 @@
  :leader
  :desc "Enable Coloured Values""t c" #'rainbow-mode
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed)
+ :desc "Open Elfeed""o l" #'elfeed
+ "cc" #'recompile
+ "cC" #'compile)
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
@@ -41,51 +43,15 @@
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
-(defun yeet/reload ()
-  "A simple cmd to make reloading my config easier"
-  (interactive)
-  (load! "config" doom-private-dir)
-  (message "Reloaded!"))
-
 (map! :leader
       "h r c" #'yeet/reload)
 
-(defun henlo ()
-  "henlo."
-  (interactive)
-  (message "\"henlo\""))
-(henlo) ;; oh wait thats how
-
-(defun stop ()
-  (interactive)
-  (defvar name "*I can quit at any time*")
-  (switch-to-buffer (get-buffer-create name))
-  (insert "I can stop at any time\nI am in control"))
-
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-             (next-win-buffer (window-buffer (next-window)))
-             (this-win-edges (window-edges (selected-window)))
-             (next-win-edges (window-edges (next-window)))
-             (this-win-2nd (not (and (<= (car this-win-edges)
-                                         (car next-win-edges))
-                                     (<= (cadr this-win-edges)
-                                         (cadr next-win-edges)))))
-             (splitter
-              (if (= (car this-win-edges)
-                     (car (window-edges (next-window))))
-                  'split-window-horizontally
-                'split-window-vertically)))
-        (delete-other-windows)
-        (let ((first-win (selected-window)))
-          (funcall splitter)
-          (if this-win-2nd (other-window 1))
-          (set-window-buffer (selected-window) this-win-buffer)
-          (set-window-buffer (next-window) next-win-buffer)
-          (select-window first-win)
-          (if this-win-2nd (other-window 1))))))
+;; (let ((lst '(1 2)))
+;;   (add-many-to-lists
+;;    lst
+;;    '(1 2 3)
+;;    '(2 3 4)
+;;    '(4 5 6)))
 
 (use-package! type-break
   :defer
@@ -112,6 +78,26 @@
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   (setq nameless-global-aliases '(("d" . "doom"))
         nameless-private-prefix t))
+
+(use-package! brainfuck-mode
+  :mode "\\.bf$\\'")
+
+(use-package! company-org-block
+  :after org
+  :config
+  (setq company-org-block-edit-style 'auto))
+
+(after! org
+  (set-company-backend! 'org-mode-hook '(company-org-block company-capf))
+
+  ;; (setq org-babel-load-languages
+  ;;       '((elisp   . t)
+  ;;         (python  . t)
+  ;;         (ruby    . t)
+  ;;         (haskell . t)
+  ;;         (scheme  . t)
+  ;;         (latex   . t)))
+  )
 
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (use-package! emacs-easy-hugo
@@ -141,25 +127,18 @@
 
 ;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
 
-;; (defun bird-annotations (cand)
-;;   "Takes a CANDidate (which is a bird) and returns a description of said bird"
-;;   (defvar birds+annotations (-zip birds '("default bird is best bird"
-;;                                           "they have got the spirit"
-;;                                           "EMACS BIRD EMACS BIRD"
-;;                                           "nananananan"
-;;                                           "you spin me right round right round like a record baby"
-;;                                           "science bitch!"
-;;                                           "He is just happy to be here")))
-;;    (cdr (assoc cand birds+annotations)))
+(defun bird-annotations (cand)
+  "Takes a CANDidate (which is a bird) and returns a description of said bird"
+  (let ((birds+annotations (-zip-pairs birds '("default bird is best bird"
+                                          "they have got the spirit"
+                                          "EMACS BIRD EMACS BIRD"
+                                          "nananananan"
+                                          "you spin me right round right round like a record baby"
+                                          "science bitch!"
+                                          "He is just happy to be here"))))
+    (cdr (assoc cand birds+annotations))))
 
 ;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
-
-(defun yeet/select-bird (bird)
-  "Select BIRD from birds"
-  (interactive (list (completing-read "Select bird: " birds)))
-  (parrot-set-parrot-type bird))
-
-(use-package! org-super-agenda :defer t)
 
 (use-package! dired-dragon
   :after dired
@@ -570,7 +549,10 @@
 
 (setq org-directory "~/org-notes/")
 (after! org
-  (setq org-agenda-files (list org-directory)
+  (setq org-agenda-files (mapcar
+                          (lambda (x)
+                            (concat org-directory x))
+                          '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
         org-hide-emphasis-markers t)
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
@@ -601,6 +583,35 @@
   (setq org-journal-enable-encryption t
         org-journal-encrypt-journal t))
 
+(use-package! org-super-agenda
+  :defer t
+  :config
+  (setq org-super-agenda-groups
+         '(;; Each group has an implicit boolean OR operator between its selectors.
+           (:name "Today"  ; Optionally specify section name
+            :time-grid t  ; Items that appear on the time grid
+            :todo "TODO")  ; Items that have this TODO keyword
+           (:name "Important"
+            ;; Single arguments given alon
+            :tag "bills"
+            :priority "A")
+           ;; Groups supply their own section names when none are given
+           (:todo "WAITING" :order 8)  ; Set order of this section
+           (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+            ;; Show this group at the end of the agenda (since it has the
+            ;; highest number). If you specified this group last, items
+            ;; with these todo keywords that e.g. have priority A would be
+            ;; displayed in that group instead, because items are grouped
+            ;; out in the order the groups are listed.
+            :order 9    )
+           (:priority<= "B"
+            ;; Show this section after "Today" and "Important", becaus  e
+            ;; their order is unspecified, defaulting to 0. Sections
+            ;; are displayed lowest-number-first.
+            :order 1))
+         org-agenda-start-day "0d"
+         org-agenda-span 1))
+
 (after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
   (when (featurep! :ui ligatures)
     (set-ligatures! 'go-mode
@@ -626,32 +637,6 @@
 (setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
 (setq +format-on-save-enabled-modes
       '(not web-mode))
-
-(defun yeet/scss-compile (watch)
-  "Get sass compiling my scss files."
-  (start-process-shell-command
-   "sass-compile" "*sass-compile-log*"
-   (concat "sass "
-           (if watch "--watch " " ")
-           (concat (projectile-acquire-root) "css/scss") ":"
-           (concat (projectile-acquire-root) "css" ))))
-
-(defun yeet/scss-build ()
-  "Build Scss files in directory."
-  (interactive)
-  (yeet/scss-compile nil)
-  (message "SCSS Compiled!"))
-
-(defun yeet/scss-start ()
-  "Watch Scss file in directory."
-  (interactive)
-  (yeet/scss-compile t))
-
-(defun yeet/scss-stop ()
-  "Kill any current scss processes"
-  (interactive)
-  (delete-process "sass-compile")
-  (message "Sass process killed"))
 
 (map! (:map 'scss-mode-map
        :localleader
@@ -713,23 +698,6 @@
 
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
-
-(defun yeet/elfeed-copy-link ()
-  "Copy current link to clipboard for easy sharing"
-  (interactive)
-  (let ((link (elfeed-entry-link elfeed-show-entry)))
-    (when link
-      (kill-new link)
-      (message "Copied %s to clipboard" link))))
-
-;; not actually useful as you can just use =title to filter by title
-(defun yeet/search-feeds-by-title (feed-title)
-  (interactive (list (completing-read "Select Feed" (let (feed-titles)
-                                                (dolist (feed elfeed-feeds feed-titles)
-                                                  (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
-                                                              (car feed))
-                                                        feed-titles))))))
-  (message "%s"  feed-title))
 
 (map! (:map elfeed-show-mode-map
        :n "gc" nil

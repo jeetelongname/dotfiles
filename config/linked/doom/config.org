@@ -31,11 +31,12 @@ Lets get this config started!
     - [[#vim][vim]]
     - [[#unit-tests][unit tests]]
     - [[#emacs-lisp-editions][Emacs lisp editions]]
-  - [[#package-edditons][Package edditons]]
+    - [[#brainfuck][Brainfuck]]
+    - [[#org-mode][org mode]]
+  - [[#package-editions][Package editions]]
     - [[#hugo-support][Hugo support]]
     - [[#modeline-fun][modeline fun]]
     - [[#evil-tutor][Evil tutor]]
-    - [[#org-super-agenda][org super agenda]]
     - [[#dired-drag-and-drop][dired drag and drop]]
     - [[#themes][themes]]
   - [[#outside-influence][Outside Influence]]
@@ -140,9 +141,10 @@ get stuck here
  :leader
  :desc "Enable Coloured Values""t c" #'rainbow-mode
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed)
-#+END_SRC
-
+ :desc "Open Elfeed""o l" #'elfeed
+ "cc" #'recompile
+ "cC" #'compile)
+#+end_src
 ** Hooky hooks
 hl-line and rainbow mode don't play all too well so if one is on the other
 should be off
@@ -163,19 +165,22 @@ Because this is a literate config I can't re evaluate the buffer using
 ~eval-buffer~ (bound to =SPC m e b=) so I reload the file after its tangled (usually
 on save)
 (=m e b= becomes =h r c=)
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle autoload.el
+;;;###autoload
 (defun yeet/reload ()
   "A simple cmd to make reloading my config easier"
   (interactive)
   (load! "config" doom-private-dir)
   (message "Reloaded!"))
-
-(map! :leader
-      "h r c" #'yeet/reload)
 #+END_SRC
 
+#+begin_src emacs-lisp
+(map! :leader
+      "h r c" #'yeet/reload)
+#+end_src
 some how this function is run on startup? not that I am complaining
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle autoload.el
+;;;###autoload
 (defun henlo ()
   "henlo."
   (interactive)
@@ -185,18 +190,20 @@ some how this function is run on startup? not that I am complaining
 #+END_SRC
 
 I don't have a problem ok I can =M-x stop= at any time
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle autoload.el
+;;;###autoload
 (defun stop ()
   (interactive)
-  (defvar name "*I can quit at any time*")
-  (switch-to-buffer (get-buffer-create name))
-  (insert "I can stop at any time\nI am in control"))
+  (let ((name "*I can quit at any time*"))
+    (switch-to-buffer (get-buffer-create name))
+    (insert "I can stop at any time\nI am in control")))
 #+end_src
 
 
 This snippet toggles between a vertical and horizontal window. Like most things
 I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWindowSplit][here]]
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle autoload.el
+;;;###autoload
 (defun toggle-window-split ()
   (interactive)
   (if (= (count-windows) 2)
@@ -222,6 +229,25 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 #+end_src
+
+#+begin_src emacs-lisp :tangle autoload.el
+(defmacro add-many-to-lists (list-sym &rest lists)
+     (dolist (elm (list ,@lists))
+       (push elm ,list-sym)))
+#+end_src
+
+#+begin_src emacs-lisp
+
+;; (let ((lst '(1 2)))
+;;   (add-many-to-lists
+;;    lst
+;;    '(1 2 3)
+;;    '(2 3 4)
+;;    '(4 5 6)))
+#+end_src
+
+#+RESULTS:
+
 ** Random modes
 *** TODO Type break mode
 Type break reminds you too take a break once a certain threshold of keys has
@@ -295,7 +321,7 @@ this adds a sybilance of a namespace in elisp
   (setq nameless-global-aliases '(("d" . "doom"))
         nameless-private-prefix t))
 #+end_src
-*** COMMENT Brainfuck
+*** Brainfuck
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! brainfuck-mode)
@@ -305,7 +331,30 @@ this adds a sybilance of a namespace in elisp
 (use-package! brainfuck-mode
   :mode "\\.bf$\\'")
 #+end_src
-** Package edditons
+*** org mode
+#+begin_src emacs-lisp :tangle packages.el
+(package! company-org-block)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! company-org-block
+  :after org
+  :config
+  (setq company-org-block-edit-style 'auto))
+
+(after! org
+  (set-company-backend! 'org-mode-hook '(company-org-block company-capf))
+
+  ;; (setq org-babel-load-languages
+  ;;       '((elisp   . t)
+  ;;         (python  . t)
+  ;;         (ruby    . t)
+  ;;         (haskell . t)
+  ;;         (scheme  . t)
+  ;;         (latex   . t)))
+  )
+#+end_src
+** Package editions
 *** Hugo support
 I blog! [[https://jeetelongname.github.io/blog][Sometimes.. When I can.. Not really]]
 This is mostly just for the time stamp but it does come in handy
@@ -353,43 +402,33 @@ This is mostly just for the time stamp but it does come in handy
 
 ;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
 
-;; (defun bird-annotations (cand)
-;;   "Takes a CANDidate (which is a bird) and returns a description of said bird"
-;;   (defvar birds+annotations (-zip birds '("default bird is best bird"
-;;                                           "they have got the spirit"
-;;                                           "EMACS BIRD EMACS BIRD"
-;;                                           "nananananan"
-;;                                           "you spin me right round right round like a record baby"
-;;                                           "science bitch!"
-;;                                           "He is just happy to be here")))
-;;    (cdr (assoc cand birds+annotations)))
+(defun bird-annotations (cand)
+  "Takes a CANDidate (which is a bird) and returns a description of said bird"
+  (let ((birds+annotations (-zip-pairs birds '("default bird is best bird"
+                                          "they have got the spirit"
+                                          "EMACS BIRD EMACS BIRD"
+                                          "nananananan"
+                                          "you spin me right round right round like a record baby"
+                                          "science bitch!"
+                                          "He is just happy to be here"))))
+    (cdr (assoc cand birds+annotations))))
 
 ;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
 
+#+end_src
+
+#+begin_src emacs-lisp :tangle autoload.el
+;;;###autoload
 (defun yeet/select-bird (bird)
   "Select BIRD from birds"
   (interactive (list (completing-read "Select bird: " birds)))
   (parrot-set-parrot-type bird))
 #+end_src
-
-#+RESULTS:
-: yeet/select-bird
-
 *** Evil tutor
 I wanted to see the differences with its vim counterparts (its a litle nicer)
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! evil-tutor)
 #+END_SRC
-*** TODO org super agenda
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-;; (package! origami)
-(package! org-super-agenda)
-#+END_SRC
-
-#+begin_src emacs-lisp
-(use-package! org-super-agenda :defer t)
-#+end_src
-
 *** dired drag and drop
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
 wellish
@@ -407,6 +446,9 @@ wellish
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
 #+end_src
+
+#+RESULTS:
+: t
 
 *** themes
 this was for a terminal  experiment that did not work
@@ -1148,7 +1190,10 @@ it
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/org-notes/")
 (after! org
-  (setq org-agenda-files (list org-directory)
+  (setq org-agenda-files (mapcar
+                          (lambda (x)
+                            (concat org-directory x))
+                          '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
         org-hide-emphasis-markers t)
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
@@ -1204,6 +1249,44 @@ I don't need people snooping into my thoughts
         org-journal-encrypt-journal t))
 #+end_src
 
+**** TODO org super agenda
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! origami)
+(package! org-super-agenda)
+#+END_SRC
+
+#+begin_src emacs-lisp
+(use-package! org-super-agenda
+  :defer t
+  :config
+  (setq org-super-agenda-groups
+         '(;; Each group has an implicit boolean OR operator between its selectors.
+           (:name "Today"  ; Optionally specify section name
+            :time-grid t  ; Items that appear on the time grid
+            :todo "TODO")  ; Items that have this TODO keyword
+           (:name "Important"
+            ;; Single arguments given alon
+            :tag "bills"
+            :priority "A")
+           ;; Groups supply their own section names when none are given
+           (:todo "WAITING" :order 8)  ; Set order of this section
+           (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+            ;; Show this group at the end of the agenda (since it has the
+            ;; highest number). If you specified this group last, items
+            ;; with these todo keywords that e.g. have priority A would be
+            ;; displayed in that group instead, because items are grouped
+            ;; out in the order the groups are listed.
+            :order 9    )
+           (:priority<= "B"
+            ;; Show this section after "Today" and "Important", becaus  e
+            ;; their order is unspecified, defaulting to 0. Sections
+            ;; are displayed lowest-number-first.
+            :order 1))
+         org-agenda-start-day "0d"
+         org-agenda-span 1))
+
+#+end_src
+
 *** DEPRECATED Go
 I have not written much go (at all)
 Go and lsp have not been behaving like they should. the file watchers have been
@@ -1252,7 +1335,7 @@ I changed it
 #+end_src
 
 Why leave emacs too compile sass?  TODO take an input and output dir
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle autoload.el
 (defun yeet/scss-compile (watch)
   "Get sass compiling my scss files."
   (start-process-shell-command
@@ -1262,23 +1345,29 @@ Why leave emacs too compile sass?  TODO take an input and output dir
            (concat (projectile-acquire-root) "css/scss") ":"
            (concat (projectile-acquire-root) "css" ))))
 
+;;;###autoload
 (defun yeet/scss-build ()
   "Build Scss files in directory."
   (interactive)
   (yeet/scss-compile nil)
   (message "SCSS Compiled!"))
 
+;;;###autoload
 (defun yeet/scss-start ()
   "Watch Scss file in directory."
   (interactive)
   (yeet/scss-compile t))
 
+;;;###autoload
 (defun yeet/scss-stop ()
   "Kill any current scss processes"
   (interactive)
   (delete-process "sass-compile")
   (message "Sass process killed"))
 
+#+end_src
+
+#+begin_src emacs-lisp
 (map! (:map 'scss-mode-map
        :localleader
        "b" nil
@@ -1287,7 +1376,6 @@ Why leave emacs too compile sass?  TODO take an input and output dir
         "c" #'yeet/scss-start
         "C" #'yeet/scss-stop)))
 #+end_src
-
 TODO caddy integration
 
 ** email
@@ -1382,7 +1470,8 @@ Elfeed is great. I just need more blogs
 
 There have been times where I wanted to share a link to an interesting blog or a
 comic that made me laugh. this just automated that process
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle autoload.el
+;;;###autoload
 (defun yeet/elfeed-copy-link ()
   "Copy current link to clipboard for easy sharing"
   (interactive)
@@ -1392,6 +1481,7 @@ comic that made me laugh. this just automated that process
       (message "Copied %s to clipboard" link))))
 
 ;; not actually useful as you can just use =title to filter by title
+;;;###autoload
 (defun yeet/search-feeds-by-title (feed-title)
   (interactive (list (completing-read "Select Feed" (let (feed-titles)
                                                 (dolist (feed elfeed-feeds feed-titles)
@@ -1400,6 +1490,9 @@ comic that made me laugh. this just automated that process
                                                         feed-titles))))))
   (message "%s"  feed-title))
 
+#+end_src
+
+#+begin_src emacs-lisp
 (map! (:map elfeed-show-mode-map
        :n "gc" nil
        :n "gc" #'yeet/elfeed-copy-link))

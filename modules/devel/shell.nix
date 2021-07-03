@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
+  home.packages = with pkgs; [ vivid ];
   programs.zsh = {
     enable = true;
 
