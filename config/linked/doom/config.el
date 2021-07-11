@@ -79,9 +79,6 @@
   (setq nameless-global-aliases '(("d" . "doom"))
         nameless-private-prefix t))
 
-(use-package! brainfuck-mode
-  :mode "\\.bf$\\'")
-
 (use-package! company-org-block
   :after org
   :config
@@ -629,7 +626,7 @@
 (setq lsp-python-ms-nupkg-channel "beta")
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 
-(setq +latex-viewers '(pdf-tools)) ;; don't be going to those filthy third party apps
+(setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)

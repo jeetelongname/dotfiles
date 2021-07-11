@@ -16,7 +16,7 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;(ivy +prescient)  ; a search engine for love and life
-       selectrum           ; a search engine worthy of my love and life
+      (vertico +icons)     ; verting co
 
 
        :ui
@@ -94,7 +94,7 @@
        (lookup
         +docset)           ; navigate your code and its documentation
        (lsp -eglot)
-       (magit -forge)      ; a git porcelain for Emacs
+       (magit +forge)      ; a git porcelain for Emacs
        make                ; run make tasks from Emacs
        pass                ; password manager for nerds
        pdf                 ; pdf enhancements

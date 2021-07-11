@@ -9,8 +9,6 @@
 
 (package! nameless)
 
-(package! brainfuck-mode)
-
 (package! company-org-block)
 
 (package! emacs-easy-hugo

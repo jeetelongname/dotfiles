@@ -31,7 +31,6 @@ Lets get this config started!
     - [[#vim][vim]]
     - [[#unit-tests][unit tests]]
     - [[#emacs-lisp-editions][Emacs lisp editions]]
-    - [[#brainfuck][Brainfuck]]
     - [[#org-mode][org mode]]
   - [[#package-editions][Package editions]]
     - [[#hugo-support][Hugo support]]
@@ -321,7 +320,7 @@ this adds a sybilance of a namespace in elisp
   (setq nameless-global-aliases '(("d" . "doom"))
         nameless-private-prefix t))
 #+end_src
-*** Brainfuck
+*** COMMENT Brainfuck
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! brainfuck-mode)
@@ -1135,6 +1134,9 @@ a default
   (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline-h))
   #+end_src
 
+  #+RESULTS:
+  | doom-set-pdf-modeline-h | doom--setq-evil-normal-state-cursor-for-pdf-view-mode-h | pdf-tools-enable-minor-modes | doom-modeline-set-pdf-modeline |
+
 *** magit
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! forge)
@@ -1317,7 +1319,7 @@ Python is great is it not 🐍
 
 *** LaTeX
 #+BEGIN_SRC emacs-lisp
-(setq +latex-viewers '(pdf-tools)) ;; don't be going to those filthy third party apps
+(setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
