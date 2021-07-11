@@ -4,7 +4,7 @@
   home.packages = with pkgs; [
     clang-manpages
     clang-tools
-    clang_12
+    # clang_12
     cmake
 
   ];

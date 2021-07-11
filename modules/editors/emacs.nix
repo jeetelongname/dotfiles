@@ -20,17 +20,25 @@ in {
     # package dev
     cask
 
+    # checkers/spell
+    (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
+
     # checkers/grammer
     languagetool
 
     # tools/format
     nixfmt
     shfmt
+
     # tools/editorconfig
     editorconfig-core-c
 
+    # lang/sh
+    shellcheck
+
     # so many
     sqlite
+    xclip
   ];
 
   programs.emacs = {
@@ -39,7 +47,8 @@ in {
   };
 
   xdg.configFile = {
-    "chemacs/profiles.el".source = ../../config/emacs/profiles.el;
+    "chemacs/profiles.el".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/emacs/profiles.el;
     # "doom".source = ../config/emacs/doom;
   };
 }

@@ -22,6 +22,7 @@
       };
 
     };
+
     includes = [{ path = "~/gitconfig.hidden"; }];
 
     userEmail = "jeetelongname@gmail.com";

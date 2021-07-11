@@ -7,13 +7,19 @@
     screenkey
     audacity
     gimp
+    zathura
   ];
 
   xdg.configFile = {
-    "castor/settings.toml".source = ../config/misc/castor.toml;
-    "libinput-gestures.conf".source = ../config/misc/libinput-gestures.conf;
-    "user-dirs.dirs".source = ../config/misc/user-dirs.dirs;
-    "user-dirs.locale".source = ../config/misc/user-dirs.locale;
-
+    "castor/settings.toml".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/misc/castor.toml;
+    "libinput-gestures.conf".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/misc/libinput-gestures.conf;
+    "user-dirs.dirs".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/misc/user-dirs.dirs;
+    "user-dirs.locale".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/misc/user-dirs.locale;
+    "systemd/user/homepage.service".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/misc/homepage.service;
   };
 }

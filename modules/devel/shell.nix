@@ -59,18 +59,26 @@
   };
 
   xdg.configFile = {
-    "zsh/extra.zsh".source = ../../config/shell/extra.zsh;
-    "zsh/functions.zsh".source = ../../config/shell/functions.zsh;
-    "zsh/keys.zsh".source = ../../config/shell/keys.zsh;
-    "aliases".source = ../../config/shell/aliases;
+    "zsh/extra.zsh".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/extra.zsh;
+    "zsh/functions.zsh".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/functions.zsh;
+    "zsh/keys.zsh".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/keys.zsh;
+    "aliases".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/aliases;
 
   };
 
   home.file = {
-    ".bashrc".source = ../../config/shell/bashrc;
-    ".xprofile".source = ../../config/shell/xprofile;
-    ".profile".source = ../../config/shell/profile;
-    ".zprofile".source = ../../config/shell/profile;
+    ".bashrc".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/bashrc;
+    ".xprofile".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/xprofile;
+    ".profile".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile;
+    ".zprofile".source =
+      config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile;
 
   };
 }

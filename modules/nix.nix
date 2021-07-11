@@ -5,5 +5,6 @@
     { allowUnfree = true; }
   '';
 
-  xdg.configFile."nix/nix.conf".source = ../config/nix/nix.conf;
+  xdg.configFile."nix/nix.conf".source =
+    config.lib.file.mkOutOfStoreSymlink ../config/nix/nix.conf;
 }

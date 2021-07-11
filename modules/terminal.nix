@@ -11,7 +11,8 @@
     ];
 
   xdg.configFile = {
-    "alacritty/alacritty.yml".source = ../config/terminal/alacritty.yml;
+    "alacritty/alacritty.yml".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/terminal/alacritty.yml;
     # "termite/config".source = ../config/terminal/termite.conf;
   };
 

@@ -19,8 +19,8 @@ User jeetelongname@gmail.com
 PassCmd "pass show email/gmail.com | grep -v login:"
 AuthMechs LOGIN
 SSLType IMAPS
-SSLVersions SSLv3
-CertificateFile /etc/ssl/certs/ca-certificates.crt
+SSLVersions TLSv1.1
+CertificateFile /etc/ssl/certs/ca-bundle.crt
 
 IMAPStore gmail-remote
 Account gmail

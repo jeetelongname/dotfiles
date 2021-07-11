@@ -32,10 +32,14 @@
   ];
 
   xdg.configFile = {
-    "topgrade.toml".source = ../config/cli/topgrade.toml;
-    "neofetch/config.conf".source = ../config/cli/neofetch.conf;
-    "htop/htoprc".source = ../config/cli/htoprc;
-    "pulsemixer.cfg".source = ../config/cli/pulsemixer.cfg;
+    "topgrade.toml".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/cli/topgrade.toml;
+    "neofetch/config.conf".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/cli/neofetch.conf;
+    "htop/htoprc".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/cli/htoprc;
+    "pulsemixer.cfg".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/cli/pulsemixer.cfg;
 
   };
 

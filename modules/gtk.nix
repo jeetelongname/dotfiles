@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 
+# https://joshtronic.com/2017/07/26/hide-title-bars-in-gnome-shell/ to disable titlebars
 {
   gtk = {
     enable = true;

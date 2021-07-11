@@ -4,7 +4,7 @@
   home.packages = with pkgs; [ mu ];
   programs = {
     msmtp.enable = true;
-    # mbsync.enable = true; # errors out on me :(
+    mbsync.enable = true; # errors out on me :(
   };
   home.file = {
     ".mbsyncrc".source =
