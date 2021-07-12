@@ -1,5 +1,6 @@
 -- the start of my nvim config I have not used lua or neovim before this day
 -- packer initalisation -- stolen from mjlbach
+
 local execute = vim.api.nvim_command
 local install_path = vim.fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
 
@@ -106,76 +107,70 @@ bo.expandtab = true
 -- leader
 
 g.mapleader = ' '
-local key = vim.api.nvim_set_keymap
-local opts = {noremap = true, silent = true}
+-- local opts = {noremap = true, silent = true}
 
 function cmdM(cmd)
    return '<cmd> ' .. cmd .. ' <cr>'
 end
 
+function map(mode, keybind, func, opts)
+
+   local key = vim.api.nvim_set_keymap
+   local opts = opts or {noremap = true, silent = true}
+
+   if mode == 'leader' then 
+      key('n', ('<leader>' .. keybind), cmdM(func), opts) 
+   else 
+      key(mode, keybind, cmdM(func), opts) 
+   end
+end
+--
 -- misc
-key('n', '<leader><space>',
-   cmdM("lua require('telescope.builtin').find_files()"),
-   opts)
+map('leader', '<space>', "lua require('telescope.builtin').find_files()")
 
 -- git
-key('n', '<leader>gg', -- open neogit (the second most sane way to interact with git)
-   cmdM('Neogit'),
-   opts)
+-- open neogit (the second most sane way to interact with git)
+map('leader', 'gg', 'Neogit')
 
 -- buffer
-key('n', '<leader>b', -- open a list of all open buffers
-   cmdM("lua require('telescope.builtin').buffers()"),
-   { noremap = true, silent = true})
+-- open a list of all open buffers
+map('leader', 'b', "lua require('telescope.builtin').buffers()")
 
 -- search
-key('n', '<leader>sf', -- search the currently open file
-   cmdM("lua require('telescope.builtin').current_buffer_fuzzy_find()"),
-   opts)
+-- search the currently open file
+map('leader', 'sf', "lua require('telescope.builtin').current_buffer_fuzzy_find()")
+
 -- window
-
-key('n', '<leader>wv', -- vertical split
-   cmdM("vsplit"),
-   opts)
-
-key('n', '<leader>ws', -- horizontal split
-   cmdM("split"),
-   opts)
-
-key('n', '<leader>wc', -- close a window
-   cmdM("quit"),
-   opts)
+-- vertical split
+map('leader', 'wv', "vsplit")
+ 
+-- horizontal split
+map('leader', 'ws', "split")
+ 
+-- close a window
+map('leader', 'wc', "quit")
 
 -- session
-key('n', '<leader>ql', -- load the last session
-   cmdM("SLoad!"),
-   opts)
+---- load the last session
+map('leader', 'ql', "SLoad!")
 
-key('n', '<leader>qs', -- save the current session
-   cmdM("SSave!"),
-   opts)
-
-key('n', '<leader>qh', -- open startify (home)
-   cmdM("Startify"),
-   opts)
+-- save the current session
+map('leader', 'qs', "SSave!")
+ 
+-- open startify (home)
+map('leader', 'qh', "Startify")
 
 -- open
-key('n', '<leader>o-',  -- open dired.. I mean Explore
-   cmdM("vertical Explore"),
-   opts)
+-- open dired.. I mean Explore
+map('leader', 'o-',  "Explore")
 
 -- code
-key('n', '<leader>cf', -- format the code
-   cmdM('Autoformat'),
-   opts)
+map('leader', 'cf', 'Autoformat')
 
-key('n', '<leader>hrc',
-   cmdM('luafile $XDG_CONFIG_HOME/nvim/init.lua'),
-   opts)
+map('leader', 'hrc', 'luafile $XDG_CONFIG_HOME/nvim/init.lua')
 
--- file 
-key('n', '<leader>fs',
-   cmdM('write'), opts)
+-- file
+map('leader', 'fs', 'write')
 
 -- snippets -----------------------------------------------------
 g.UltiSnipsExpandTrigger="<tab>" -- expand snippet on tab
@@ -243,8 +238,8 @@ o.termguicolors = true
 vim.cmd("colorscheme horizon")
 
 -- custom lightline
-g.lightline = { 
-   colorscheme = 'horizon'; 
+g.lightline = {
+   colorscheme = 'horizon';
    active = { left = { { 'mode', 'paste' },
    { 'gitbranch', 'readonly', 'filename', 'modified' }}};
 component_function = { gitbranch = 'fugitive#head', };}
@@ -268,7 +263,7 @@ g.header = {
 }
 
 vim.cmd([[
-let g:startify_custom_header = startify#center(g:header)
+   let g:startify_custom_header = startify#center(g:header)
 ]]) -- centers the startpage banner
 
 -- misc stuff
