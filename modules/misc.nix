@@ -8,6 +8,9 @@
     audacity
     gimp
     zathura
+    uwuify
+
+    lua
   ];
 
   xdg.configFile = {
