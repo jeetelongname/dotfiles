@@ -60,7 +60,7 @@ Lets get this config started!
   - [[#completion][completion]]
     - [[#company][company]]
     - [[#deprecated-ivy][DEPRECATED ivy]]
-    - [[#selectrum][selectrum]]
+    - [[#vertico][vertico]]
   - [[#editor][editor]]
     - [[#evil][evil]]
   - [[#ui][ui]]
@@ -762,7 +762,7 @@ this is to make prescient a little more intelligent
 (setq-default history-length 10000)
 (setq-default prescient-history-length 10000)
 #+END_SRC
-*** selectrum
+*** vertico
 affe adds async fuzzy finding. I need to work on it some more
 #+begin_src emacs-lisp :tangle packages.el
 (package! affe)
@@ -990,7 +990,7 @@ whats the fun in that?
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(objed-state misc-info persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process checker vcs "  " bar)))
+    '(objed-state misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process checker " " bar " ")))
 #+end_src
 
 I stole this from @tecosaur Its frankly a great addition (this is a theme
