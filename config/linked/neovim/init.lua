@@ -29,6 +29,11 @@ packer.startup(function()
    -- language support
    use 'sheerun/vim-polyglot' -- language support for the lazy
    use 'sherylynn/vim-elisp' -- what can I say except I enjoy living in sin
+   use {
+      'nvim-treesitter/nvim-treesitter',
+      run = ':TSUpdate'
+   }
+   use "nvim-treesitter/playground"
    -- lang server's
    use 'neovim/nvim-lspconfig' -- all the completion
    use 'hrsh7th/nvim-compe'  -- for actual completion
@@ -118,10 +123,10 @@ function map(mode, keybind, func, opts)
    local key = vim.api.nvim_set_keymap
    local opts = opts or {noremap = true, silent = true}
 
-   if mode == 'leader' then 
-      key('n', ('<leader>' .. keybind), cmdM(func), opts) 
-   else 
-      key(mode, keybind, cmdM(func), opts) 
+   if mode == 'leader' then
+      key('n', ('<leader>' .. keybind), cmdM(func), opts)
+   else
+      key(mode, keybind, cmdM(func), opts)
    end
 end
 --
@@ -143,10 +148,10 @@ map('leader', 'sf', "lua require('telescope.builtin').current_buffer_fuzzy_find(
 -- window
 -- vertical split
 map('leader', 'wv', "vsplit")
- 
+
 -- horizontal split
 map('leader', 'ws', "split")
- 
+
 -- close a window
 map('leader', 'wc', "quit")
 
@@ -156,7 +161,7 @@ map('leader', 'ql', "SLoad!")
 
 -- save the current session
 map('leader', 'qs', "SSave!")
- 
+
 -- open startify (home)
 map('leader', 'qh', "Startify")
 
@@ -233,6 +238,15 @@ lspconfig.pyls.setup{} -- python
 lspconfig.solargraph.setup{} -- ruby
 lspconfig.texlab.setup{} -- latex
 
+-- treesitter
+require'nvim-treesitter.configs'.setup {
+   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+   ignore_install = { "javascript" }, -- List of parsers to ignore installing
+   highlight = {
+      enable = true,              -- false will disable the whole extension
+      -- disable = { "c", "rust" },  -- list of language that will be disabled
+   },
+}
 -- ui -- basic ui settings ------------------------------------------------------------
 o.termguicolors = true
 vim.cmd("colorscheme horizon")
