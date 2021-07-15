@@ -17,9 +17,9 @@ vim.api.nvim_exec([[
 ]], false)
 
 
-local use = require('packer').use
 local packer = require('packer')
 packer.startup(function()
+   local use = packer.use
    -- package managment
    use {'wbthomason/packer.nvim', opt = true}  -- the package responsible for it all
 
@@ -234,7 +234,7 @@ local custom_attach = function(client)
 end
 
 -- lsp's I don't really do much
-lspconfig.pyls.setup{} -- python
+lspconfig.pylsp.setup{} -- python
 lspconfig.solargraph.setup{} -- ruby
 lspconfig.texlab.setup{} -- latex
 
