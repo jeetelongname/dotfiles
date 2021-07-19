@@ -9,6 +9,7 @@
     gimp
     zathura
     uwuify
+    filezilla
 
     lua
   ];

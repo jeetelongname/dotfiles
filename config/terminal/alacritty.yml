@@ -59,33 +59,37 @@ font:
     x: 0
     y: 0
 # fonts end here
+
+# Colors (Horizon Dark)
 colors:
-  # Default Colors (pencil dark)
+  # Primary colors
   primary:
-    background: "#212121"
-    foreground: "#f1f1f1"
+    background: '0x1c1e26'
+    foreground: '0xe0e0e0'
+
   # Normal colors
   normal:
-    black: "#212121"
-    red: "#c30771"
-    green: "#10a778"
-    yellow: "#a89c14"
-    blue: "#008ec4"
-    magenta: "#523c79"
-    cyan: "#20a5ba"
-    white: "#e0e0e0"
+    black: '0x16161c'
+    red: '0xe95678'
+    green: '0x29d398'
+    yellow: '0xfab795'
+    blue: '0x26bbd9'
+    magenta: '0xee64ac'
+    cyan: '0x59e1e3'
+    white: '0xd5d8da'
+
   # Bright colors
   bright:
-    black: "#212121"
-    red: "#fb007a"
-    green: "#5fd7af"
-    yellow: "#f3e430"
-    blue: "#20bbfc"
-    magenta: "#6855de"
-    cyan: "#4fb8cc"
-    white: "#f1f1f1"
+    black: '0x5b5858'
+    red: '0xec6a88'
+    green: '0x3fdaa4'
+    yellow: '0xfbc3a7'
+    blue: '0x3fc4de'
+    magenta: '0xf075b5'
+    cyan: '0x6be4e6'
+    white: '0xd5d8da'
 
-background_opacity: 0.97
+background_opacity: 1
 
 # Allow terminal applications to change Alacritty's window title.
 #dynamic_title: true

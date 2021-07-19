@@ -2,7 +2,8 @@
 
 {
   home.packages = with pkgs; [
-    # server
+    # servers
+    hugo
     caddy
 
     # clients
