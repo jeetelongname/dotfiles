@@ -20,6 +20,18 @@
     (insert "I can stop at any time\nI am in control")))
 
 ;;;###autoload
+(defun uwu (start end)
+  "Uwu the text between START and END."
+  (interactive "r")
+  (let ((str (buffer-substring-no-properties start end)))
+    (goto-char start)
+    (delete-region start end)
+    (insert (format "%s" (shell-command-to-string ;; I have to pipe the text into uwuify unless making a temp-file is more your style
+                          (concat "echo "
+                                  "'" str "'"
+                                  " | " (executable-find "uwuify")))))))
+
+;;;###autoload
 (defun toggle-window-split ()
   (interactive)
   (if (= (count-windows) 2)
@@ -44,10 +56,6 @@
           (set-window-buffer (next-window) next-win-buffer)
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
-
-(defmacro add-many-to-lists (list-sym &rest lists)
-     (dolist (elm (list ,@lists))
-       (push elm ,list-sym)))
 
 ;;;###autoload
 (defun yeet/select-bird (bird)

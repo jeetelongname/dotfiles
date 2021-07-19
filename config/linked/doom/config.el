@@ -46,13 +46,6 @@
 (map! :leader
       "h r c" #'yeet/reload)
 
-;; (let ((lst '(1 2)))
-;;   (add-many-to-lists
-;;    lst
-;;    '(1 2 3)
-;;    '(2 3 4)
-;;    '(4 5 6)))
-
 (use-package! type-break
   :defer
   :config
@@ -490,6 +483,14 @@
 ;; (map! :leader "od" nil
 ;;       :leader "od" #'dap-debug
 ;;       :leader "dt" #'dap-breakpoint-toggle)
+
+(custom-set-faces! `(eros-result-overlay-face
+                     :foreground ,(doom-color 'violet)))
+
+(after! eros
+  (setq eros-eval-result-prefix "->  "))
+
+(setq lsp-enable-file-watchers nil)
 
 (after! (pdf-tools doom-modeline)
   (doom-modeline-def-segment pdf-icon

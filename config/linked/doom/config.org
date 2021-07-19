@@ -73,6 +73,8 @@ Lets get this config started!
     - [[#workspaces][Workspaces]]
   - [[#tools][tools]]
     - [[#debugger][debugger]]
+    - [[#eval][eval]]
+    - [[#lsp][lsp]]
     - [[#pdf][pdf]]
     - [[#magit][magit]]
     - [[#tmux][tmux]]
@@ -198,6 +200,22 @@ I don't have a problem ok I can =M-x stop= at any time
     (insert "I can stop at any time\nI am in control")))
 #+end_src
 
+thewe awe days whewe i nyeed to quickwy u-uwu a wawge a-amount of text w-wight in emacs
+o-onwy wowks on an e-expwicit sewection a-at the moment
+
+#+begin_src emacs-lisp :tangle autoload.el
+;;;###autoload
+(defun uwu (start end)
+  "Uwu the text between START and END."
+  (interactive "r")
+  (let ((str (buffer-substring-no-properties start end)))
+    (goto-char start)
+    (delete-region start end)
+    (insert (format "%s" (shell-command-to-string ;; I have to pipe the text into uwuify unless making a temp-file is more your style
+                          (concat "echo "
+                                  "'" str "'"
+                                  " | " (executable-find "uwuify")))))))
+#+end_src
 
 This snippet toggles between a vertical and horizontal window. Like most things
 I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWindowSplit][here]]
@@ -229,7 +247,8 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
           (if this-win-2nd (other-window 1))))))
 #+end_src
 
-#+begin_src emacs-lisp :tangle autoload.el
+*** COMMENT macros
+#+begin_src emacs-lisp
 (defmacro add-many-to-lists (list-sym &rest lists)
      (dolist (elm (list ,@lists))
        (push elm ,list-sym)))
@@ -1091,6 +1110,22 @@ this does a thing
 ;;       :leader "od" #'dap-debug
 ;;       :leader "dt" #'dap-breakpoint-toggle)
 #+end_src
+*** eval
+I did not like the overlay as its greyed self so I picked something that would
+stick out a little more
+#+begin_src emacs-lisp
+(custom-set-faces! `(eros-result-overlay-face
+                     :foreground ,(doom-color 'violet)))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! eros
+  (setq eros-eval-result-prefix "->  "))
+#+end_src
+*** lsp
+#+begin_src emacs-lisp
+(setq lsp-enable-file-watchers nil)
+#+end_src
 *** pdf
 custom modeline for pdf files stolen from tecosaur and hopefully it will become
 a default
@@ -1221,7 +1256,6 @@ directly
   '(org-level-5 :foreground "#9093ae":weight normal)
   '(org-level-6 :foreground "#90dfe0":weight normal))
   #+END_SRC
-
 
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
