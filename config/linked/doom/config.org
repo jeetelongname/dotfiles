@@ -767,7 +767,7 @@ defer the idle delay for those real brain fart seconds
         company-show-numbers t))
 #+END_SRC
 *** DEPRECATED ivy
-Ivy is nice but selectrum is my friend
+Ivy is nice but +selectrum+ vertico is my friend
 #+BEGIN_SRC emacs-lisp
 (after! ivy
   (setq ivy-height 20
