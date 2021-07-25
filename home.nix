@@ -24,9 +24,9 @@
     modules/devel/shell.nix
     modules/editors/neovim.nix
     modules/languages/cc.nix # FIXME: clang is being a pain meaning I don't have clangd
-    modules/languages/guile.nix
     modules/languages/haskell.nix
     modules/languages/python.nix
+    modules/languages/racket.nix
     modules/languages/ruby.nix
     modules/chat.nix
     modules/cli.nix
