@@ -35,24 +35,25 @@ export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
 ## CDPATH "sending you ~ a little less" TODO
 
 export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib:/lib"
+export SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
 ## PATH Variables# set PATH so it includes users private bin if it existis
 if [ -d "$HOME/.local/bin/" ]; then
-	PATH="$HOME/.local/bin/:$PATH"
+    PATH="$HOME/.local/bin/:$PATH"
 fi
 if [ "$PAGER" = "most" ]; then
-	PAGER="less"
+    PAGER="less"
 fi
 
 export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 
 if [ -d $HOME/.nix-profile/etc/profile.d ]; then
-	for i in $HOME/.nix-profile/etc/profile.d/*.sh; do
-		if [ -r $i ]; then
-			. $i
-		fi
-	done
+    for i in $HOME/.nix-profile/etc/profile.d/*.sh; do
+        if [ -r $i ]; then
+            . $i
+        fi
+    done
 fi
 
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
-	. ~/.nix-profile/etc/profile.d/nix.sh
+    . ~/.nix-profile/etc/profile.d/nix.sh
 fi # added by Nix installer
