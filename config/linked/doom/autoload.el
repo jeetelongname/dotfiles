@@ -9,7 +9,8 @@
 (defun henlo ()
   "henlo."
   (interactive)
-  (message "\"henlo\""))
+  (message "henlo"))
+
 (henlo) ;; oh wait thats how
 
 ;;;###autoload

@@ -5,25 +5,14 @@
       doom-scratch-initial-major-mode 'lisp-interaction-mode
       auth-sources '("~/.authinfo.gpg")
       ispell-dictionary "en"
-      display-line-numbers-type 'relative
+      display-line-numbers-type 'relative ;; this is a reminder that I should try and use relative actions more
       browse-url-browser-function 'browse-url-firefox)
 
 (when (boundp 'native-comp-async-jobs-number)
-  (setq native-comp-async-jobs-number 6))
+  (setq native-comp-async-jobs-number 9))
 
 (setq-default header-line-format
-        (concat (propertize " " 'display '((space :align-to 0)))
-                " "))
-
-;; (let ((width  500)
-;;       (height 250)
-;;       (display-height (display-pixel-height))
-;;       (display-width  (display-pixel-width)))
-;;   (pushnew! initial-frame-alist
-;;             `(left . ,(- (/ display-width 2) (/ width 2)))
-;;             `(top . ,(- (/ display-height 2) (/ height 2)))
-;;             `(width text-pixels ,width)
-;;             `(height text-pixels ,height)))
+        (concat (propertize " " 'display '((space :align-to 0))) " "))
 
 (map!
  :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
@@ -31,6 +20,7 @@
  :desc "Enable Coloured Values""t c" #'rainbow-mode
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
  :desc "Open Elfeed""o l" #'elfeed
+ ;; I recompile more than I compile
  "cc" #'recompile
  "cC" #'compile)
 
@@ -45,6 +35,10 @@
 
 (map! :leader
       "h r c" #'yeet/reload)
+
+(map! :leader
+      "w C-t" nil
+      "w C-t" #'toggle-window-split)
 
 (use-package! type-break
   :defer
@@ -244,6 +238,19 @@
 ;; (use-package! org-sidebar
 ;;   :after org)
 
+(use-package! affe
+  :after orderless
+  :config
+  ;; Configure Orderless
+  (setq affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless-highlight-matches))
+
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (setq elfeed-goodies/powerline-default-separator 'bar)
+  (elfeed-goodies/setup))
+
 (after! company
   (setq company-idle-delay 6 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
         ;; company-minimum-prefix-length 2
@@ -258,13 +265,6 @@
 (setq-default history-length 10000)
 (setq-default prescient-history-length 10000)
 
-(use-package! affe
-  :after orderless
-  :config
-  ;; Configure Orderless
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless-highlight-matches))
-
 (defun yeet/face-annotator (cand)
     "Annotate faces with dummy text and face documentation"
     (when-let (sym (intern-soft cand))
@@ -274,8 +274,6 @@
         :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
 (after! marginalia
-  (add-to-list 'marginalia-prompt-categories '("\\<face\\>" . face))
-
   (add-to-list 'marginalia-annotator-registry
                '(face yeet/face-annotator marginalia-annotate-face builtin none)))
 
@@ -299,11 +297,9 @@
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 
-(if (daemonp)
-    (setq doom-theme 'doom-horizon)
-  (if (display-graphic-p)
-      (setq doom-theme 'doom-horizon)
-    (setq doom-theme 'horizon)))
+(setq doom-theme (if (or (daemonp) (display-graphic-p))
+                     'doom-horizon
+                   'horizon))
 
 (use-package! tao-theme ; messing around with tao
   :defer
@@ -436,24 +432,6 @@
   `(doom-modeline-buffer-modified   :foreground ,(doom-color 'orange))
   `(doom-modeline-buffer-major-mode :foreground ,(doom-color 'blue)))
 
-;; (set-popup-rule! ".+"
-;;   :side 'right
-;;   :width 90
-;;   :actions '+popup-display-buffer-stacked-side-window-fn
-;;   :quit t)
-;; (set-popup-rule! "COMMIT_EDITMSG"
-;;   :side 'top
-;;   :height 20)
-
-(when (featurep! :ui tabs)
-  (after! centaur-tabs
-    (setq centaur-tabs-style "box"
-          centaur-tabs-height 32
-          centaur-tabs-set-bar 'under
-          x-underline-at-descent-line t
-          centaur-tabs-close-button "×"
-          centaur-tabs-modified-marker "Ø")))
-
 (after! treemacs
   (setq +treemacs-git-mode 'extended
         treemacs-width 30))
@@ -472,17 +450,6 @@
 
 (map! :leader "TAB TAB" nil
       :leader "TAB TAB" #'+workspace/switch-to)
-
-;; (after! dap-mode
-;;   (setq dap-auto-configure-features '(sessions locals controls tooltip)
-;;         dap-python-executable "python3"))
-
-;; (add-hook 'dap-stopped-hook
-;;           (lambda () (call-interactively #'dap-hydra)))
-
-;; (map! :leader "od" nil
-;;       :leader "od" #'dap-debug
-;;       :leader "dt" #'dap-breakpoint-toggle)
 
 (custom-set-faces! `(eros-result-overlay-face
                      :foreground ,(doom-color 'violet)))
@@ -558,14 +525,14 @@
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
 
 (custom-set-faces!
-  '(org-date :foreground "#5b6268")
+  `(org-date :foreground ,(doom-color 'violet))
   '(org-document-title :height 1.75 :weight bold)
-  '(org-level-1 :foreground "#21bfc2" :height 1.3 :weight normal)
-  '(org-level-2 :foreground "#6c6f93" :height 1.1 :weight normal)
-  '(org-level-3 :foreground "#b877db" :height 1.0 :weight normal)
-  '(org-level-4 :foreground "#58cfd1":height 1.0 :weight normal)
-  '(org-level-5 :foreground "#9093ae":weight normal)
-  '(org-level-6 :foreground "#90dfe0":weight normal))
+  `(org-level-1 :foreground ,(doom-color 'blue) :height 1.3 :weight normal)
+  `(org-level-2 :foreground ,(doom-color 'grey) :height 1.1 :weight normal)
+  `(org-level-3 :foreground ,(doom-color 'violet) :height 1.0 :weight normal)
+  `(org-level-4 :foreground ,(doom-color 'cyan)   :height 1.0 :weight normal)
+  `(org-level-5 :foreground ,(doom-color 'grey) :weight normal)
+  `(org-level-6 :foreground ,(doom-color 'blue) :weight normal))
 
 (after! org-capture
   (setq org-capture-templates
@@ -624,7 +591,6 @@
   lsp-enable-file-watchers nil)
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
-(setq lsp-python-ms-nupkg-channel "beta")
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
@@ -680,16 +646,16 @@
  /Sent using my text editor/
  #+end_signature"))
 
-(custom-set-faces! '(mu4e-replied-face :foreground "#e95678" :inherit font-lock-builtin-face))
+(custom-set-faces! `(mu4e-replied-face :foreground ,(doom-color 'red) :inherit font-lock-builtin-face))
 
 (after! circe
-  (set-irc-server! "chat.freenode.net"
+  (set-irc-server! "irc.eu.libera.chat"
                    '(:tls t
                      :port 6697
-                     :nick "yeetaditya"
-                     :sasl-username ,"yeetadita"
+                     :nick "jeetelongname"
+                     :sasl-username ,"jeetelongname"
                      :sasl-password (+pass-get-secret "social/freenode")
-                     :channels ("#emacs"))))
+                     :channels ("#emacs" "#haskell"))))
 
 (after! elfeed
   (setq elfeed-search-filter "@3-week-ago")
@@ -700,12 +666,6 @@
 (map! (:map elfeed-show-mode-map
        :n "gc" nil
        :n "gc" #'yeet/elfeed-copy-link))
-
-(use-package! elfeed-goodies
-  :after elfeed
-  :config
-  (setq elfeed-goodies/powerline-default-separator 'bar)
-  (elfeed-goodies/setup))
 
 (after! emacs-everywhere
   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)

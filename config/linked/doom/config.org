@@ -1,4 +1,5 @@
 #+TITLE: My configuration
+#+date: 2021-7-19
 #+STARTUP: content
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
@@ -8,7 +9,7 @@ as I tolerate it!
 
 #+begin_quote
 Do note I don't try to explain how things work but I do try to explain my
-motivation behand my config. I was told this is not the norm but this is my
+motivation behind my config. I was told this is not the norm but this is my
 config and =C-h f= exists so you can go have a look
 #+end_quote
 
@@ -26,36 +27,35 @@ Lets get this config started!
   - [[#random-modes][Random modes]]
     - [[#type-break-mode][Type break mode]]
 - [[#packages][Packages]]
-  - [[#language-editions][Language editions]]
+  - [[#language-packages][Language packages]]
     - [[#caddy][Caddy]]
     - [[#vim][vim]]
     - [[#unit-tests][unit tests]]
     - [[#emacs-lisp-editions][Emacs lisp editions]]
     - [[#org-mode][org mode]]
-  - [[#package-editions][Package editions]]
-    - [[#hugo-support][Hugo support]]
-    - [[#modeline-fun][modeline fun]]
-    - [[#evil-tutor][Evil tutor]]
-    - [[#dired-drag-and-drop][dired drag and drop]]
-    - [[#themes][themes]]
-  - [[#outside-influence][Outside Influence]]
-    - [[#discord-rich-presence][discord rich presence]]
-    - [[#tldr-integration][tldr integration]]
-    - [[#atomic-chrome][atomic chrome]]
-    - [[#hacker-news][Hacker news]]
-    - [[#deprecated-emacs-application-framework][DEPRECATED emacs application framework]]
-    - [[#emacs-webkit][emacs webkit]]
-    - [[#pretty-code-shots][pretty code shots]]
-    - [[#matrix][matrix]]
-  - [[#fun][fun!]]
-    - [[#keycast][keycast]]
-    - [[#power-mode][Power mode]]
-    - [[#selectric-mode][selectric-mode]]
-    - [[#games][Games]]
+  - [[#hugo-support][Hugo support]]
+  - [[#modeline-fun][modeline fun]]
+  - [[#evil-tutor][Evil tutor]]
+  - [[#dired-drag-and-drop][dired drag and drop]]
+  - [[#themes][themes]]
+  - [[#discord-rich-presence][discord rich presence]]
+  - [[#tldr-integration][tldr integration]]
+  - [[#atomic-chrome][atomic chrome]]
+  - [[#hacker-news][Hacker news]]
+  - [[#deprecated-emacs-application-framework][DEPRECATED emacs application framework]]
+  - [[#emacs-webkit][emacs webkit]]
+  - [[#pretty-code-shots][pretty code shots]]
+  - [[#matrix][matrix]]
+  - [[#keycast][keycast]]
+  - [[#power-mode][Power mode]]
+  - [[#selectric-mode][selectric-mode]]
+  - [[#games][Games]]
   - [[#sidebars][Sidebars]]
     - [[#dired-sidebar][Dired sidebar]]
     - [[#ibuffer-sidebar][Ibuffer sidebar]]
     - [[#org-sidebar][Org Sidebar]]
+  - [[#affe][affe]]
+  - [[#elfeed][elfeed]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -67,16 +67,12 @@ Lets get this config started!
     - [[#doom][Doom]]
     - [[#doom-dashboard][Doom Dashboard]]
     - [[#modeline][Modeline]]
-    - [[#fixme-popup][FIXME Popup]]
-    - [[#deprecated-tabs][DEPRECATED Tabs]]
     - [[#treemacs][Treemacs]]
     - [[#workspaces][Workspaces]]
   - [[#tools][tools]]
-    - [[#debugger][debugger]]
     - [[#eval][eval]]
     - [[#lsp][lsp]]
     - [[#pdf][pdf]]
-    - [[#magit][magit]]
     - [[#tmux][tmux]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
@@ -106,33 +102,20 @@ This is the stuff that does not really belong in any module but is useful
       doom-scratch-initial-major-mode 'lisp-interaction-mode
       auth-sources '("~/.authinfo.gpg")
       ispell-dictionary "en"
-      display-line-numbers-type 'relative
+      display-line-numbers-type 'relative ;; this is a reminder that I should try and use relative actions more
       browse-url-browser-function 'browse-url-firefox)
 
 (when (boundp 'native-comp-async-jobs-number)
-  (setq native-comp-async-jobs-number 6))
+  (setq native-comp-async-jobs-number 9))
 #+END_SRC
 
 I like a little separation so I put an empty line at the top of my emacs
 instance (I may put something in it later)
 #+BEGIN_SRC emacs-lisp
 (setq-default header-line-format
-        (concat (propertize " " 'display '((space :align-to 0)))
-                " "))
+        (concat (propertize " " 'display '((space :align-to 0))) " "))
 #+END_SRC
 
-spawn emacs somewhat in the center of my screen
-#+BEGIN_SRC emacs-lisp
-;; (let ((width  500)
-;;       (height 250)
-;;       (display-height (display-pixel-height))
-;;       (display-width  (display-pixel-width)))
-;;   (pushnew! initial-frame-alist
-;;             `(left . ,(- (/ display-width 2) (/ width 2)))
-;;             `(top . ,(- (/ display-height 2) (/ height 2)))
-;;             `(width text-pixels ,width)
-;;             `(height text-pixels ,height)))
-#+END_SRC
 ** Keybinds
 These are my global keybinds they should not belong to any module. thus they
 get stuck here
@@ -143,6 +126,7 @@ get stuck here
  :desc "Enable Coloured Values""t c" #'rainbow-mode
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
  :desc "Open Elfeed""o l" #'elfeed
+ ;; I recompile more than I compile
  "cc" #'recompile
  "cC" #'compile)
 #+end_src
@@ -185,7 +169,8 @@ some how this function is run on startup? not that I am complaining
 (defun henlo ()
   "henlo."
   (interactive)
-  (message "\"henlo\""))
+  (message "henlo"))
+
 (henlo) ;; oh wait thats how
 
 #+END_SRC
@@ -201,7 +186,8 @@ I don't have a problem ok I can =M-x stop= at any time
 #+end_src
 
 thewe awe days whewe i nyeed to quickwy u-uwu a wawge a-amount of text w-wight in emacs
-o-onwy wowks on an e-expwicit sewection a-at the moment
+o-onwy wowks on an e-expwicit sewection a-at the moment [[https://github.com/Daniel-Liu-c0deb0t/uwu][this is the pwogwam i
+use]] tho it couwd wowk with any uwu pwogwam t-that accepts s-stdin
 
 #+begin_src emacs-lisp :tangle autoload.el
 ;;;###autoload
@@ -247,7 +233,12 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
           (if this-win-2nd (other-window 1))))))
 #+end_src
 
-*** COMMENT macros
+#+begin_src emacs-lisp
+(map! :leader
+      "w C-t" nil
+      "w C-t" #'toggle-window-split)
+#+end_src
+** COMMENT macros
 #+begin_src emacs-lisp
 (defmacro add-many-to-lists (list-sym &rest lists)
      (dolist (elm (list ,@lists))
@@ -286,7 +277,7 @@ subsequent configurations
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
-** Language editions
+** Language packages :lang:
 *** Caddy
 Caddy is a webserver with its own file format
 #+begin_src emacs-lisp :tangle packages.el
@@ -325,7 +316,7 @@ I was so ready to use it but it did not want too work with my ruby project :(
 (use-package! feature-mode
   :mode "\.feature$")
 #+end_src
-*** Emacs lisp editions
+*** Emacs lisp editions :emacsLisp:
 this adds a sybilance of a namespace in elisp
 #+begin_src emacs-lisp :tangle packages.el
 (package! nameless)
@@ -349,7 +340,7 @@ this adds a sybilance of a namespace in elisp
 (use-package! brainfuck-mode
   :mode "\\.bf$\\'")
 #+end_src
-*** org mode
+*** org mode :org:
 #+begin_src emacs-lisp :tangle packages.el
 (package! company-org-block)
 #+end_src
@@ -372,8 +363,7 @@ this adds a sybilance of a namespace in elisp
   ;;         (latex   . t)))
   )
 #+end_src
-** Package editions
-*** Hugo support
+** Hugo support
 I blog! [[https://jeetelongname.github.io/blog][Sometimes.. When I can.. Not really]]
 This is mostly just for the time stamp but it does come in handy
 #+BEGIN_SRC emacs-lisp :tangle packages.el
@@ -390,7 +380,7 @@ This is mostly just for the time stamp but it does come in handy
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 #+END_SRC
-*** modeline fun
+** modeline fun :modeline:
 /whats life without a little colour?/
 #+begin_src emacs-lisp :tangle packages.el
 (package! nyan-mode)
@@ -442,12 +432,12 @@ This is mostly just for the time stamp but it does come in handy
   (interactive (list (completing-read "Select bird: " birds)))
   (parrot-set-parrot-type bird))
 #+end_src
-*** Evil tutor
+** Evil tutor :evil:
 I wanted to see the differences with its vim counterparts (its a litle nicer)
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! evil-tutor)
 #+END_SRC
-*** dired drag and drop
+** dired drag and drop :dired:
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
 wellish
 #+begin_src emacs-lisp :tangle packages.el
@@ -465,10 +455,7 @@ wellish
          :n "i" #'dired-dragon-individual)))
 #+end_src
 
-#+RESULTS:
-: t
-
-*** themes
+** themes :doom:
 this was for a terminal  experiment that did not work
 #+begin_src emacs-lisp :tangle packages.el
 (package! horizon-theme)
@@ -476,8 +463,7 @@ this was for a terminal  experiment that did not work
 (package! tao-theme)
 #+end_src
 
-** Outside Influence
-*** discord rich presence
+** discord rich presence
 Why use emacs when you can't tell everyone your using emacs?
 I am now using elcord because.. peer pressure? I don't know but the config is
 nice
@@ -497,7 +483,7 @@ I use non daemon sessions for testing I would much rather it would not be used
 #+RESULTS:
 : t
 
-*** tldr integration
+** tldr integration
 Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
 a lot of useless information and .. no information. Now in emacs!
 #+BEGIN_SRC emacs-lisp :tangle packages.el
@@ -510,7 +496,7 @@ a lot of useless information and .. no information. Now in emacs!
   (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
   (setq tldr-enabled-categories '("common" "linux")))
 #+end_src
-*** atomic chrome
+** atomic chrome
 #+begin_src emacs-lisp :tangle packages.el
 (package! atomic-chrome)
 #+end_src
@@ -528,7 +514,7 @@ button on a keybind in my browser)
 
   (atomic-chrome-start-server))
 #+end_src
-*** Hacker news
+** Hacker news
 I am a hacker.. I like news (sometimes) Now in emacs!
 #+begin_src emacs-lisp :tangle packages.el
 (package! hackernews)
@@ -538,7 +524,7 @@ I am a hacker.. I like news (sometimes) Now in emacs!
 (use-package! hackernews :defer t)
 #+end_src
 
-*** DEPRECATED emacs application framework
+** DEPRECATED emacs application framework
 #+begin_quote
 EAF does not work with pgtk. due to reasons I don't understand [[https://github.com/manateelazycat/emacs-application-framework/issues/449][check out this
 issue for more info]]
@@ -586,7 +572,7 @@ pip as it can be buggy
 ;;     (setq eaf-evil-leader-key "spc")))
 #+end_src
 
-*** TODO emacs webkit
+** TODO emacs webkit
 because my emacs addiction is getting worse
 #+begin_src emacs-lisp :tangle packages.el
 (package! webkit :recipe
@@ -595,7 +581,7 @@ because my emacs addiction is getting worse
    :files (:defaults "*")))
 #+end_src
 
-*** pretty code shots
+** pretty code shots
 i missed the ability to make pretty code shots inside vscode now its come back to
 me through this package. its pretty cool and works well (it only does one thing)
 #+begin_src emacs-lisp :tangle packages.el
@@ -628,13 +614,12 @@ I just went back to firefox since eaf is deprecated in my config
 #+begin_src emacs-lisp
 ;; (use-package! screenshot :defer)
 #+end_src
-*** TODO matrix
+** TODO matrix
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
 #+end_src
 
-** fun!
-*** TODO keycast
+** TODO keycast
 I have stolen this from @tecosaur again..
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! keycast)
@@ -663,7 +648,7 @@ also bound it
                   :weight bold))
   (map! :leader "tk" #'keycast-mode))
 #+END_SRC
-*** Power mode
+** Power mode
 #+begin_src emacs-lisp :tangle packages.el
 (package! power-mode :recipe (:host github :repo "elizagamedev/power-mode.el"))
 #+end_src
@@ -674,14 +659,14 @@ also bound it
 
 #+end_src
 
-*** selectric-mode
+** selectric-mode
 I want to annoy people with a loud keyboard without having to carry around a
 loud keyboard
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! selectric-mode)
 #+END_SRC
-*** Games
-I want to make a module full of fun games and additins to eastr eggs. its there
+** Games
+I want to make a module full of fun games and addition's to easter eggs. its there
 to document what exists and just add a little more fun to the operating system
 we call home
 Some games I will probably add
@@ -693,7 +678,7 @@ Some games I will probably add
 ;;            :repo "sprang/emacs-2048"))
 
 #+end_src
-** Sidebars
+** Sidebars :sidebars:
 By virtue of these things I seem to have 3 different sidebars (4 if you include
 treemacs) that I have taken a liking to so they get there own sub genre
 
@@ -753,11 +738,40 @@ bit of work to be done
 ;;   :after org)
 #+end_src
 
+** affe :completion:vertico:
+affe adds async fuzzy finding. I need to work on it some more
+#+begin_src emacs-lisp :tangle packages.el
+(package! affe)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! affe
+  :after orderless
+  :config
+  ;; Configure Orderless
+  (setq affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless-highlight-matches))
+#+end_src
+** elfeed :app:rss:
+I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! elfeed-goodies)
+(package! elfeed-web)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (setq elfeed-goodies/powerline-default-separator 'bar)
+  (elfeed-goodies/setup))
+#+END_SRC
 * Modules
 These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
-** completion
-*** company
+(except the deprecated ones.)
+** completion :completion:
+*** company :company:
 Deals with completions something I like. I elect for manual completion but
 defer the idle delay for those real brain fart seconds
 #+BEGIN_SRC emacs-lisp
@@ -766,7 +780,7 @@ defer the idle delay for those real brain fart seconds
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 #+END_SRC
-*** DEPRECATED ivy
+*** DEPRECATED ivy :ivy:
 Ivy is nice but +selectrum+ vertico is my friend
 #+BEGIN_SRC emacs-lisp
 (after! ivy
@@ -781,20 +795,7 @@ this is to make prescient a little more intelligent
 (setq-default history-length 10000)
 (setq-default prescient-history-length 10000)
 #+END_SRC
-*** vertico
-affe adds async fuzzy finding. I need to work on it some more
-#+begin_src emacs-lisp :tangle packages.el
-(package! affe)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! affe
-  :after orderless
-  :config
-  ;; Configure Orderless
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless-highlight-matches))
-#+end_src
+*** vertico :vertico:
 **** marginalia
 These are some small tweaks to marginalia I will probably add more as its kind
 of fun!
@@ -808,22 +809,20 @@ of fun!
         :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
 (after! marginalia
-  (add-to-list 'marginalia-prompt-categories '("\\<face\\>" . face))
-
   (add-to-list 'marginalia-annotator-registry
                '(face yeet/face-annotator marginalia-annotate-face builtin none)))
 #+end_src
 
-** editor
-*** evil
+** editor :editor:
+*** evil :evil:
 Frankly I don't know why this is not default
 (it automatically switches to a split)
 #+BEGIN_SRC emacs-lisp
 (setq evil-split-window-below  t
       evil-vsplit-window-right t)
 #+END_SRC
-** ui
-*** Doom
+** ui :ui:
+*** Doom :doom:
 This is the main module to say what Doom looks like! I put all of my font
 settings and all of that fun stuff here
 
@@ -851,7 +850,7 @@ comments
          doom-flatwhite-brighter-modeline t))
 #+end_src
 
-I wanted my comments and keywords to be italics. I may need to change fonts..
+I wanted my comments and keywords to be italics.
 #+begin_src  emacs-lisp
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
@@ -863,11 +862,9 @@ this will load up 2 different themes one for the terminal and one for the gui.
 turns out that the emacs client works differently so this is not something that
 I can use... still works tho
 #+BEGIN_SRC emacs-lisp
-(if (daemonp)
-    (setq doom-theme 'doom-horizon)
-  (if (display-graphic-p)
-      (setq doom-theme 'doom-horizon)
-    (setq doom-theme 'horizon)))
+(setq doom-theme (if (or (daemonp) (display-graphic-p))
+                     'doom-horizon
+                   'horizon))
 
 (use-package! tao-theme ; messing around with tao
   :defer
@@ -877,15 +874,14 @@ I can use... still works tho
 ;; (setq doom-theme 'tao-yang)
 #+end_src
 
-*** Doom Dashboard
+*** Doom Dashboard :dashboard:
 
 my splash image can be found [[https://github.com/jeetelongname/doom-banners ][here]]
 #+BEGIN_SRC emacs-lisp
 (setq fancy-splash-image "~/code/other/doom-banners/splashes/emacs/emacs-gnu-logo.png")
 #+END_SRC
 
-I am starting to experimenting with adding stuff to the dashboard
-(its not working)
+A futile reminder to get back to work
 #+begin_src emacs-lisp
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))
@@ -984,7 +980,7 @@ I removed the helpful menu. I only use it for.. nothing. lets make it C L E A N
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 #+end_src
-*** Modeline
+*** Modeline :modeline:
 My modeline does a lot...
 #+BEGIN_SRC emacs-lisp
 (after! doom-modeline
@@ -1034,41 +1030,15 @@ the persp name was too dark for my liking
   `(doom-modeline-buffer-major-mode :foreground ,(doom-color 'blue)))
 #+end_src
 
-*** FIXME Popup
-this is my default pop up rule, all my popups are beaten into submission
-#+BEGIN_SRC emacs-lisp
-;; (set-popup-rule! ".+"
-;;   :side 'right
-;;   :width 90
-;;   :actions '+popup-display-buffer-stacked-side-window-fn
-;;   :quit t)
-;; (set-popup-rule! "COMMIT_EDITMSG"
-;;   :side 'top
-;;   :height 20)
-#+END_SRC
-
-*** DEPRECATED Tabs
-I don't use tabs so a lot of this is not really maintained...
-#+BEGIN_SRC emacs-lisp
-(when (featurep! :ui tabs)
-  (after! centaur-tabs
-    (setq centaur-tabs-style "box"
-          centaur-tabs-height 32
-          centaur-tabs-set-bar 'under
-          x-underline-at-descent-line t
-          centaur-tabs-close-button "×"
-          centaur-tabs-modified-marker "Ø")))
-#+END_SRC
-*** Treemacs
+*** Treemacs :treemacs:sidebars:
 this provides a vscode like sidebar. I actually use dired a lot more but I guess
-its still useful for presentation's
+its still useful for presentation's (dired sidebar is actually all I need)
 #+BEGIN_SRC emacs-lisp
 (after! treemacs
   (setq +treemacs-git-mode 'extended
         treemacs-width 30))
 #+END_SRC
-*** Workspaces
-
+*** Workspaces :workspaces:
 This hot little number shows the workspaces whenever =SPC TAB= is hit. it makes
  =SPC TAB TAB= redundant. I then remap it too something a little more useful
 
@@ -1089,28 +1059,8 @@ This hot little number shows the workspaces whenever =SPC TAB= is hit. it makes
 (map! :leader "TAB TAB" nil
       :leader "TAB TAB" #'+workspace/switch-to)
 #+end_src
-** tools
-*** TODO debugger
-dap support in doom is meh so I a have added a little more. tbh I don't really
-use a debugger (tho I should) its a little broken and go support seems to be
-out so I will have to fix that eventually
-#+begin_src emacs-lisp
-;; (after! dap-mode
-;;   (setq dap-auto-configure-features '(sessions locals controls tooltip)
-;;         dap-python-executable "python3"))
-#+end_src
-
-this does a thing
-#+begin_src emacs-lisp
-;; (add-hook 'dap-stopped-hook
-;;           (lambda () (call-interactively #'dap-hydra)))
-#+end_src
-#+begin_src emacs-lisp
-;; (map! :leader "od" nil
-;;       :leader "od" #'dap-debug
-;;       :leader "dt" #'dap-breakpoint-toggle)
-#+end_src
-*** eval
+** tools :tools:
+*** eval :eval:
 I did not like the overlay as its greyed self so I picked something that would
 stick out a little more
 #+begin_src emacs-lisp
@@ -1122,11 +1072,12 @@ stick out a little more
 (after! eros
   (setq eros-eval-result-prefix "->  "))
 #+end_src
-*** lsp
+*** lsp :lsp:
+file watchers crash emacs. I never know what they do anyway
 #+begin_src emacs-lisp
 (setq lsp-enable-file-watchers nil)
 #+end_src
-*** pdf
+*** pdf :pdf:
 custom modeline for pdf files stolen from tecosaur and hopefully it will become
 a default
 
@@ -1169,22 +1120,15 @@ a default
   (add-hook! 'pdf-view-mode-hook 'doom-set-pdf-modeline-h))
   #+end_src
 
-  #+RESULTS:
-  | doom-set-pdf-modeline-h | doom--setq-evil-normal-state-cursor-for-pdf-view-mode-h | pdf-tools-enable-minor-modes | doom-modeline-set-pdf-modeline |
-
-*** magit
-#+begin_src emacs-lisp :tangle packages.el
-(unpin! forge)
-#+end_src
-*** tmux
+*** tmux :tmux:
 Sadly I can't live in emacs entirely. I have to use an outside terminal
 this just makes it a little easier to orchestrate  my life in emacs
 #+begin_src emacs-lisp
 (after! evil
   (evil-ex-define-cmd "run" #'+tmux:run))
 #+end_src
-** emacs
-*** dired
+** emacs :emacs:
+*** dired :dired:
 If I open 2 instances of dired in two different locations then move/copy/symlink
 a file. dired will point the move to the other location
 #+begin_src emacs-lisp
@@ -1201,16 +1145,16 @@ Do note you can use =(= to toggle the information
 #+begin_src emacs-lisp
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
 #+end_src
-** term
-*** eshell
+** term :term:
+*** eshell :eshell:
 eshell is a repl like shell. it works like a shell but you can use elisp in line
 and it does not handle tui apps (like htop) usually defering to ~ansi-term~
 #+begin_src emacs-lisp
 (set-eshell-alias!
  "cls" "clear") ; this is what I use in my regular shell
 #+end_src
-** checkers
-*** spell
+** checkers :checkers:
+*** spell :spell:
 This readds the functionality of spelling on =return=
 #+begin_src emacs-lisp
 (map! (:after spell-fu
@@ -1220,8 +1164,8 @@ This readds the functionality of spelling on =return=
                #'+spell/correct))))
 #+end_src
 
-** lang
-*** TODO Org
+** lang :lang:
+*** TODO Org :org:
 Org mode. our favorite plain text markup format! these are my configurations for
 it
 #+BEGIN_SRC emacs-lisp
@@ -1240,21 +1184,21 @@ it
 
 As org has a lot of subheading's I wanted to tweak stuff ever so slightly thus
 here we are. do note that I have copied all of the foreground info over that
-becuse the ~inherit~ value (setter?, key? idk) did not exist untill I looked it
+because the ~inherit~ value (setter?, key? idk) did not exist until I looked it
 up it would have looked like ~..:inherit outline-x~ where x is the level of the
 heading you want to change. This just locks me into the horizon colour scheme
 but there are worst things. The better way would be to change ~outline-x~
 directly
 #+begin_src emacs-lisp
 (custom-set-faces!
-  '(org-date :foreground "#5b6268")
+  `(org-date :foreground ,(doom-color 'violet))
   '(org-document-title :height 1.75 :weight bold)
-  '(org-level-1 :foreground "#21bfc2" :height 1.3 :weight normal)
-  '(org-level-2 :foreground "#6c6f93" :height 1.1 :weight normal)
-  '(org-level-3 :foreground "#b877db" :height 1.0 :weight normal)
-  '(org-level-4 :foreground "#58cfd1":height 1.0 :weight normal)
-  '(org-level-5 :foreground "#9093ae":weight normal)
-  '(org-level-6 :foreground "#90dfe0":weight normal))
+  `(org-level-1 :foreground ,(doom-color 'blue) :height 1.3 :weight normal)
+  `(org-level-2 :foreground ,(doom-color 'grey) :height 1.1 :weight normal)
+  `(org-level-3 :foreground ,(doom-color 'violet) :height 1.0 :weight normal)
+  `(org-level-4 :foreground ,(doom-color 'cyan)   :height 1.0 :weight normal)
+  `(org-level-5 :foreground ,(doom-color 'grey) :weight normal)
+  `(org-level-6 :foreground ,(doom-color 'blue) :weight normal))
   #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1323,7 +1267,7 @@ I don't need people snooping into my thoughts
 
 #+end_src
 
-*** DEPRECATED Go
+*** DEPRECATED Go :go:
 I have not written much go (at all)
 Go and lsp have not been behaving like they should. the file watchers have been
 misbehaving and now they have been disabled for go mode. That fixes the issue
@@ -1343,15 +1287,14 @@ but means lsp will not watch files in the workspace (a small price to pay imo)
   lsp-enable-file-watchers nil)
 #+END_SRC
 
-*** Python
+*** Python :python:
 Python is great is it not 🐍
 #+BEGIN_SRC emacs-lisp
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
-(setq lsp-python-ms-nupkg-channel "beta")
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 #+END_SRC
 
-*** LaTeX
+*** LaTeX :LaTeX:
 #+BEGIN_SRC emacs-lisp
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 #+END_SRC
@@ -1361,7 +1304,7 @@ Python is great is it not 🐍
       :i "TAB" #'cdlatex-tab)
 #+END_SRC
 
-*** TODO Web
+*** Web :web:
 I just find the tidy formatter indent functionality annoying and redundant. so
 I changed it
 #+begin_src emacs-lisp
@@ -1414,8 +1357,8 @@ Why leave emacs too compile sass?  TODO take an input and output dir
 #+end_src
 TODO caddy integration
 
-** email
-*** mu4e
+** email :email:
+*** mu4e :mu4e:
 Whats better than email? email in emacs! mu4e has been fine for me so I dont
 think I will be switching to notmuch or what notj
 
@@ -1474,27 +1417,27 @@ toggle the kind of signature I want to use then
 
 I don't like the default replied face
 #+begin_src emacs-lisp
-(custom-set-faces! '(mu4e-replied-face :foreground "#e95678" :inherit font-lock-builtin-face))
+(custom-set-faces! `(mu4e-replied-face :foreground ,(doom-color 'red) :inherit font-lock-builtin-face))
 #+end_src
 
 I update my mail when I feel like it so this is a little redundant for me
 #+begin_src emacs-lisp :tangle packages.el
 (package! mu4e-alert :disable t)
 #+end_src
-** App
-*** irc
+** App :app:
+*** irc :irc:
 I have a beard and I do like wasting time...
 #+begin_src emacs-lisp
 (after! circe
-  (set-irc-server! "chat.freenode.net"
+  (set-irc-server! "irc.eu.libera.chat"
                    '(:tls t
                      :port 6697
-                     :nick "yeetaditya"
-                     :sasl-username ,"yeetadita"
+                     :nick "jeetelongname"
+                     :sasl-username ,"jeetelongname"
                      :sasl-password (+pass-get-secret "social/freenode")
-                     :channels ("#emacs"))))
+                     :channels ("#emacs" "#haskell"))))
 #+end_src
-*** rss
+*** rss :rss:
 Elfeed is great. I just need more blogs
 #+BEGIN_SRC emacs-lisp
 (after! elfeed
@@ -1534,21 +1477,7 @@ comic that made me laugh. this just automated that process
        :n "gc" #'yeet/elfeed-copy-link))
 #+end_src
 
-**** elfeed-goodies
-I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! elfeed-goodies)
-(package! elfeed-web)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package! elfeed-goodies
-  :after elfeed
-  :config
-  (setq elfeed-goodies/powerline-default-separator 'bar)
-  (elfeed-goodies/setup))
-#+END_SRC
-*** everywhere
+*** everywhere :everywhere:
 I prefer to write in the language that is going to be posted so markdown mode
 makes more sense to be the default (which is org)
 #+begin_src emacs-lisp

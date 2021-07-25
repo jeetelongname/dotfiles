@@ -76,12 +76,10 @@
 
 (package! affe)
 
-(unpin! forge)
+(package! elfeed-goodies)
+(package! elfeed-web)
 
 (package! origami)
 (package! org-super-agenda)
 
 (package! mu4e-alert :disable t)
-
-(package! elfeed-goodies)
-(package! elfeed-web)
