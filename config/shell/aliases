@@ -18,17 +18,15 @@ alias py='python3'
 alias ipy='ipython3'
 alias ap="sudo aptitude"
 alias e='devour emacsclient -c'
+alias xcclip='xclip -sel clip' # I like C-c and C-v
 ## git quick commands (because im lazy)
 alias ig="emacsclient -a -nw '' -e '(magit-status)' -c"
-alias gits='git status'
-alias gitls='exa -l -a --color=auto --git --git-ignore'
-alias gitp='git push'
-alias gitl='git log'
 ## not git
 alias caps='setxkbmap -option caps:swapescape'
 alias hm='home-manager'
 #a little bit of fun
 alias rr='curl -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
+# for when I type c;s
 alias c='echo your a dumbass && sleep 0.51'
 alias s='echo "its cls not c;s" && sleep 0.5 && clear'
 alias par='curl parrot.live'
