@@ -1,4 +1,5 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;; Don't edit this file directly unless you like your changes being wiped
 
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
@@ -156,26 +157,6 @@
 
 (use-package! hackernews :defer t)
 
-;; (unless pgtk-initialized
-;;   (use-package! eaf
-;;     :defer t
-;;     :init
-;;     (use-package! epc :defer t)
-;;     (use-package! ctable :defer t)
-;;     (use-package! deferred :defer t)
-;;     (use-package! s :defer t)
-;;     :config
-;;     (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-;;     (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
-;;     (setq eaf-browser-default-search-engine "duckduckgo")
-;;     (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
-
-;;   (use-package! eaf-evil ;; evil bindings in my browser
-;;     :after eaf
-;;     :config
-;;     (setq eaf-evil-leader-keymap doom-leader-map)
-;;     (setq eaf-evil-leader-key "spc")))
-
 (use-package! carbon-now-sh
   :config
   (defun yeet/carbon-use-eaf ()
@@ -235,8 +216,8 @@
   :commands ibuffer-sidebar-toggle-sidebar
   :defer t)
 
-;; (use-package! org-sidebar
-;;   :after org)
+(use-package! org-sidebar
+  :after org)
 
 (use-package! affe
   :after orderless
@@ -658,7 +639,7 @@
                      :channels ("#emacs" "#haskell"))))
 
 (after! elfeed
-  (setq elfeed-search-filter "@3-week-ago")
+  (setq elfeed-search-filter "@3-week-ago -fun") ;; /they post so much/
 
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
