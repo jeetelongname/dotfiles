@@ -23,7 +23,7 @@
       config.lib.file.mkOutOfStoreSymlink ../config/misc/user-dirs.dirs;
     "user-dirs.locale".source =
       config.lib.file.mkOutOfStoreSymlink ../config/misc/user-dirs.locale;
-    "systemd/user/homepage.service".source =
-      config.lib.file.mkOutOfStoreSymlink ../config/misc/homepage.service;
+    # "systemd/user/homepage.service".source =
+    #   config.lib.file.mkOutOfStoreSymlink ../config/misc/homepage.service;
   };
 }

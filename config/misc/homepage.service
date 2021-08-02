@@ -1,8 +1,9 @@
+#-*- mode: Conf -*-
 [Unit]
 Description=Home page server
 
 [Service]
-ExecStart=/usr/bin/python3 -m http.server 8080
+ExecStart=/usr/bin/python3 -m http.server 54321
 WorkingDirectory=/home/jeet/.dotfiles/config
 
 [Install]
