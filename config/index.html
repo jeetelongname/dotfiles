@@ -131,13 +131,14 @@
 
 
          const timeCaller = () => {
-             date = new Date
+             let date = new Date
+             let darkHours = ["19", "20", "21", "22", "23", "00", "01", "02", "03 ", "04"]
 
              h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
              m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
              s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
 
-             if (date.getHours() in [19 , 20 , 21 , 22 , 23 , 0 , 1 , 2 , 3 ,4]) {
+             if (darkHours.includes(String(h))) {
                  switchTheme(darkTheme)
                  dark = true
              } else {
