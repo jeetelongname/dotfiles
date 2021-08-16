@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     # servers
+    nodejs
     hugo
     caddy
 
@@ -16,11 +17,8 @@
 
     # formatters
     nodePackages.js-beautify
-    nodePackages.stylelint
 
     # language servers
-    nodePackages.vscode-html-languageserver-bin
-    nodePackages.vscode-css-languageserver-bin
     nodePackages.vscode-json-languageserver-bin
     nodePackages.typescript-language-server
   ];

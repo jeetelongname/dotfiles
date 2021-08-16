@@ -11,9 +11,6 @@ let
       ];
     };
 
-  emacspgtkgcc = (pkgs.emacsPackagesGen unstable.emacsPgtkGcc).emacsWithPackages
-    (epkgs: [ epkgs.vterm ]);
-
 in {
 
   home.packages = with pkgs; [
@@ -43,7 +40,8 @@ in {
 
   programs.emacs = {
     enable = true;
-    package = emacspgtkgcc; # accidentally compiling emacs:
+    package = unstable.emacsPgtkGcc;
+    extraPackages = epkgs: [ epkgs.vterm ];
   };
 
   xdg.configFile = {

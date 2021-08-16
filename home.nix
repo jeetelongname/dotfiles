@@ -23,7 +23,8 @@
     modules/devel/latex.nix
     modules/devel/shell.nix
     modules/editors/neovim.nix
-    modules/languages/cc.nix # FIXME: clang is being a pain meaning I don't have clangd
+    modules/editors/emacs.nix
+    modules/languages/cc.nix
     modules/languages/haskell.nix
     modules/languages/python.nix
     modules/languages/racket.nix
@@ -36,7 +37,6 @@
     modules/nix.nix
     modules/terminal.nix
     modules/web.nix
-    modules/editors/emacs.nix
   ];
 
   # autoOptimiseStore = true;
