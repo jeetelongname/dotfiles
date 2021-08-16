@@ -71,7 +71,8 @@
    (concat "sass "
            (if watch "--watch " " ")
            (concat (projectile-acquire-root) "css/scss") ":"
-           (concat (projectile-acquire-root) "css" ))))
+           (concat (projectile-acquire-root) "css" )
+           " --no-color")))
 
 ;;;###autoload
 (defun yeet/scss-build ()

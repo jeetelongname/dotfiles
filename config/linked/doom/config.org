@@ -54,7 +54,6 @@ Lets get this config started!
     - [[#dired-sidebar][Dired sidebar]]
     - [[#ibuffer-sidebar][Ibuffer sidebar]]
     - [[#org-sidebar][Org Sidebar]]
-  - [[#affe][affe]]
   - [[#elfeed][elfeed]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
@@ -83,6 +82,7 @@ Lets get this config started!
   - [[#lang][lang]]
     - [[#org][Org]]
     - [[#deprecated-go][DEPRECATED Go]]
+    - [[#haskell][haskell]]
     - [[#python][Python]]
     - [[#latex][LaTeX]]
     - [[#web][Web]]
@@ -737,7 +737,7 @@ bit of work to be done
   :after org)
 #+end_src
 
-** affe :completion:vertico:
+** COMMENT affe :completion:vertico:
 affe adds async fuzzy finding. I need to work on it some more
 #+begin_src emacs-lisp :tangle packages.el
 (package! affe)
@@ -1286,6 +1286,13 @@ but means lsp will not watch files in the workspace (a small price to pay imo)
   lsp-enable-file-watchers nil)
 #+END_SRC
 
+*** haskell
+I have been pretty lazy when it comes to learning haskell
+#+begin_src emacs-lisp
+(after! lsp-haskell
+  (setq lsp-haskell-formatting-provider "ormolu"))
+#+end_src
+
 *** Python :python:
 Python is great is it not 🐍
 #+BEGIN_SRC emacs-lisp
@@ -1321,7 +1328,8 @@ Why leave emacs too compile sass?  TODO take an input and output dir
    (concat "sass "
            (if watch "--watch " " ")
            (concat (projectile-acquire-root) "css/scss") ":"
-           (concat (projectile-acquire-root) "css" ))))
+           (concat (projectile-acquire-root) "css" )
+           " --no-color")))
 
 ;;;###autoload
 (defun yeet/scss-build ()
@@ -1345,6 +1353,9 @@ Why leave emacs too compile sass?  TODO take an input and output dir
 
 #+end_src
 
+#+RESULTS:
+: yeet/scss-stop
+
 #+begin_src emacs-lisp
 (map! (:map 'scss-mode-map
        :localleader
@@ -1355,7 +1366,16 @@ Why leave emacs too compile sass?  TODO take an input and output dir
         "C" #'yeet/scss-stop)))
 #+end_src
 TODO caddy integration
-
+**** css
+I use sass and sadly the css-ls does not really work that well. I am going to
+stick with the lsp less life for css
+#+begin_src emacs-lisp
+(remove-hook! '(css-mode-local-vars-hook
+                scss-mode-local-vars-hook
+                sass-mode-local-vars-hook
+                less-css-mode-local-vars-hook)
+  #'lsp!)
+#+end_src
 ** email :email:
 *** mu4e :mu4e:
 Whats better than email? email in emacs! mu4e has been fine for me so I dont

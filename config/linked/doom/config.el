@@ -219,13 +219,6 @@
 (use-package! org-sidebar
   :after org)
 
-(use-package! affe
-  :after orderless
-  :config
-  ;; Configure Orderless
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless-highlight-matches))
-
 (use-package! elfeed-goodies
   :after elfeed
   :config
@@ -571,6 +564,9 @@
 (setq-hook! 'go-mode-hook
   lsp-enable-file-watchers nil)
 
+(after! lsp-haskell
+  (setq lsp-haskell-formatting-provider "ormolu"))
+
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 
@@ -590,6 +586,12 @@
         "b" #'yeet/scss-build
         "c" #'yeet/scss-start
         "C" #'yeet/scss-stop)))
+
+(remove-hook! '(css-mode-local-vars-hook
+                scss-mode-local-vars-hook
+                sass-mode-local-vars-hook
+                less-css-mode-local-vars-hook)
+  #'lsp!)
 
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
