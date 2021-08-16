@@ -17,3 +17,6 @@
                                        "cannot open shared object file")
                                (error-message-string e))
          (signal (car e) (cadr e)))))))
+
+(use-package! evil-textobj-treesitter
+ :after tree-sitter)

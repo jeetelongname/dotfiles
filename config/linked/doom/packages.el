@@ -64,8 +64,6 @@
 
 (package! org-sidebar)
 
-(package! affe)
-
 (package! elfeed-goodies)
 (package! elfeed-web)
 

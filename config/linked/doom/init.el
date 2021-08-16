@@ -40,7 +40,7 @@
        ;;ligatures         ; ligatures and symbols to make your code pretty again
        ;; tabs             ; a tab bar for Emacs
        (treemacs +lsp)     ; a project drawer, like neotree but cooler
-       ;;treesitter        ; FIXME syntax and parsing, sitting in a tree...
+       treesitter        ; FIXME syntax and parsing, sitting in a tree...
        ;;unicode           ; extended unicode support for various languages
        vc-gutter           ; vcs diff in the fringe
        vi-tilde-fringe     ; fringe tildes to mark beyond EOB
