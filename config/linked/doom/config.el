@@ -587,10 +587,8 @@
         "c" #'yeet/scss-start
         "C" #'yeet/scss-stop)))
 
-(remove-hook! '(css-mode-local-vars-hook
-                scss-mode-local-vars-hook
-                sass-mode-local-vars-hook
-                less-css-mode-local-vars-hook)
+(remove-hook! '(scss-mode-local-vars-hook
+                sass-mode-local-vars-hook)
   #'lsp!)
 
 (set-email-account! "gmail"
