@@ -29,10 +29,10 @@ class Car {
 
 
 // conditional
-if (true) {
+if (x == 1) {
   doStuff();
 } else {
-  doOtherStuff();
+  x = new Car.age(2020)
 }
 
 
