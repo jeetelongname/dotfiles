@@ -1,0 +1,9 @@
+#!/bin/sh
+
+xclip -h 2>/dev/null || exit 1 # check if xclip is installed
+
+selected=$(cat ~/.local/share/ascii-emoji | fzfmenu | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}')
+
+[ "$selected" = "" ] && exit 5
+
+echo "$selected" | xclip -sel clip
