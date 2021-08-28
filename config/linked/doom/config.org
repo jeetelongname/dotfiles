@@ -73,6 +73,7 @@ Lets get this config started!
     - [[#lsp][lsp]]
     - [[#pdf][pdf]]
     - [[#tmux][tmux]]
+    - [[#tree-sitter][tree-sitter]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
   - [[#term][term]]
@@ -1125,6 +1126,12 @@ this just makes it a little easier to orchestrate  my life in emacs
 #+begin_src emacs-lisp
 (after! evil
   (evil-ex-define-cmd "run" #'+tmux:run))
+#+end_src
+*** tree-sitter :treesitter:
+#+begin_src emacs-lisp
+(after! tree-sitter
+  (pushnew! tree-sitter-major-mode-language-alist
+            '(scss-mode . css)))
 #+end_src
 ** emacs :emacs:
 *** dired :dired:

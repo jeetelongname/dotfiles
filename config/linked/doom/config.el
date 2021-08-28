@@ -473,6 +473,10 @@
 (after! evil
   (evil-ex-define-cmd "run" #'+tmux:run))
 
+(after! tree-sitter
+  (pushnew! tree-sitter-major-mode-language-alist
+            '(scss-mode . css)))
+
 (setq dired-dwim-target t)
 
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
