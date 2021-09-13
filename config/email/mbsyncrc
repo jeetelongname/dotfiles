@@ -33,21 +33,9 @@ Inbox ~/.mail/gmail/Inbox
 
 # IMAPAccount school
 
-# Host outlook.office365.com
-# port 993
-# User "jeetaditya.chatterj@utcreading.org.uk"
-# PassCmd "pass show email/school\ email"
-# AuthMechs LOGIN
-# SSLType IMAPS
-# SSLVersions SSLv3
-# CertificateFile /etc/ssl/certs/ca-certificates.crt
-
-# IMAPStore outlook-remote
-# Account outlook
-
 Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
+Far :gmail-remote:
+Near :gmail-local:
 # Exclude everything under the internal [Gmail] folder, except the interesting folders
 # Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
 # Or include everything
