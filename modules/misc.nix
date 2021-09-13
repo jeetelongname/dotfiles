@@ -12,6 +12,8 @@
     filezilla
 
     lua
+    lua52Packages.luarocks
+    fennel
   ];
 
   xdg.configFile = {
