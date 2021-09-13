@@ -36,6 +36,7 @@
     modules/misc.nix
     modules/nix.nix
     modules/terminal.nix
+    modules/tilingwm.nix
     modules/web.nix
   ];
 
