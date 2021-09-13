@@ -1,3 +1,6 @@
+(package! engrave-faces
+  :recipe (:host github :repo "tecosaur/engrave-faces"))
+
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
@@ -66,6 +69,11 @@
 
 (package! elfeed-goodies)
 (package! elfeed-web)
+
+(package! hideshow-tree-sitter
+  :recipe
+  (:local-repo "~/code/emacs/tree-sitter-code-folding"
+   :files ( "*.el" "queries")))
 
 (package! origami)
 (package! org-super-agenda)

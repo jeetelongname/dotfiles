@@ -24,7 +24,9 @@ Lets get this config started!
 - [[#rudimentary-configuration][Rudimentary configuration]]
   - [[#keybinds][Keybinds]]
   - [[#hooky-hooks][Hooky hooks]]
+  - [[#cli-commands][cli commands]]
   - [[#funky-functions][funky functions]]
+  - [[#macros][macros]]
   - [[#random-modes][Random modes]]
     - [[#type-break-mode][Type break mode]]
 - [[#packages][Packages]]
@@ -113,8 +115,8 @@ This is the stuff that does not really belong in any module but is useful
 I like a little separation so I put an empty line at the top of my emacs
 instance (I may put something in it later)
 #+BEGIN_SRC emacs-lisp
-(setq-default header-line-format
-        (concat (propertize " " 'display '((space :align-to 0))) " "))
+;; (setq-default header-line-format
+;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
 #+END_SRC
 
 ** Keybinds
@@ -146,6 +148,124 @@ should be off
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 #+END_SRC
+** cli commands
+this adds a repl command so that I can run emacs lisp in a terminal repl. is it
+useful? no is it cool? yes. is it mine? no thanks @tecosaur!
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! engrave-faces
+  :recipe (:host github :repo "tecosaur/engrave-faces"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle cli.el
+(defcli! repl ((in-rlwrap-p ["--rl"] "For internal use only."))
+  "Start an elisp REPL."
+  (when (and (executable-find "rlwrap") (not in-rlwrap-p))
+    ;; For autocomplete
+    (setq autocomplete-file "/tmp/doom_elisp_repl_symbols")
+    (unless (file-exists-p autocomplete-file)
+      (princ "\e[0;33mInitialising autocomplete list...\e[0m\n")
+      (with-temp-buffer
+        (cl-do-all-symbols (s)
+          (let ((sym (symbol-name s)))
+            (when (string-match-p "\\`[[:ascii:]][[:ascii:]]+\\'" sym)
+              (insert sym "\n"))))
+        (write-region nil nil autocomplete-file)))
+    (princ "\e[F")
+    (throw 'exit (list "rlwrap" "-f" autocomplete-file
+                       (concat doom-emacs-dir "bin/doom") "repl" "--rl")))
+
+  (doom-initialize-packages)
+  (require 'engrave-faces-ansi)
+  (setq engrave-faces-ansi-color-mode '3-bit)
+
+  ;; For some reason (require 'parent-mode) doesn't work :(
+  (defun parent-mode-list (mode)
+    "Return a list of MODE and all its parent modes.
+
+The returned list starts with the parent-most mode and ends with MODE."
+    (let ((result ()))
+      (parent-mode--worker mode (lambda (mode)
+                                  (push mode result)))
+      result))
+  (defun parent-mode--worker (mode func)
+    "For MODE and all its parent modes, call FUNC.
+
+FUNC is first called for MODE, then for its parent, then for the parent's
+parent, and so on.
+
+MODE shall be a symbol referring to a function.
+FUNC shall be a function taking one argument."
+    (funcall func mode)
+    (when (not (fboundp mode))
+      (signal 'void-function (list mode)))
+    (let ((modefunc (symbol-function mode)))
+      (if (symbolp modefunc)
+          ;; Hande all the modes that use (defalias 'foo-parent-mode (stuff)) as
+          ;; their parent
+          (parent-mode--worker modefunc func)
+        (let ((parentmode (get mode 'derived-mode-parent)))
+          (when parentmode
+            (parent-mode--worker parentmode func))))))
+  (provide 'parent-mode)
+  ;; Some extra highlighting (needs parent-mode)
+  (require 'rainbow-delimiters)
+  (require 'highlight-quoted)
+  (require 'highlight-numbers)
+  (setq emacs-lisp-mode-hook '(rainbow-delimiters-mode
+                               highlight-quoted-mode
+                               highlight-numbers-mode))
+  ;; Pretty print
+  (defun pp-sexp (sexp)
+    (with-temp-buffer
+      (cl-prettyprint sexp)
+      (emacs-lisp-mode)
+      (font-lock-ensure)
+      (with-current-buffer (engrave-faces-ansi-buffer)
+        (princ (string-trim (buffer-string)))
+        (kill-buffer (current-buffer)))))
+  ;; Now do the REPL
+  (defvar accumulated-input nil)
+  (while t
+    (condition-case nil
+        (let ((input (if accumulated-input
+                         (read-string "\e[31m .\e[0m  ")
+                       (read-string "\e[31mλ:\e[0m "))))
+          (setq input (concat accumulated-input
+                              (when accumulated-input "\n")
+                              input))
+          (cond
+           ((string-match-p "\\`[[:space:]]*\\'" input)
+            nil)
+           ((string= input "exit")
+            (princ "\n") (kill-emacs 0))
+           (t
+            (condition-case err
+                (let ((input-sexp (car (read-from-string input))))
+                  (setq accumulated-input nil)
+                  (pp-sexp (eval input-sexp))
+                  (princ "\n"))
+              ;; Caused when sexp in unbalanced
+              (end-of-file (setq accumulated-input input))
+              (error
+               (cl-destructuring-bind (backtrace &optional type data . _)
+                   (cons (doom-cli--backtrace) err)
+                 (princ (concat "\e[1;31mERROR:\e[0m " (get type 'error-message)))
+                 (princ "\n       ")
+                 (pp-sexp (cons type data))
+                 (when backtrace
+                   (print! (bold "Backtrace:"))
+                   (print-group!
+                    (dolist (frame (seq-take backtrace 10))
+                      (print!
+                       "%0.74s" (replace-regexp-in-string
+                                 "[\n\r]" "\\\\n"
+                                 (format "%S" frame))))))
+                 (princ "\n")))))))
+      ;; C-d causes an end-of-file error
+      (end-of-file (princ "exit\n") (kill-emacs 0)))
+    (unless accumulated-input (princ "\n"))))
+#+end_src
 ** funky functions
 Because this is a literate config I can't re evaluate the buffer using
 ~eval-buffer~ (bound to =SPC m e b=) so I reload the file after its tangled (usually
@@ -239,24 +359,28 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
       "w C-t" nil
       "w C-t" #'toggle-window-split)
 #+end_src
-** COMMENT macros
+** macros
+this is a small helper macro that wraps ~with-temp-buffer~ with an implicit call
+to ~buffer-string~ I did this as I see this patter all over the place and
 #+begin_src emacs-lisp
-(defmacro add-many-to-lists (list-sym &rest lists)
-     (dolist (elm (list ,@lists))
-       (push elm ,list-sym)))
+(defmacro with-temp-buffer! (&rest BODY)
+  "A wrapper around `with-temp-buffer' that implicitly calls `buffer-string'
+This is in an effort to streamline a very common usecase"
+  (declare (indent 0) (debug t))
+  `(with-temp-buffer
+    (progn ,@BODY)
+    (buffer-string)))
 #+end_src
 
-#+begin_src emacs-lisp
-
-;; (let ((lst '(1 2)))
-;;   (add-many-to-lists
-;;    lst
-;;    '(1 2 3)
-;;    '(2 3 4)
-;;    '(4 5 6)))
+#+begin_src emacs-lisp :tangle no
+(message "%s" (with-temp-buffer!
+                (insert "hello\n")
+                (insert "world!")))
 #+end_src
 
 #+RESULTS:
+: hello
+: world!
 
 ** Random modes
 *** TODO Type break mode
@@ -332,7 +456,7 @@ this adds a sybilance of a namespace in elisp
         nameless-private-prefix t))
 #+end_src
 *** COMMENT Brainfuck
-
+me get errors need fix
 #+begin_src emacs-lisp :tangle packages.el
 (package! brainfuck-mode)
 #+end_src
@@ -478,11 +602,12 @@ I use non daemon sessions for testing I would much rather it would not be used
 (when (daemonp)
   (use-package! elcord
     :config
-    (quiet! (elcord-mode +1)))) ;; elcord is a noisy bitch. I don't need all of the output
-#+end_src
+    (setq elcord-quiet t
+          elcord-use-major-mode-as-main-icon t
+          elcord-show-small-icon nil)
 
-#+RESULTS:
-: t
+    (elcord-mode +1))) ;; elcord is a noisy bitch. I don't need all of the output
+#+end_src
 
 ** tldr integration
 Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
@@ -1128,10 +1253,22 @@ this just makes it a little easier to orchestrate  my life in emacs
   (evil-ex-define-cmd "run" #'+tmux:run))
 #+end_src
 *** tree-sitter :treesitter:
+current hack in testing
 #+begin_src emacs-lisp
 (after! tree-sitter
   (pushnew! tree-sitter-major-mode-language-alist
             '(scss-mode . css)))
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! hideshow-tree-sitter
+  :recipe
+  (:local-repo "~/code/emacs/tree-sitter-code-folding"
+   :files ( "*.el" "queries")))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package hideshow-tree-sitter :after tree-sitter)
 #+end_src
 ** emacs :emacs:
 *** dired :dired:
@@ -1150,6 +1287,12 @@ Do note you can use =(= to toggle the information
 
 #+begin_src emacs-lisp
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
+#+end_src
+
+work on something to put in the dired header line
+#+begin_src emacs-lisp
+;; (setq-hook! 'dired-mode-hook
+;;   header-line-format (concat (propertize )))
 #+end_src
 ** term :term:
 *** eshell :eshell:

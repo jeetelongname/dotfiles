@@ -12,8 +12,8 @@
 (when (boundp 'native-comp-async-jobs-number)
   (setq native-comp-async-jobs-number 9))
 
-(setq-default header-line-format
-        (concat (propertize " " 'display '((space :align-to 0))) " "))
+;; (setq-default header-line-format
+;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
 
 (map!
  :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
@@ -40,6 +40,14 @@
 (map! :leader
       "w C-t" nil
       "w C-t" #'toggle-window-split)
+
+(defmacro with-temp-buffer! (&rest BODY)
+  "A wrapper around `with-temp-buffer' that implicitly calls `buffer-string'
+This is in an effort to streamline a very common usecase"
+  (declare (indent 0) (debug t))
+  `(with-temp-buffer
+    (progn ,@BODY)
+    (buffer-string)))
 
 (use-package! type-break
   :defer
@@ -137,7 +145,11 @@
 (when (daemonp)
   (use-package! elcord
     :config
-    (quiet! (elcord-mode +1)))) ;; elcord is a noisy bitch. I don't need all of the output
+    (setq elcord-quiet t
+          elcord-use-major-mode-as-main-icon t
+          elcord-show-small-icon nil)
+
+    (elcord-mode +1))) ;; elcord is a noisy bitch. I don't need all of the output
 
 (use-package! tldr
   :config
@@ -477,9 +489,14 @@
   (pushnew! tree-sitter-major-mode-language-alist
             '(scss-mode . css)))
 
+(use-package hideshow-tree-sitter :after tree-sitter)
+
 (setq dired-dwim-target t)
 
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
+
+;; (setq-hook! 'dired-mode-hook
+;;   header-line-format (concat (propertize )))
 
 (set-eshell-alias!
  "cls" "clear") ; this is what I use in my regular shell
