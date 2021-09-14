@@ -20,7 +20,7 @@ alias ap="sudo aptitude"
 alias e='devour emacsclient -c'
 alias xcclip='xclip -sel clip' # I like C-c and C-v
 ## git quick commands (because im lazy)
-alias ig="emacsclient -a -nw '' -e '(magit-status)' -c"
+alias ig="emacsclient -a -nw '' -e \"magit\" -c" # FIXME
 ## not git
 alias caps='setxkbmap -option caps:swapescape'
 alias hm='home-manager'
