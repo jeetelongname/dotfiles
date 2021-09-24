@@ -522,47 +522,7 @@ This is in an effort to streamline a very common usecase"
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
-#+end_srca
 
-As org has a lot of subheading's I wanted to tweak stuff ever so slightly thus
-here we are. do note that I have copied all of the foreground info over that
-because the ~inherit~ value (setter?, key? idk) did not exist until I looked it
-up it would have looked like ~..:inherit outline-x~ where x is the level of the
-heading you want to change. This just locks me into the horizon colour scheme
-but there are worst things. The better way would be to change ~outline-x~
-directly
-#+begin_src emacs-lisp
-(custom-set-faces!
-  `(org-date :foreground ,(doom-color 'violet))
-  '(org-document-title :height 1.75 :weight bold)
-  `(org-level-1 :foreground ,(doom-color 'blue) :height 1.3 :weight normal)
-  `(org-level-2 :foreground ,(doom-color 'grey) :height 1.1 :weight normal)
-  `(org-level-3 :foreground ,(doom-color 'violet) :height 1.0 :weight normal)
-  `(org-level-4 :foreground ,(doom-color 'cyan)   :height 1.0 :weight normal)
-  `(org-level-5 :foreground ,(doom-color 'grey) :weight normal)
-  `(org-level-6 :foreground ,(doom-color 'blue) :weight normal))
-
-(setq org-directory "~/org-notes/")
-(after! org
-  (setq org-agenda-files (mapcar
-                          (lambda (x)
-                            (concat org-directory x))
-                          '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
-        org-hide-emphasis-markers t) ;; this makes org feel more like a proper document and less like a mark up format
-
-  (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
-    (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
-          org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
-#+end_srca
-
-As org has a lot of subheading's I wanted to tweak stuff ever so slightly thus
-here we are. do note that I have copied all of the foreground info over that
-because the ~inherit~ value (setter?, key? idk) did not exist until I looked it
-up it would have looked like ~..:inherit outline-x~ where x is the level of the
-heading you want to change. This just locks me into the horizon colour scheme
-but there are worst things. The better way would be to change ~outline-x~
-directly
-#+begin_src emacs-lisp
 (custom-set-faces!
   `(org-date :foreground ,(doom-color 'violet))
   '(org-document-title :height 1.75 :weight bold)

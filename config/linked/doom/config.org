@@ -1337,7 +1337,7 @@ it
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
-#+end_srca
+#+end_src
 
 As org has a lot of subheading's I wanted to tweak stuff ever so slightly thus
 here we are. do note that I have copied all of the foreground info over that
