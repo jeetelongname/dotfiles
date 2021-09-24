@@ -112,8 +112,10 @@ This is the stuff that does not really belong in any module but is useful
   (setq native-comp-async-jobs-number 9))
 #+END_SRC
 
-I like a little separation so I put an empty line at the top of my emacs
-instance (I may put something in it later)
++I like a little separation so I put an empty line at the top of my emacs+
++instance (I may put something in it later)+
+
+I never did as i moved to multi monitors
 #+BEGIN_SRC emacs-lisp
 ;; (setq-default header-line-format
 ;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
@@ -442,7 +444,10 @@ I was so ready to use it but it did not want too work with my ruby project :(
   :mode "\.feature$")
 #+end_src
 *** Emacs lisp editions :emacsLisp:
-this adds a sybilance of a namespace in elisp
+in the ever growing emacs ecosystem the amount of prefixes you can use are
+shrinking and as microcosoms open up and connections need to be reenforced it
+all leads us down the slippery slope of ever lengthening prefixes. this godly
+package shortens them to make reading code a lot easier
 #+begin_src emacs-lisp :tangle packages.el
 (package! nameless)
 #+end_src
@@ -450,10 +455,14 @@ this adds a sybilance of a namespace in elisp
 #+begin_src emacs-lisp
 (use-package! nameless
   :defer t
+  :hook (emacs-lisp-mode-hook . nameless-mode)
   :config
-  (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   (setq nameless-global-aliases '(("d" . "doom"))
-        nameless-private-prefix t))
+        nameless-private-prefix t)
+
+  (map! :map emacs-lisp-mode-map
+        :localleader
+        "i" #'nameless-insert-name))
 #+end_src
 *** COMMENT Brainfuck
 me get errors need fix
@@ -937,7 +946,6 @@ of fun!
   (add-to-list 'marginalia-annotator-registry
                '(face yeet/face-annotator marginalia-annotate-face builtin none)))
 #+end_src
-
 ** editor :editor:
 *** evil :evil:
 Frankly I don't know why this is not default
@@ -1324,12 +1332,12 @@ it
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
-        org-hide-emphasis-markers t)
+        org-hide-emphasis-markers t) ;; this makes org feel more like a proper document and less like a mark up format
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
-#+end_src
+#+end_srca
 
 As org has a lot of subheading's I wanted to tweak stuff ever so slightly thus
 here we are. do note that I have copied all of the foreground info over that
