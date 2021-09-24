@@ -10,6 +10,7 @@
     zathura
     uwuify
     filezilla
+    xournalpp
 
     lua
     lua52Packages.luarocks

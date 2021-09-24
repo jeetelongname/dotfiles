@@ -6,5 +6,8 @@
     clang-tools
     cmake
 
+    valgrind
+    strace
+
   ];
 }
