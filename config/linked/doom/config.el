@@ -12,6 +12,8 @@
 (when (boundp 'native-comp-async-jobs-number)
   (setq native-comp-async-jobs-number 9))
 
+(setq pgtk-wait-for-event-timeout 0.001)
+
 ;; (setq-default header-line-format
 ;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
 
@@ -234,12 +236,6 @@ This is in an effort to streamline a very common usecase"
 
 (use-package! org-sidebar
   :after org)
-
-(use-package! elfeed-goodies
-  :after elfeed
-  :config
-  (setq elfeed-goodies/powerline-default-separator 'bar)
-  (elfeed-goodies/setup))
 
 (after! company
   (setq company-idle-delay 6 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
@@ -495,6 +491,8 @@ This is in an effort to streamline a very common usecase"
 
 (use-package hideshow-tree-sitter :after tree-sitter)
 
+(custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
+
 (setq dired-dwim-target t)
 
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
@@ -517,7 +515,7 @@ This is in an effort to streamline a very common usecase"
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
-        org-hide-emphasis-markers t) ;; this makes org feel more like a proper document and less like a mark up format
+        org-hide-emphasis-markers nil) ;; this makes org feel more like a proper document and less like a mark up format
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
@@ -624,6 +622,7 @@ This is in an effort to streamline a very common usecase"
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
 
 (after! mu4e
+  (setq mu4e-mu-version "1.6.6")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 
@@ -669,9 +668,12 @@ This is in an effort to streamline a very common usecase"
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
 
-(map! (:map elfeed-show-mode-map
-       :n "gc" nil
-       :n "gc" #'yeet/elfeed-copy-link))
+(after! elfeed-goodies
+  (setq elfeed-goodies/powerline-default-separator 'bar))
+
+;; (map! (:map elfeed-show-mode-map
+;;        :n "gc" nil
+;;        :n "gc" #'yeet/elfeed-copy-link))
 
 (after! emacs-everywhere
   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)

@@ -67,7 +67,6 @@
 
 (package! org-sidebar)
 
-(package! elfeed-goodies)
 (package! elfeed-web)
 
 (package! hideshow-tree-sitter
@@ -79,3 +78,5 @@
 (package! org-super-agenda)
 
 (package! mu4e-alert :disable t)
+
+;; (package! elfeed-goodies :disable t)

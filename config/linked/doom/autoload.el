@@ -94,21 +94,15 @@
   (delete-process "sass-compile")
   (message "Sass process killed"))
 
-;;;###autoload
-(defun yeet/elfeed-copy-link ()
-  "Copy current link to clipboard for easy sharing"
-  (interactive)
-  (let ((link (elfeed-entry-link elfeed-show-entry)))
-    (when link
-      (kill-new link)
-      (message "Copied %s to clipboard" link))))
-
 ;; not actually useful as you can just use =title to filter by title
 ;;;###autoload
 (defun yeet/search-feeds-by-title (feed-title)
-  (interactive (list (completing-read "Select Feed" (let (feed-titles)
-                                                (dolist (feed elfeed-feeds feed-titles)
-                                                  (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
-                                                              (car feed))
-                                                        feed-titles))))))
+  (interactive
+   (list (completing-read
+          "Select Feed"
+          (let (feed-titles)
+            (dolist (feed elfeed-feeds feed-titles)
+              (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
+                          (car feed))
+                    feed-titles))))))
   (message "%s"  feed-title))

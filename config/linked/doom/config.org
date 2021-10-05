@@ -91,7 +91,7 @@ Lets get this config started!
     - [[#web][Web]]
   - [[#email][email]]
     - [[#mu4e][mu4e]]
-  - [[#app][App]]
+  - [[#app][app]]
     - [[#irc][irc]]
     - [[#rss][rss]]
     - [[#everywhere][everywhere]]
@@ -110,6 +110,8 @@ This is the stuff that does not really belong in any module but is useful
 
 (when (boundp 'native-comp-async-jobs-number)
   (setq native-comp-async-jobs-number 9))
+
+(setq pgtk-wait-for-event-timeout 0.001)
 #+END_SRC
 
 +I like a little separation so I put an empty line at the top of my emacs+
@@ -887,18 +889,8 @@ affe adds async fuzzy finding. I need to work on it some more
         affe-highlight-function #'orderless-highlight-matches))
 #+end_src
 ** elfeed :app:rss:
-I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
 #+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! elfeed-goodies)
 (package! elfeed-web)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package! elfeed-goodies
-  :after elfeed
-  :config
-  (setq elfeed-goodies/powerline-default-separator 'bar)
-  (elfeed-goodies/setup))
 #+END_SRC
 * Modules
 These are the configurations for the doom specific modules. some are big like
@@ -1278,6 +1270,13 @@ current hack in testing
 #+begin_src emacs-lisp
 (use-package hideshow-tree-sitter :after tree-sitter)
 #+end_src
+
+The yellow used for function calls was the same colour used for strings (in
+~doom-horizon~) so I changed it to blue for parity with function definition
+#+begin_src emacs-lisp
+(custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
+#+end_src
+
 ** emacs :emacs:
 *** dired :dired:
 If I open 2 instances of dired in two different locations then move/copy/symlink
@@ -1332,7 +1331,7 @@ it
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
-        org-hide-emphasis-markers t) ;; this makes org feel more like a proper document and less like a mark up format
+        org-hide-emphasis-markers nil) ;; this makes org feel more like a proper document and less like a mark up format
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
@@ -1550,6 +1549,7 @@ on the folders remember that they come from what you set in your [[https://githu
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
+  (setq mu4e-mu-version "1.6.6")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 #+END_SRC
@@ -1599,7 +1599,7 @@ I update my mail when I feel like it so this is a little redundant for me
 #+begin_src emacs-lisp :tangle packages.el
 (package! mu4e-alert :disable t)
 #+end_src
-** App :app:
+** app :app:
 *** irc :irc:
 I have a beard and I do like wasting time...
 #+begin_src emacs-lisp
@@ -1614,42 +1614,42 @@ I have a beard and I do like wasting time...
 #+end_src
 *** rss :rss:
 Elfeed is great. I just need more blogs
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! elfeed-goodies :disable t)
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (after! elfeed
   (setq elfeed-search-filter "@3-week-ago -fun") ;; /they post so much/
 
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
+
+(after! elfeed-goodies
+  (setq elfeed-goodies/powerline-default-separator 'bar))
 #+END_SRC
 
 There have been times where I wanted to share a link to an interesting blog or a
 comic that made me laugh. this just automated that process
 #+begin_src emacs-lisp :tangle autoload.el
-;;;###autoload
-(defun yeet/elfeed-copy-link ()
-  "Copy current link to clipboard for easy sharing"
-  (interactive)
-  (let ((link (elfeed-entry-link elfeed-show-entry)))
-    (when link
-      (kill-new link)
-      (message "Copied %s to clipboard" link))))
-
 ;; not actually useful as you can just use =title to filter by title
 ;;;###autoload
 (defun yeet/search-feeds-by-title (feed-title)
-  (interactive (list (completing-read "Select Feed" (let (feed-titles)
-                                                (dolist (feed elfeed-feeds feed-titles)
-                                                  (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
-                                                              (car feed))
-                                                        feed-titles))))))
+  (interactive
+   (list (completing-read
+          "Select Feed"
+          (let (feed-titles)
+            (dolist (feed elfeed-feeds feed-titles)
+              (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
+                          (car feed))
+                    feed-titles))))))
   (message "%s"  feed-title))
-
 #+end_src
 
 #+begin_src emacs-lisp
-(map! (:map elfeed-show-mode-map
-       :n "gc" nil
-       :n "gc" #'yeet/elfeed-copy-link))
+;; (map! (:map elfeed-show-mode-map
+;;        :n "gc" nil
+;;        :n "gc" #'yeet/elfeed-copy-link))
 #+end_src
 
 *** everywhere :everywhere:
