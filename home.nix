@@ -31,6 +31,7 @@
     modules/languages/ruby.nix
     modules/chat.nix
     modules/cli.nix
+    modules/direnv.nix
     modules/email.nix
     modules/fun.nix
     modules/misc.nix
