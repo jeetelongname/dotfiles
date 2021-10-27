@@ -238,6 +238,82 @@ This is in an effort to streamline a very common usecase"
 (use-package! org-sidebar
   :after org)
 
+(use-package! calibredb
+  :defer t
+  :config
+  (setq calibredb-root-dir "~/Documents/reading/calibre"
+        calibredb-db-dir   (expand-file-name "metadata.db" calibredb-root-dir))
+  ;; the view for all books
+  (map! :map calibredb-search-mode-map
+        :ne "?" #'calibredb-entry-dispatch
+        :ne "." #'calibredb-open-dired
+        :ne "e" #'calibredb-export-dispatch
+        :ne "m" #'calibredb-mark-at-point
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "q" #'calibredb-entry-quit
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "u" #'calibredb-unmark-at-point
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne [tab] #'calibredb-toggle-view-at-point)
+  ;; the veiw for one book
+  (map! :map calibredb-show-mode-map
+        :ne [mouse-3] #'calibredb-search-mouse
+        :ne "RET" #'calibredb-find-file
+        :ne "?" #'calibredb-dispatch
+        :ne "a" #'calibredb-add
+        :ne "A" #'calibredb-add-dir
+        :ne "c" #'calibredb-clone
+        :ne "d" #'calibredb-remove
+        :ne "D" #'calibredb-remove-marked-items
+        :ne "j" #'calibredb-next-entry
+        :ne "k" #'calibredb-previous-entry
+        :ne "l" #'calibredb-virtual-library-list
+        :ne "L" #'calibredb-library-list
+        :ne "n" #'calibredb-virtual-library-next
+        :ne "N" #'calibredb-library-next
+        :ne "p" #'calibredb-virtual-library-previous
+        :ne "P" #'calibredb-library-previous
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "S" #'calibredb-switch-library
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "v" #'calibredb-view
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "." #'calibredb-open-dired
+        :ne "b" #'calibredb-catalog-bib-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "r" #'calibredb-search-refresh-and-clear-filter
+        :ne "R" #'calibredb-search-clear-filter
+        :ne "q" #'calibredb-search-quit
+        :ne "m" #'calibredb-mark-and-forward
+        :ne "f" #'calibredb-toggle-favorite-at-point
+        :ne "x" #'calibredb-toggle-archive-at-point
+        :ne "h" #'calibredb-toggle-highlight-at-point
+        :ne "u" #'calibredb-unmark-and-forward
+        :ne "i" #'calibredb-edit-annotation
+        :ne "DEL" #'calibredb-unmark-and-backward
+        :ne [backtab] #'calibredb-toggle-view
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-n" #'calibredb-show-next-entry
+        :ne "M-p" #'calibredb-show-previous-entry
+        :ne "/" #'calibredb-search-live-filter
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments))
+
+(use-package! nov
+  :mode ("\\.epub\\'" . nov-mode)
+  :config
+  (add-hook! 'nov-mode-hook #'olivetti-mode ;; Centers the text making it easier to read
+             (defun yeet/nov-setup ()
+               nil))) ;; stub for the moment
+
+(after! olivetti
+  (setq olivetti-body-width 125))
+
 (after! company
   (setq company-idle-delay 6 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
         ;; company-minimum-prefix-length 2
@@ -272,7 +348,9 @@ This is in an effort to streamline a very common usecase"
        doom-big-font
        (font-spec :family "Iosevka" :size 25)
        doom-variable-pitch-font
-       (font-spec :family "Input" :size 17))
+       (font-spec :family "Merriweather" :size 17))
+
+(delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 
 (after! doom-themes
   (setq! doom-themes-enable-bold t
@@ -291,7 +369,8 @@ This is in an effort to streamline a very common usecase"
 (use-package! tao-theme ; messing around with tao
   :defer
   :config
-  (setq tao-theme-use-sepia nil))
+  (setq tao-theme-use-sepia t
+        tao-theme-sepia-depth 50))
 
 ;; (setq doom-theme 'tao-yang)
 
@@ -386,6 +465,8 @@ This is in an effort to streamline a very common usecase"
 
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+
+;; (set-popup-rule! "\\*info*\\" :side 'right)
 
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'auto

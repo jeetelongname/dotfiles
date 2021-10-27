@@ -4,6 +4,8 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
+(package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
+
 (package! caddyfile-mode)
 
 (package! vimrc-mode)
@@ -68,6 +70,11 @@
 (package! org-sidebar)
 
 (package! elfeed-web)
+
+(package! nov)
+(package! calibredb)
+(package! olivetti)
+(package! mixed-pitch)
 
 (package! hideshow-tree-sitter
   :recipe

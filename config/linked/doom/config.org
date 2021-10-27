@@ -30,6 +30,7 @@ Lets get this config started!
   - [[#random-modes][Random modes]]
     - [[#type-break-mode][Type break mode]]
 - [[#packages][Packages]]
+  - [[#fixes][Fixes]]
   - [[#language-packages][Language packages]]
     - [[#caddy][Caddy]]
     - [[#vim][vim]]
@@ -57,6 +58,7 @@ Lets get this config started!
     - [[#ibuffer-sidebar][Ibuffer sidebar]]
     - [[#org-sidebar][Org Sidebar]]
   - [[#elfeed][elfeed]]
+  - [[#novels-and-epubs][novels and epubs]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -67,6 +69,7 @@ Lets get this config started!
   - [[#ui][ui]]
     - [[#doom][Doom]]
     - [[#doom-dashboard][Doom Dashboard]]
+    - [[#popup][Popup]]
     - [[#modeline][Modeline]]
     - [[#treemacs][Treemacs]]
     - [[#workspaces][Workspaces]]
@@ -407,6 +410,10 @@ subsequent configurations
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
+** Fixes
+#+begin_src emacs-lisp :tangle packages.el
+(package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
+#+end_src
 ** Language packages :lang:
 *** Caddy
 Caddy is a webserver with its own file format
@@ -893,6 +900,107 @@ affe adds async fuzzy finding. I need to work on it some more
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! elfeed-web)
 #+END_SRC
+** novels and epubs
+I am starting to read more books and papers online so it makes sense to include
+improve the experience somewhat
+#+begin_src emacs-lisp :tangle packages.el
+(package! nov)
+(package! calibredb)
+(package! olivetti)
+(package! mixed-pitch)
+#+end_src
+
+Calibredb provides a nice interface for exploring adding and working with ebooks
+I have stolen most of these keybinding from [[https://tecosaur.github.io/emacs-config/config.html#ebooks][@tecosaur]] (thanks for doing this
+work so I don't have to) I have slightly modified them though to fit my needs.
+#+begin_src emacs-lisp
+(use-package! calibredb
+  :defer t
+  :config
+  (setq calibredb-root-dir "~/Documents/reading/calibre"
+        calibredb-db-dir   (expand-file-name "metadata.db" calibredb-root-dir))
+  ;; the view for all books
+  (map! :map calibredb-search-mode-map
+        :ne "?" #'calibredb-entry-dispatch
+        :ne "." #'calibredb-open-dired
+        :ne "e" #'calibredb-export-dispatch
+        :ne "m" #'calibredb-mark-at-point
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "q" #'calibredb-entry-quit
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "u" #'calibredb-unmark-at-point
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne [tab] #'calibredb-toggle-view-at-point)
+  ;; the veiw for one book
+  (map! :map calibredb-show-mode-map
+        :ne [mouse-3] #'calibredb-search-mouse
+        :ne "RET" #'calibredb-find-file
+        :ne "?" #'calibredb-dispatch
+        :ne "a" #'calibredb-add
+        :ne "A" #'calibredb-add-dir
+        :ne "c" #'calibredb-clone
+        :ne "d" #'calibredb-remove
+        :ne "D" #'calibredb-remove-marked-items
+        :ne "j" #'calibredb-next-entry
+        :ne "k" #'calibredb-previous-entry
+        :ne "l" #'calibredb-virtual-library-list
+        :ne "L" #'calibredb-library-list
+        :ne "n" #'calibredb-virtual-library-next
+        :ne "N" #'calibredb-library-next
+        :ne "p" #'calibredb-virtual-library-previous
+        :ne "P" #'calibredb-library-previous
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "S" #'calibredb-switch-library
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "v" #'calibredb-view
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "." #'calibredb-open-dired
+        :ne "b" #'calibredb-catalog-bib-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "r" #'calibredb-search-refresh-and-clear-filter
+        :ne "R" #'calibredb-search-clear-filter
+        :ne "q" #'calibredb-search-quit
+        :ne "m" #'calibredb-mark-and-forward
+        :ne "f" #'calibredb-toggle-favorite-at-point
+        :ne "x" #'calibredb-toggle-archive-at-point
+        :ne "h" #'calibredb-toggle-highlight-at-point
+        :ne "u" #'calibredb-unmark-and-forward
+        :ne "i" #'calibredb-edit-annotation
+        :ne "DEL" #'calibredb-unmark-and-backward
+        :ne [backtab] #'calibredb-toggle-view
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-n" #'calibredb-show-next-entry
+        :ne "M-p" #'calibredb-show-previous-entry
+        :ne "/" #'calibredb-search-live-filter
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments))
+
+
+#+end_src
+
+Nov is how we do the reading!
+I don't configre it too much for the time being though I do plan on adding a
+setup function that changes the theme and makes it pretty
+#+begin_src emacs-lisp
+(use-package! nov
+  :mode ("\\.epub\\'" . nov-mode)
+  :config
+  (add-hook! 'nov-mode-hook #'olivetti-mode ;; Centers the text making it easier to read
+             (defun yeet/nov-setup ()
+               nil))) ;; stub for the moment
+
+(after! olivetti
+  (setq olivetti-body-width 125))
+#+end_src
+
+#+RESULTS:
+: 125
+
 * Modules
 These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
@@ -963,7 +1071,9 @@ Iosevka is my new best friend
        doom-big-font
        (font-spec :family "Iosevka" :size 25)
        doom-variable-pitch-font
-       (font-spec :family "Input" :size 17))
+       (font-spec :family "Merriweather" :size 17))
+
+(delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 #+end_src
 
 the comments for horizon are borderline unreadable so now we have brighter
@@ -995,7 +1105,8 @@ I can use... still works tho
 (use-package! tao-theme ; messing around with tao
   :defer
   :config
-  (setq tao-theme-use-sepia nil))
+  (setq tao-theme-use-sepia t
+        tao-theme-sepia-depth 50))
 
 ;; (setq doom-theme 'tao-yang)
 #+end_src
@@ -1105,6 +1216,10 @@ I removed the helpful menu. I only use it for.. nothing. lets make it C L E A N
 #+begin_src emacs-lisp
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+#+end_src
+*** Popup
+#+begin_src emacs-lisp
+;; (set-popup-rule! "\\*info*\\" :side 'right)
 #+end_src
 *** Modeline :modeline:
 My modeline does a lot...

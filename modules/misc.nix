@@ -11,6 +11,7 @@
     uwuify
     filezilla
     xournalpp
+    calibre
 
     lua
     lua52Packages.luarocks
