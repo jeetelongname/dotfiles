@@ -28,6 +28,8 @@ Lets get this config started!
   - [[#funky-functions][funky functions]]
   - [[#macros][macros]]
   - [[#random-modes][Random modes]]
+    - [[#display-time-mode][display time mode]]
+    - [[#globalsubword-mode][GlobalSubWord Mode]]
     - [[#type-break-mode][Type break mode]]
 - [[#packages][Packages]]
   - [[#fixes][Fixes]]
@@ -37,6 +39,7 @@ Lets get this config started!
     - [[#unit-tests][unit tests]]
     - [[#emacs-lisp-editions][Emacs lisp editions]]
     - [[#org-mode][org mode]]
+    - [[#janet][janet]]
   - [[#hugo-support][Hugo support]]
   - [[#modeline-fun][modeline fun]]
   - [[#evil-tutor][Evil tutor]]
@@ -48,17 +51,16 @@ Lets get this config started!
   - [[#hacker-news][Hacker news]]
   - [[#emacs-webkit][emacs webkit]]
   - [[#pretty-code-shots][pretty code shots]]
-  - [[#matrix][matrix]]
-  - [[#keycast][keycast]]
-  - [[#power-mode][Power mode]]
   - [[#selectric-mode][selectric-mode]]
   - [[#games][Games]]
+  - [[#fixme-sql][FIXME SQL]]
   - [[#sidebars][Sidebars]]
     - [[#dired-sidebar][Dired sidebar]]
     - [[#ibuffer-sidebar][Ibuffer sidebar]]
     - [[#org-sidebar][Org Sidebar]]
   - [[#elfeed][elfeed]]
   - [[#novels-and-epubs][novels and epubs]]
+  - [[#org-roam][org roam]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -126,6 +128,10 @@ I never did as i moved to multi monitors
 ;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
 #+END_SRC
 
+for those random scripts I find
+#+begin_src emacs-lisp
+(add-load-path! "lisp")
+#+end_src
 ** Keybinds
 These are my global keybinds they should not belong to any module. thus they
 get stuck here
@@ -391,6 +397,14 @@ This is in an effort to streamline a very common usecase"
 : world!
 
 ** Random modes
+*** display time mode
+#+begin_src emacs-lisp
+(display-time-mode +1)
+#+end_src
+*** GlobalSubWord Mode
+#+begin_src emacs-lisp
+(global-subword-mode +1)
+#+end_src
 *** TODO Type break mode
 Type break reminds you too take a break once a certain threshold of keys has
 been met. Its nice if its not too frequent
@@ -451,7 +465,7 @@ I was so ready to use it but it did not want too work with my ruby project :(
 
 #+begin_src emacs-lisp
 (use-package! feature-mode
-  :mode "\.feature$")
+  :mode "\\.feature$\\'")
 #+end_src
 *** Emacs lisp editions :emacsLisp:
 in the ever growing emacs ecosystem the amount of prefixes you can use are
@@ -507,6 +521,17 @@ me get errors need fix
   ;;         (latex   . t)))
   )
 #+end_src
+*** janet
+#+begin_src emacs-lisp :tangle packages.el
+(package! janet-mode :recipe
+  (:host github :repo "ALSchwalm/janet-mode"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! janet-mode
+  :mode "\\.janet$\\'")
+#+end_src
+
 ** Hugo support
 I blog! [[https://jeetelongname.github.io/blog][Sometimes.. When I can.. Not really]]
 This is mostly just for the time stamp but it does come in handy
@@ -532,41 +557,37 @@ This is mostly just for the time stamp but it does come in handy
 #+end_src
 
 #+begin_src emacs-lisp
-(defvar birds '(default confused emacs nyan rotating science thumbsup))
+(defvar yeet/birds '(default confused emacs nyan rotating science thumbsup))
 
 (use-package! nyan-mode
-  :defer t
+  :after doom-modeline
   :config
   (setq nyan-bar-length 15
-        nyan-wavy-trail t))
+        nyan-wavy-trail t)
+  (nyan-mode)
+  (nyan-start-animation))
 
 (use-package! parrot
   :defer t
   :config
-  (parrot-set-parrot-type (nth (random (length birds)) birds))) ;; this chooses a random bird on startup
-
-
-(after! doom-modeline
-  (nyan-mode)
-  (nyan-start-animation)
+  (parrot-set-parrot-type (nth (random (length yeet/birds)) yeet/birds)) ;; this chooses a random bird on startup
   (parrot-mode)
   (parrot-start-animation))
 
-;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
+  ;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
 
-(defun bird-annotations (cand)
-  "Takes a CANDidate (which is a bird) and returns a description of said bird"
-  (let ((birds+annotations (-zip-pairs birds '("default bird is best bird"
-                                          "they have got the spirit"
-                                          "EMACS BIRD EMACS BIRD"
-                                          "nananananan"
-                                          "you spin me right round right round like a record baby"
-                                          "science bitch!"
-                                          "He is just happy to be here"))))
-    (cdr (assoc cand birds+annotations))))
+  (defun bird-annotations (cand)
+    "Takes a CANDidate (which is a bird) and returns a description of said bird"
+    (let ((yeet/birds+annotations (-zip-pairs yeet/birds '("default bird is best bird"
+                                                 "they have got the spirit"
+                                                 "EMACS BIRD EMACS BIRD"
+                                                 "nananananan"
+                                                 "you spin me right round right round like a record baby"
+                                                 "science bitch!"
+                                                 "He is just happy to be here"))))
+      (cdr (assoc cand yeet/birds+annotations))))
 
-;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
-
+  ;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
 #+end_src
 
 #+begin_src emacs-lisp :tangle autoload.el
@@ -621,11 +642,19 @@ I use non daemon sessions for testing I would much rather it would not be used
 (when (daemonp)
   (use-package! elcord
     :config
-    (setq elcord-quiet t
-          elcord-use-major-mode-as-main-icon t
-          elcord-show-small-icon nil)
+    (defun yeet/elcord-buffer-info ()
+      "Get the buffer name or whether we are editing it or not and return a formatted string."
+      (format "%s %s" (if buffer-read-only
+                          "Reading"
+                        "Editing")
+              (buffer-name)))
 
-    (elcord-mode +1))) ;; elcord is a noisy bitch. I don't need all of the output
+    (setq elcord-quiet nil
+          elcord-use-major-mode-as-main-icon nil
+          elcord-show-small-icon t
+          elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
+
+    (elcord-mode +1)))
 #+end_src
 
 ** tldr integration
@@ -719,8 +748,8 @@ pip as it can be buggy
 ** TODO emacs webkit
 because my emacs addiction is getting worse
 #+begin_src emacs-lisp :tangle packages.el
-(package! webkit :recipe
-  (:host github :repo "akirakyle/emacs-webkit"
+(package! webkit
+  :recipe (:host github :repo "akirakyle/emacs-webkit"
    :branch "main"
    :files (:defaults "*")))
 #+end_src
@@ -758,51 +787,6 @@ I just went back to firefox since eaf is deprecated in my config
 #+begin_src emacs-lisp
 ;; (use-package! screenshot :defer)
 #+end_src
-** TODO matrix
-#+begin_src emacs-lisp :tangle packages.el
-;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
-#+end_src
-
-** TODO keycast
-I have stolen this from @tecosaur again..
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! keycast)
-#+END_SRC
-it adds prettier keycast mode support and more stuff that I don't understand. I
-also bound it
-#+BEGIN_SRC emacs-lisp
-(use-package! keycast
-  :commands keycast-mode
-  :after doom-modeline
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
-  (custom-set-faces!
-    '(keycast-command :inherit doom-modeline-debug
-                      :height 0.9)
-    '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold))
-  (map! :leader "tk" #'keycast-mode))
-#+END_SRC
-** Power mode
-#+begin_src emacs-lisp :tangle packages.el
-(package! power-mode :recipe (:host github :repo "elizagamedev/power-mode.el"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! power-mode
-  :defer t)
-
-#+end_src
-
 ** selectric-mode
 I want to annoy people with a loud keyboard without having to carry around a
 loud keyboard
@@ -821,6 +805,15 @@ Some games I will probably add
 ;;   :recipe (:host github
 ;;            :repo "sprang/emacs-2048"))
 
+#+end_src
+** FIXME SQL
+#+begin_src emacs-lisp
+(after! sql
+  (add-to-list 'sql-connection-alist
+               '(psql (sql-product 'postgres)
+                      (sql-port 22)
+                      (sql-server (read-from-minibuffer "server ip: "))
+                      (sql-user "up2063130"))))
 #+end_src
 ** Sidebars :sidebars:
 By virtue of these things I seem to have 3 different sidebars (4 if you include
@@ -882,20 +875,6 @@ bit of work to be done
   :after org)
 #+end_src
 
-** COMMENT affe :completion:vertico:
-affe adds async fuzzy finding. I need to work on it some more
-#+begin_src emacs-lisp :tangle packages.el
-(package! affe)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! affe
-  :after orderless
-  :config
-  ;; Configure Orderless
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless-highlight-matches))
-#+end_src
 ** elfeed :app:rss:
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! elfeed-web)
@@ -928,7 +907,9 @@ work so I don't have to) I have slightly modified them though to fit my needs.
         :ne "o" #'calibredb-find-file
         :ne "O" #'calibredb-find-file-other-frame
         :ne "q" #'calibredb-entry-quit
-        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "s" nil
+        :n  "s" #'calibredb-sort-dispatch
+        :ne "S" #'calibredb-set-metadata-dispatch
         :ne "u" #'calibredb-unmark-at-point
         :ne "V" #'calibredb-open-file-with-default-tool
         :ne [tab] #'calibredb-toggle-view-at-point)
@@ -980,7 +961,21 @@ work so I don't have to) I have slightly modified them though to fit my needs.
         :ne "M-T" #'calibredb-set-metadata--title
         :ne "M-c" #'calibredb-set-metadata--comments))
 
+(defun =book ()
+  (interactive)
+  (if (featurep! :ui workspaces)
+      (progn
+        (+workspace-switch "*book*" t)
+        (doom/switch-to-scratch-buffer)
+        (calibredb)
+        (+workspace/display))
+    (calibredb)))
 
+;; I read books more than I read files in my buffer
+(map! :leader
+      "ob" nil
+      "ob" #'=book
+      "oB" #'browse-url-of-file)
 #+end_src
 
 Nov is how we do the reading!
@@ -992,15 +987,32 @@ setup function that changes the theme and makes it pretty
   :config
   (add-hook! 'nov-mode-hook #'olivetti-mode ;; Centers the text making it easier to read
              (defun yeet/nov-setup ()
-               nil))) ;; stub for the moment
+               (setq olivetti-body-width 125))))
 
-(after! olivetti
-  (setq olivetti-body-width 125))
+(after! olivetti)
 #+end_src
 
 #+RESULTS:
 : 125
+** org roam :org:roam:
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! org-roam)
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+#+end_src
 
+#+begin_src emacs-lisp
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
 * Modules
 These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
@@ -1073,7 +1085,9 @@ Iosevka is my new best friend
        doom-variable-pitch-font
        (font-spec :family "Merriweather" :size 17))
 
+(delete "Noto Emoji" doom-emoji-fallback-font-families)
 (delete "Noto Color Emoji" doom-emoji-fallback-font-families)
+
 #+end_src
 
 the comments for horizon are borderline unreadable so now we have brighter
@@ -1321,6 +1335,9 @@ file watchers crash emacs. I never know what they do anyway
 *** pdf :pdf:
 custom modeline for pdf files stolen from tecosaur and hopefully it will become
 a default
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! pdf-tools)
+#+end_src
 
 #+begin_src emacs-lisp
 (after! (pdf-tools doom-modeline)
@@ -1482,7 +1499,12 @@ directly
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 
-
+Cooking in org has never been this easy!
+FIXME
+#+begin_src emacs-lisp
+;; (use-package! org-cook
+;;   :after org)
+#+end_src
 Below you will see a configuration for roam and journal. The reason I have both
 is because I make 2 kinds of notes. one is for my head (which are linear) and
 the other is for my school (which are non linear) roam has been a god sent for
@@ -1772,9 +1794,9 @@ comic that made me laugh. this just automated that process
 I prefer to write in the language that is going to be posted so markdown mode
 makes more sense to be the default (which is org)
 #+begin_src emacs-lisp
-(after! emacs-everywhere
-  (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
-  (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
+;; (after! emacs-everywhere
+;;   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
+;;   (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
 #+end_src
 
 * Epilogue

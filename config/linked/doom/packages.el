@@ -16,6 +16,9 @@
 
 (package! company-org-block)
 
+(package! janet-mode :recipe
+  (:host github :repo "ALSchwalm/janet-mode"))
+
 (package! emacs-easy-hugo
   :recipe (:host github
            :repo "masasam/emacs-easy-hugo"
@@ -41,8 +44,8 @@
 
 (package! hackernews)
 
-(package! webkit :recipe
-  (:host github :repo "akirakyle/emacs-webkit"
+(package! webkit
+  :recipe (:host github :repo "akirakyle/emacs-webkit"
    :branch "main"
    :files (:defaults "*")))
 
@@ -50,12 +53,6 @@
 
 ;; (package! screenshot. :recipe
 ;;   (:host github :repo "tecosaur/screenshot"))
-
-;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
-
-(package! keycast)
-
-(package! power-mode :recipe (:host github :repo "elizagamedev/power-mode.el"))
 
 (package! selectric-mode)
 
@@ -75,6 +72,12 @@
 (package! calibredb)
 (package! olivetti)
 (package! mixed-pitch)
+
+(unpin! org-roam)
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+
+(unpin! pdf-tools)
 
 (package! hideshow-tree-sitter
   :recipe

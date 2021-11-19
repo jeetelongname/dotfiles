@@ -17,6 +17,8 @@
 ;; (setq-default header-line-format
 ;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
 
+(add-load-path! "lisp")
+
 (map!
  :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
  :g "C-`" #'+workspace/other
@@ -52,6 +54,10 @@ This is in an effort to streamline a very common usecase"
     (progn ,@BODY)
     (buffer-string)))
 
+(display-time-mode +1)
+
+(global-subword-mode +1)
+
 (use-package! type-break
   :defer
   :config
@@ -69,7 +75,7 @@ This is in an effort to streamline a very common usecase"
 ;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
 
 (use-package! feature-mode
-  :mode "\.feature$")
+  :mode "\\.feature$\\'")
 
 (use-package! nameless
   :defer t
@@ -99,46 +105,46 @@ This is in an effort to streamline a very common usecase"
   ;;         (latex   . t)))
   )
 
+(use-package! janet-mode
+  :mode "\\.janet$\\'")
+
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (use-package! emacs-easy-hugo
   :after markdown
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 
-(defvar birds '(default confused emacs nyan rotating science thumbsup))
+(defvar yeet/birds '(default confused emacs nyan rotating science thumbsup))
 
 (use-package! nyan-mode
-  :defer t
+  :after doom-modeline
   :config
   (setq nyan-bar-length 15
-        nyan-wavy-trail t))
+        nyan-wavy-trail t)
+  (nyan-mode)
+  (nyan-start-animation))
 
 (use-package! parrot
   :defer t
   :config
-  (parrot-set-parrot-type (nth (random (length birds)) birds))) ;; this chooses a random bird on startup
-
-
-(after! doom-modeline
-  (nyan-mode)
-  (nyan-start-animation)
+  (parrot-set-parrot-type (nth (random (length yeet/birds)) yeet/birds)) ;; this chooses a random bird on startup
   (parrot-mode)
   (parrot-start-animation))
 
-;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
+  ;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
 
-(defun bird-annotations (cand)
-  "Takes a CANDidate (which is a bird) and returns a description of said bird"
-  (let ((birds+annotations (-zip-pairs birds '("default bird is best bird"
-                                          "they have got the spirit"
-                                          "EMACS BIRD EMACS BIRD"
-                                          "nananananan"
-                                          "you spin me right round right round like a record baby"
-                                          "science bitch!"
-                                          "He is just happy to be here"))))
-    (cdr (assoc cand birds+annotations))))
+  (defun bird-annotations (cand)
+    "Takes a CANDidate (which is a bird) and returns a description of said bird"
+    (let ((yeet/birds+annotations (-zip-pairs yeet/birds '("default bird is best bird"
+                                                 "they have got the spirit"
+                                                 "EMACS BIRD EMACS BIRD"
+                                                 "nananananan"
+                                                 "you spin me right round right round like a record baby"
+                                                 "science bitch!"
+                                                 "He is just happy to be here"))))
+      (cdr (assoc cand yeet/birds+annotations))))
 
-;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
+  ;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
 
 (use-package! dired-dragon
   :after dired
@@ -152,11 +158,19 @@ This is in an effort to streamline a very common usecase"
 (when (daemonp)
   (use-package! elcord
     :config
-    (setq elcord-quiet t
-          elcord-use-major-mode-as-main-icon t
-          elcord-show-small-icon nil)
+    (defun yeet/elcord-buffer-info ()
+      "Get the buffer name or whether we are editing it or not and return a formatted string."
+      (format "%s %s" (if buffer-read-only
+                          "Reading"
+                        "Editing")
+              (buffer-name)))
 
-    (elcord-mode +1))) ;; elcord is a noisy bitch. I don't need all of the output
+    (setq elcord-quiet nil
+          elcord-use-major-mode-as-main-icon nil
+          elcord-show-small-icon t
+          elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
+
+    (elcord-mode +1)))
 
 (use-package! tldr
   :config
@@ -188,29 +202,12 @@ This is in an effort to streamline a very common usecase"
 
 ;; (use-package! screenshot :defer)
 
-(use-package! keycast
-  :commands keycast-mode
-  :after doom-modeline
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
-  (custom-set-faces!
-    '(keycast-command :inherit doom-modeline-debug
-                      :height 0.9)
-    '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold))
-  (map! :leader "tk" #'keycast-mode))
-
-(use-package! power-mode
-  :defer t)
+(after! sql
+  (add-to-list 'sql-connection-alist
+               '(psql (sql-product 'postgres)
+                      (sql-port 22)
+                      (sql-server (read-from-minibuffer "server ip: "))
+                      (sql-user "up2063130"))))
 
 (defun yeet/sidebar-toggle ()
   "toggle both ibuffer and dired sidebars"
@@ -252,7 +249,9 @@ This is in an effort to streamline a very common usecase"
         :ne "o" #'calibredb-find-file
         :ne "O" #'calibredb-find-file-other-frame
         :ne "q" #'calibredb-entry-quit
-        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "s" nil
+        :n  "s" #'calibredb-sort-dispatch
+        :ne "S" #'calibredb-set-metadata-dispatch
         :ne "u" #'calibredb-unmark-at-point
         :ne "V" #'calibredb-open-file-with-default-tool
         :ne [tab] #'calibredb-toggle-view-at-point)
@@ -304,15 +303,41 @@ This is in an effort to streamline a very common usecase"
         :ne "M-T" #'calibredb-set-metadata--title
         :ne "M-c" #'calibredb-set-metadata--comments))
 
+(defun =book ()
+  (interactive)
+  (if (featurep! :ui workspaces)
+      (progn
+        (+workspace-switch "*book*" t)
+        (doom/switch-to-scratch-buffer)
+        (calibredb)
+        (+workspace/display))
+    (calibredb)))
+
+;; I read books more than I read files in my buffer
+(map! :leader
+      "ob" nil
+      "ob" #'=book
+      "oB" #'browse-url-of-file)
+
 (use-package! nov
   :mode ("\\.epub\\'" . nov-mode)
   :config
   (add-hook! 'nov-mode-hook #'olivetti-mode ;; Centers the text making it easier to read
              (defun yeet/nov-setup ()
-               nil))) ;; stub for the moment
+               (setq olivetti-body-width 125))))
 
-(after! olivetti
-  (setq olivetti-body-width 125))
+(after! olivetti)
+
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 
 (after! company
   (setq company-idle-delay 6 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
@@ -350,6 +375,7 @@ This is in an effort to streamline a very common usecase"
        doom-variable-pitch-font
        (font-spec :family "Merriweather" :size 17))
 
+(delete "Noto Emoji" doom-emoji-fallback-font-families)
 (delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 
 (after! doom-themes
@@ -620,6 +646,9 @@ This is in an effort to streamline a very common usecase"
           ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
+;; (use-package! org-cook
+;;   :after org)
+
 (setq org-roam-directory (concat org-directory "roam/")
       org-roam-db-location (concat org-roam-directory ".org-roam.db"))
 
@@ -757,6 +786,6 @@ This is in an effort to streamline a very common usecase"
 ;;        :n "gc" nil
 ;;        :n "gc" #'yeet/elfeed-copy-link))
 
-(after! emacs-everywhere
-  (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
-  (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
+;; (after! emacs-everywhere
+;;   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
+;;   (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
