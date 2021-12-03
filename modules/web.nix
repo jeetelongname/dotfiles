@@ -8,7 +8,7 @@
     caddy
 
     # clients
-    firefox
+    #firefox
     nyxt
 
     # devel

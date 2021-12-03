@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     castor # TODO: fix castor
-    firefox
     screenkey
     audacity
     gimp
@@ -12,6 +11,7 @@
     filezilla
     xournalpp
     calibre
+    peek
 
     lua
     lua52Packages.luarocks
