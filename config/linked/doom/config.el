@@ -14,8 +14,7 @@
 
 (setq pgtk-wait-for-event-timeout 0.001)
 
-;; (setq-default header-line-format
-;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
+;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
 
 (add-load-path! "lisp")
 
@@ -46,6 +45,17 @@
       "w C-t" nil
       "w C-t" #'toggle-window-split)
 
+(defvar yeet/insert-cat-width nil
+  "the width of the cats")
+
+(defun yeet/insert-cat ()
+  (interactive)
+  (insert-before-markers
+   (shell-command-to-string
+    (format "jp2a --width= %s https://cataas.com/cat" (if yeet/insert-cat-width
+                                                          yeet/insert-cat-width
+                                                        60)))))
+
 (defmacro with-temp-buffer! (&rest BODY)
   "A wrapper around `with-temp-buffer' that implicitly calls `buffer-string'
 This is in an effort to streamline a very common usecase"
@@ -64,6 +74,8 @@ This is in an effort to streamline a very common usecase"
   (setq type-break-interval 1800 ;; half an hour between type breaks
         type-break-keystroke-threshold (cons 2000  14000))
   (type-break-mode 1))
+
+(display-battery-mode 1)
 
 (use-package! caddyfile-mode
   :mode (("Caddyfile\\'" . caddyfile-mode)
@@ -156,7 +168,7 @@ This is in an effort to streamline a very common usecase"
          :n "i" #'dired-dragon-individual)))
 
 (when (daemonp)
-  (use-package! elcord
+  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
     :config
     (defun yeet/elcord-buffer-info ()
       "Get the buffer name or whether we are editing it or not and return a formatted string."
@@ -165,7 +177,7 @@ This is in an effort to streamline a very common usecase"
                         "Editing")
               (buffer-name)))
 
-    (setq elcord-quiet nil
+    (setq elcord-quiet t
           elcord-use-major-mode-as-main-icon nil
           elcord-show-small-icon t
           elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
@@ -206,8 +218,7 @@ This is in an effort to streamline a very common usecase"
   (add-to-list 'sql-connection-alist
                '(psql (sql-product 'postgres)
                       (sql-port 22)
-                      (sql-server (read-from-minibuffer "server ip: "))
-                      (sql-user "up2063130"))))
+                      (sql-server (read-from-minibuffer "server ip: ")))))
 
 (defun yeet/sidebar-toggle ()
   "toggle both ibuffer and dired sidebars"
@@ -250,7 +261,7 @@ This is in an effort to streamline a very common usecase"
         :ne "O" #'calibredb-find-file-other-frame
         :ne "q" #'calibredb-entry-quit
         :ne "s" nil
-        :n  "s" #'calibredb-sort-dispatch
+        :ne "s" #'calibredb-sort-dispatch
         :ne "S" #'calibredb-set-metadata-dispatch
         :ne "u" #'calibredb-unmark-at-point
         :ne "V" #'calibredb-open-file-with-default-tool
@@ -597,7 +608,12 @@ This is in an effort to streamline a very common usecase"
   (pushnew! tree-sitter-major-mode-language-alist
             '(scss-mode . css)))
 
-(use-package hideshow-tree-sitter :after tree-sitter)
+(use-package! hideshow-tree-sitter :after tree-sitter)
+(use-package! tree-sitter-playground
+  :after tree-sitter
+  :config
+  (setq tree-sitter-playground-jump-buttons t
+        tree-sitter-playground-highlight-jump-region t))
 
 (custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
 
@@ -619,7 +635,7 @@ This is in an effort to streamline a very common usecase"
 
 (setq org-directory "~/org-notes/")
 (after! org
-  (setq org-agenda-files (mapcar
+  (setq org-agenda-files (seq-map
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
@@ -766,12 +782,12 @@ This is in an effort to streamline a very common usecase"
 
 (after! circe
   (set-irc-server! "irc.eu.libera.chat"
-                   '(:tls t
+                   `(:tls t
                      :port 6697
                      :nick "jeetelongname"
                      :sasl-username ,"jeetelongname"
-                     :sasl-password (+pass-get-secret "social/freenode")
-                     :channels ("#emacs" "#haskell"))))
+                     :sasl-password ,(+pass-get-secret "social/freenode")
+                     :channels ("#emacs" "#haskell" "#doomemacs"))))
 
 (after! elfeed
   (setq elfeed-search-filter "@3-week-ago -fun") ;; /they post so much/

@@ -84,6 +84,9 @@
   (:local-repo "~/code/emacs/tree-sitter-code-folding"
    :files ( "*.el" "queries")))
 
+(package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
+                                          :build (:not compile)))
+
 (package! origami)
 (package! org-super-agenda)
 

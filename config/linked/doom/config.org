@@ -31,6 +31,7 @@ Lets get this config started!
     - [[#display-time-mode][display time mode]]
     - [[#globalsubword-mode][GlobalSubWord Mode]]
     - [[#type-break-mode][Type break mode]]
+    - [[#battery-mode][Battery mode]]
 - [[#packages][Packages]]
   - [[#fixes][Fixes]]
   - [[#language-packages][Language packages]]
@@ -124,8 +125,7 @@ This is the stuff that does not really belong in any module but is useful
 
 I never did as i moved to multi monitors
 #+BEGIN_SRC emacs-lisp
-;; (setq-default header-line-format
-;;         (concat (propertize " " 'display '((space :align-to 0))) " "))
+  ;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
 #+END_SRC
 
 for those random scripts I find
@@ -373,6 +373,20 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
       "w C-t" nil
       "w C-t" #'toggle-window-split)
 #+end_src
+
+I need more cats in my life
+#+begin_src emacs-lisp
+(defvar yeet/insert-cat-width nil
+  "the width of the cats")
+
+(defun yeet/insert-cat ()
+  (interactive)
+  (insert-before-markers
+   (shell-command-to-string
+    (format "jp2a --width= %s https://cataas.com/cat" (if yeet/insert-cat-width
+                                                          yeet/insert-cat-width
+                                                        60)))))
+#+end_src
 ** macros
 this is a small helper macro that wraps ~with-temp-buffer~ with an implicit call
 to ~buffer-string~ I did this as I see this patter all over the place and
@@ -415,6 +429,11 @@ been met. Its nice if its not too frequent
   (setq type-break-interval 1800 ;; half an hour between type breaks
         type-break-keystroke-threshold (cons 2000  14000))
   (type-break-mode 1))
+#+end_src
+*** Battery mode
+I like my modeline busy
+#+begin_src emacs-lisp
+(display-battery-mode 1)
 #+end_src
 
 * Packages
@@ -640,7 +659,7 @@ I use non daemon sessions for testing I would much rather it would not be used
 
 #+begin_src emacs-lisp
 (when (daemonp)
-  (use-package! elcord
+  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
     :config
     (defun yeet/elcord-buffer-info ()
       "Get the buffer name or whether we are editing it or not and return a formatted string."
@@ -649,7 +668,7 @@ I use non daemon sessions for testing I would much rather it would not be used
                         "Editing")
               (buffer-name)))
 
-    (setq elcord-quiet nil
+    (setq elcord-quiet t
           elcord-use-major-mode-as-main-icon nil
           elcord-show-small-icon t
           elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
@@ -812,8 +831,7 @@ Some games I will probably add
   (add-to-list 'sql-connection-alist
                '(psql (sql-product 'postgres)
                       (sql-port 22)
-                      (sql-server (read-from-minibuffer "server ip: "))
-                      (sql-user "up2063130"))))
+                      (sql-server (read-from-minibuffer "server ip: ")))))
 #+end_src
 ** Sidebars :sidebars:
 By virtue of these things I seem to have 3 different sidebars (4 if you include
@@ -879,7 +897,7 @@ bit of work to be done
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! elfeed-web)
 #+END_SRC
-** novels and epubs
+** novels and epubs :books:
 I am starting to read more books and papers online so it makes sense to include
 improve the experience somewhat
 #+begin_src emacs-lisp :tangle packages.el
@@ -908,7 +926,7 @@ work so I don't have to) I have slightly modified them though to fit my needs.
         :ne "O" #'calibredb-find-file-other-frame
         :ne "q" #'calibredb-entry-quit
         :ne "s" nil
-        :n  "s" #'calibredb-sort-dispatch
+        :ne "s" #'calibredb-sort-dispatch
         :ne "S" #'calibredb-set-metadata-dispatch
         :ne "u" #'calibredb-unmark-at-point
         :ne "V" #'calibredb-open-file-with-default-tool
@@ -1398,10 +1416,18 @@ current hack in testing
   :recipe
   (:local-repo "~/code/emacs/tree-sitter-code-folding"
    :files ( "*.el" "queries")))
+
+(package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
+                                          :build (:not compile)))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package hideshow-tree-sitter :after tree-sitter)
+(use-package! hideshow-tree-sitter :after tree-sitter)
+(use-package! tree-sitter-playground
+  :after tree-sitter
+  :config
+  (setq tree-sitter-playground-jump-buttons t
+        tree-sitter-playground-highlight-jump-region t))
 #+end_src
 
 The yellow used for function calls was the same colour used for strings (in
@@ -1457,10 +1483,11 @@ This readds the functionality of spelling on =return=
 *** TODO Org :org:
 Org mode. our favorite plain text markup format! these are my configurations for
 it
+
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/org-notes/")
 (after! org
-  (setq org-agenda-files (mapcar
+  (setq org-agenda-files (seq-map
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
@@ -1743,12 +1770,12 @@ I have a beard and I do like wasting time...
 #+begin_src emacs-lisp
 (after! circe
   (set-irc-server! "irc.eu.libera.chat"
-                   '(:tls t
+                   `(:tls t
                      :port 6697
                      :nick "jeetelongname"
                      :sasl-username ,"jeetelongname"
-                     :sasl-password (+pass-get-secret "social/freenode")
-                     :channels ("#emacs" "#haskell"))))
+                     :sasl-password ,(+pass-get-secret "social/freenode")
+                     :channels ("#emacs" "#haskell" "#doomemacs"))))
 #+end_src
 *** rss :rss:
 Elfeed is great. I just need more blogs
