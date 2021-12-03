@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
 
-
 # Use lf to switch directories and bind it to ctrl-f (its not working at the mo)
 lfcd() {
     tmp="$(mktemp)"
@@ -35,6 +34,10 @@ if [[ $DISPLAY ]]; then
     [[ -z "$TMUX" ]] && exec tmux
 fi
 
+# want to use the open bsd man pages? grab them and add this command!
+oman() {
+  man -M ~/man/openbsd "$@"
+}
 #if [ -n "$INSIDE_EMACS" ]; then
 #  export TERM=dumb
 #else
