@@ -16,7 +16,7 @@ IMAPAccount gmail
 Host imap.gmail.com
 Port 993
 User jeetelongname@gmail.com
-PassCmd "pass show email/gmail.com | grep -v login:"
+PassCmd "pass show email/mu4e | grep -v login:"
 AuthMechs LOGIN
 SSLType IMAPS
 SSLVersions TLSv1.1
