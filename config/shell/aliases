@@ -17,7 +17,7 @@ alias shut='shutdown now'
 alias py='python3'
 alias ipy='ipython3'
 alias ap="sudo aptitude"
-alias e='devour emacsclient -c'
+alias e='emacsclient -c'
 alias xcclip='xclip -sel clip' # I like C-c and C-v
 ## git quick commands (because im lazy)
 alias ig="emacsclient -a -nw '' -e \"magit\" -c" # FIXME
