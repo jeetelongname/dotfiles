@@ -14,7 +14,7 @@
 
 (setq pgtk-wait-for-event-timeout 0.001)
 
-;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
+  ;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
 
 (add-load-path! "lisp")
 
@@ -719,6 +719,9 @@ This is in an effort to streamline a very common usecase"
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
+
+(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 

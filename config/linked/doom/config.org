@@ -92,7 +92,8 @@ Lets get this config started!
     - [[#org][Org]]
     - [[#deprecated-go][DEPRECATED Go]]
     - [[#haskell][haskell]]
-    - [[#python][Python]]
+    - [[#python][python]]
+    - [[#racket][racket]]
     - [[#latex][LaTeX]]
     - [[#web][Web]]
   - [[#email][email]]
@@ -1615,12 +1616,20 @@ I have been pretty lazy when it comes to learning haskell
   (setq lsp-haskell-formatting-provider "ormolu"))
 #+end_src
 
-*** Python :python:
+*** python :python:
 Python is great is it not 🐍
 #+BEGIN_SRC emacs-lisp
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 #+END_SRC
+*** racket
+racket is slowly becoming my favorite language
+
+adding unicode input
+#+begin_src emacs-lisp
+(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+#+end_src
 
 *** LaTeX :LaTeX:
 #+BEGIN_SRC emacs-lisp
