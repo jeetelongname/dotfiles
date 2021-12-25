@@ -28,10 +28,18 @@
     userEmail = "jeetelongname@gmail.com";
     userName = "Jeetaditya Chatterjee";
 
+    signing = {
+      key = "64357829";
+      gpgPath = "/usr/bin/gpg";
+      signByDefault = true;
+    };
+
     extraConfig = {
       github.user = "jeetelongname";
       color.ui = "auto";
       init.defaultBranch = "senpai"; # because I am a child
+      # commit.gpgSign = true;
+      tag.gpgSign = true;
 
     };
 
