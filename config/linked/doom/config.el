@@ -12,7 +12,8 @@
 (when (boundp 'native-comp-async-jobs-number)
   (setq native-comp-async-jobs-number 9))
 
-(setq pgtk-wait-for-event-timeout 0.001)
+(when (boundp 'pgtk-wait-for-event-timeout)
+  (setq pgtk-wait-for-event-timeout 0.001))
 
   ;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
 
@@ -20,23 +21,21 @@
 
 (map!
  :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
- :g "C-`" #'+workspace/other
+ :g "C-`" #'+workspace/other ; faster than SPC w `
  :leader
- :desc "Enable Coloured Values""t c" #'rainbow-mode
- :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed
+ :desc "Enable Coloured Values" "t c" #'rainbow-mode
+ :desc "Toggle Tabs" "t B" #'centaur-tabs-local-mode
+ :desc "Open Elfeed" "o l" #'=rss
+ :desc "Open Irc" "o c" #'=irc
  ;; I recompile more than I compile
  "cc" #'recompile
  "cC" #'compile)
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
-;; this snippet can be replaced with `(after! magit (setq magit-save-repository-buffers t))'
-;; (after! magit (add-hook! 'magit-status-mode-hook :append (call-interactively #'save-some-buffers)))
 
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 (map! :leader
       "h r c" #'yeet/reload)
@@ -617,6 +616,11 @@ This is in an effort to streamline a very common usecase"
 
 (custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
 
+(map! (:map +tree-sitter-outer-text-objects-map
+       "m" (evil-textobj-tree-sitter-get-textobj "import"
+             '((python-mode . [(import_statement) @import])
+               (rust-mode . [(use_declaration) @import])))))
+
 (setq dired-dwim-target t)
 
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
@@ -788,7 +792,7 @@ This is in an effort to streamline a very common usecase"
                    `(:tls t
                      :port 6697
                      :nick "jeetelongname"
-                     :sasl-username ,"jeetelongname"
+                     :sasl-username "jeetelongname"
                      :sasl-password ,(+pass-get-secret "social/freenode")
                      :channels ("#emacs" "#haskell" "#doomemacs"))))
 

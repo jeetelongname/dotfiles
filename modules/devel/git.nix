@@ -29,7 +29,7 @@
     userName = "Jeetaditya Chatterjee";
 
     signing = {
-      key = "64357829";
+      key = "D2132B91";
       gpgPath = "/usr/bin/gpg";
       signByDefault = true;
     };

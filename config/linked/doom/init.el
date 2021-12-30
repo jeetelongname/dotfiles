@@ -139,7 +139,7 @@
              +tree-sitter)
        (javascript +lsp    ; all(hope(abandon(ye(who(enter(here))))))
                    +tree-sitter)
-       ;;julia             ; a better, faster MATLAB
+       (julia +tree-sitter); a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk

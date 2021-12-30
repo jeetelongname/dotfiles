@@ -6,6 +6,16 @@
 
 (package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
 
+(package! gitconfig-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitconfig-mode.el")))
+(package! gitignore-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitignore-mode.el")))
+
+;; This is temporarily necessary due to an unrelated bug.
+(unpin! gitignore-mode gitconfig-mode)
+
 (package! caddyfile-mode)
 
 (package! vimrc-mode)
@@ -81,7 +91,7 @@
 
 (package! hideshow-tree-sitter
   :recipe
-  (:local-repo "~/code/emacs/tree-sitter-code-folding"
+  (:local-repo "~/code/emacs/hideshow-tree-sitter"
    :files ( "*.el" "queries")))
 
 (package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
@@ -91,5 +101,7 @@
 (package! org-super-agenda)
 
 (package! mu4e-alert :disable t)
+
+(package! circe-notifications :disable t)
 
 ;; (package! elfeed-goodies :disable t)

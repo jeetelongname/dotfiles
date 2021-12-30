@@ -3,7 +3,7 @@
 #+STARTUP: content
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
-mostly stolen snippets from others. This config is [[elisp:(call-interactively #'count-words)][this many]] words, lines and
+mostly stolen snippets from others. This config is [[elisp:(count-words (point-min) (point-max))][this many]] words, lines and
 characters long. Its a lot of blood sweat and tears so I hope you like it as much
 as I tolerate it!
 
@@ -118,7 +118,8 @@ This is the stuff that does not really belong in any module but is useful
 (when (boundp 'native-comp-async-jobs-number)
   (setq native-comp-async-jobs-number 9))
 
-(setq pgtk-wait-for-event-timeout 0.001)
+(when (boundp 'pgtk-wait-for-event-timeout)
+  (setq pgtk-wait-for-event-timeout 0.001))
 #+END_SRC
 
 +I like a little separation so I put an empty line at the top of my emacs+
@@ -139,11 +140,12 @@ get stuck here
 #+BEGIN_SRC emacs-lisp
 (map!
  :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
- :g "C-`" #'+workspace/other
+ :g "C-`" #'+workspace/other ; faster than SPC w `
  :leader
- :desc "Enable Coloured Values""t c" #'rainbow-mode
- :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed
+ :desc "Enable Coloured Values" "t c" #'rainbow-mode
+ :desc "Toggle Tabs" "t B" #'centaur-tabs-local-mode
+ :desc "Open Elfeed" "o l" #'=rss
+ :desc "Open Irc" "o c" #'=irc
  ;; I recompile more than I compile
  "cc" #'recompile
  "cC" #'compile)
@@ -154,14 +156,11 @@ should be off
 #+begin_src emacs-lisp
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
-;; this snippet can be replaced with `(after! magit (setq magit-save-repository-buffers t))'
-;; (after! magit (add-hook! 'magit-status-mode-hook :append (call-interactively #'save-some-buffers)))
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 #+END_SRC
 ** cli commands
 this adds a repl command so that I can run emacs lisp in a terminal repl. is it
@@ -447,6 +446,18 @@ subsequent configurations
 ** Fixes
 #+begin_src emacs-lisp :tangle packages.el
 (package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! gitconfig-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitconfig-mode.el")))
+(package! gitignore-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitignore-mode.el")))
+
+;; This is temporarily necessary due to an unrelated bug.
+(unpin! gitignore-mode gitconfig-mode)
 #+end_src
 ** Language packages :lang:
 *** Caddy
@@ -1415,7 +1426,7 @@ current hack in testing
 #+begin_src emacs-lisp :tangle packages.el
 (package! hideshow-tree-sitter
   :recipe
-  (:local-repo "~/code/emacs/tree-sitter-code-folding"
+  (:local-repo "~/code/emacs/hideshow-tree-sitter"
    :files ( "*.el" "queries")))
 
 (package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
@@ -1435,6 +1446,11 @@ The yellow used for function calls was the same colour used for strings (in
 ~doom-horizon~) so I changed it to blue for parity with function definition
 #+begin_src emacs-lisp
 (custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
+
+(map! (:map +tree-sitter-outer-text-objects-map
+       "m" (evil-textobj-tree-sitter-get-textobj "import"
+             '((python-mode . [(import_statement) @import])
+               (rust-mode . [(use_declaration) @import])))))
 #+end_src
 
 ** emacs :emacs:
@@ -1684,9 +1700,6 @@ Why leave emacs too compile sass?  TODO take an input and output dir
 
 #+end_src
 
-#+RESULTS:
-: yeet/scss-stop
-
 #+begin_src emacs-lisp
 (map! (:map 'scss-mode-map
        :localleader
@@ -1782,9 +1795,14 @@ I have a beard and I do like wasting time...
                    `(:tls t
                      :port 6697
                      :nick "jeetelongname"
-                     :sasl-username ,"jeetelongname"
+                     :sasl-username "jeetelongname"
                      :sasl-password ,(+pass-get-secret "social/freenode")
                      :channels ("#emacs" "#haskell" "#doomemacs"))))
+#+end_src
+
+I don't really need the notifications
+#+begin_src emacs-lisp :tangle packages.el
+(package! circe-notifications :disable t)
 #+end_src
 *** rss :rss:
 Elfeed is great. I just need more blogs
