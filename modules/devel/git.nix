@@ -8,7 +8,8 @@
       co = "checkout";
       s = "status";
       yolo = ''
-        !git commit -m "$(curl -s whatthecommit.com/index.txt)"''; # we take part in a modicum of tomfoolery
+        !git commit -m "$(curl -s whatthecommit.com/index.txt)"
+      ''; # we take part in a modicum of tomfoolery
 
     };
 

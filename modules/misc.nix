@@ -12,6 +12,8 @@
     xournalpp
     calibre
     peek
+    beancount
+    tokei
 
     lua
     lua52Packages.luarocks

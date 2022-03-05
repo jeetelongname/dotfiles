@@ -56,8 +56,8 @@
 
 (package! webkit
   :recipe (:host github :repo "akirakyle/emacs-webkit"
-   :branch "main"
-   :files (:defaults "*")))
+           :branch "main"
+           :files (:defaults "*")))
 
 (package! carbon-now-sh)
 
@@ -104,4 +104,6 @@
 
 (package! circe-notifications :disable t)
 
-;; (package! elfeed-goodies :disable t)
+(package! elfeed-goodies
+  :recipe (:local-repo "~/code/emacs/elfeed-goodies"
+           :build (:not compile)))

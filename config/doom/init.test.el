@@ -24,26 +24,26 @@
        doom                ; what makes DOOM look the way it does
        doom-dashboard      ; a nifty splash screen for Emacs
        doom-quit           ; DOOM quit-message prompts when you quit Emacs
-       (emoji              ; 🙂
-         +github
-         +unicode)
-       hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       ;; (emoji              ; 🙂
+       ;;  +github)
+       ;;fill-column       ; a `fill-column' indicator
+       hl-todo             ; highlight todo/fixme/note/deprecated/hack/review
        hydra
        ;;indent-guides     ; highlighted indent columns
-       ;;ligatures         ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
        modeline            ; snazzy, Atom-inspired modeline, plus API
        nav-flash           ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       ;;ligatures         ; ligatures and symbols to make your code pretty again
        ;; tabs             ; a tab bar for Emacs
        (treemacs +lsp)     ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        vc-gutter           ; vcs diff in the fringe
        vi-tilde-fringe     ; fringe tildes to mark beyond EOB
-       (window-select      ; visually switch windows
-        +numbers)
+       (window-select
+        +numbers)          ; visually switch windows
        workspaces          ; tab emulation, persistence & separate workspaces
        zen                 ; distraction-free coding or writing
 
@@ -53,7 +53,7 @@
        fold                ; (nigh) universal code folding
        (format +onsave)    ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
-       lispy               ; vim for lisp, for people who don't like vim
+       ;;lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors    ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
@@ -82,7 +82,7 @@
 
        :tools
        ;;ansible
-       debugger            ; FIXME stepping through code, to help you add bugs
+       ;; (debugger +lsp)     ; FIXME stepping through code, to help you add bugs
        direnv
        ;;docker
        editorconfig        ; let someone else argue about tabs vs spaces
@@ -139,7 +139,7 @@
              +tree-sitter)
        (javascript +lsp    ; all(hope(abandon(ye(who(enter(here))))))
                    +tree-sitter)
-       (julia +tree-sitter); a better, faster MATLAB
+       ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk
@@ -159,17 +159,17 @@
         +noter
         +pandoc            ; See all the file formats from the magic of org
         +present
-        +roam2             ; so that I can map my insanity
+        +roam2              ; so that I can map my insanity
         )
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python +lsp        ; beautiful is better than ugly
                +poetry
-               +pyright
+               -pyright
                +tree-sitter)
        ;;qt                ; the 'cutest' gui framework ever
-       (racket +lsp +xp)   ; a DSL for DSLs
+       racket              ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
        ;;rest              ; Emacs as a REST client
        ;;rst               ; ReST in peace
@@ -187,10 +187,9 @@
        (web +lsp           ; the tubes
             +tree-stter)
        yaml                ; JSON, but readable
-       ;;zig               ; C, but simpler
 
        :email
-       (mu4e +gmail +org)  ; The emacs experience is not complete without email
+       (mu4e +gmail +org) ; The emacs experience is not complete without email
        ;;notmuch
        ;;(wanderlust +gmail)
 
@@ -199,8 +198,15 @@
        everywhere          ; *leave* Emacs!? You must be joking
        irc                 ; how neckbeards socialize
        (rss +org)          ; emacs as an RSS reader
-       ;;twitter           ; twitter client https://twitter.com/vnought
+       twitter             ; twitter client https://twitter.com/vnought
 
        :config
        literate
-       (default +bindings +smartparens))
+       (default +bindings +smartparens)
+
+       :private
+       ;; fzf
+       )
+
+
+;; wow

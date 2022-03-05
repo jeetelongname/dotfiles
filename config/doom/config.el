@@ -15,7 +15,9 @@
 (when (boundp 'pgtk-wait-for-event-timeout)
   (setq pgtk-wait-for-event-timeout 0.001))
 
-  ;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
+(setq doom-leader-alt-key "C-,")
+
+;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
 
 (add-load-path! "lisp")
 
@@ -60,8 +62,8 @@
 This is in an effort to streamline a very common usecase"
   (declare (indent 0) (debug t))
   `(with-temp-buffer
-    (progn ,@BODY)
-    (buffer-string)))
+     (progn ,@BODY)
+     (buffer-string)))
 
 (display-time-mode +1)
 
@@ -75,6 +77,64 @@ This is in an effort to streamline a very common usecase"
   (type-break-mode 1))
 
 (display-battery-mode 1)
+
+(defvar +literate-tangle--proc nil)
+(defvar +literate-tangle--proc-start-time nil)
+
+(defadvice! +literate-tangle-async-h ()
+  "A very simplified version of `+literate-tangle-h', but async."
+  :override #'+literate-tangle-h
+  (unless (getenv "__NOTANGLE")
+    (let ((default-directory doom-private-dir))
+      (when +literate-tangle--proc
+        (message "Killing outdated tangle process...")
+        (set-process-sentinel +literate-tangle--proc #'ignore)
+        (kill-process +literate-tangle--proc)
+        (sit-for 0.3)) ; ensure the message is seen for a bit
+      (setq +literate-tangle--proc-start-time (float-time)
+            +literate-tangle--proc
+            (start-process "tangle-config"
+                           (get-buffer-create " *tangle config*")
+                           "emacs" "--batch" "--eval"
+                           (format "(progn \
+(require 'ox) \
+(require 'ob-tangle) \
+(setq org-confirm-babel-evaluate nil \
+      org-inhibit-startup t \
+      org-mode-hook nil \
+      write-file-functions nil \
+      before-save-hook nil \
+      after-save-hook nil \
+      vc-handled-backends nil \
+      org-startup-folded nil \
+      org-startup-indented nil) \
+(org-babel-tangle-file \"%s\" \"%s\"))"
+                                   +literate-config-file
+                                   (expand-file-name (concat doom-module-config-file ".el")))))
+      (set-process-sentinel +literate-tangle--proc #'+literate-tangle--sentinel)
+      (run-at-time nil nil (lambda () (message "Tangling config.org"))) ; ensure shown after a save message
+      "Tangling config.org...")))
+
+(defun +literate-tangle--sentinel (process signal)
+  (cond
+   ((and (eq 'exit (process-status process))
+         (= 0 (process-exit-status process)))
+    (message "Tangled config.org sucessfully (took %.1fs)"
+             (- (float-time) +literate-tangle--proc-start-time))
+    (setq +literate-tangle--proc nil))
+   ((memq (process-status process) (list 'exit 'signal))
+    (+popup-buffer (get-buffer " *tangle config*"))
+    (message "Failed to tangle config.org (after %.1fs)"
+             (- (float-time) +literate-tangle--proc-start-time))
+    (setq +literate-tangle--proc nil))))
+
+(defun +literate-tangle-check-finished ()
+  (when (and (process-live-p +literate-tangle--proc)
+             (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
+    (switch-to-buffer " *tangle config*")
+    (signal 'quit nil)))
+
+(add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
 
 (use-package! caddyfile-mode
   :mode (("Caddyfile\\'" . caddyfile-mode)
@@ -142,20 +202,20 @@ This is in an effort to streamline a very common usecase"
   (parrot-mode)
   (parrot-start-animation))
 
-  ;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
+;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
 
-  (defun bird-annotations (cand)
-    "Takes a CANDidate (which is a bird) and returns a description of said bird"
-    (let ((yeet/birds+annotations (-zip-pairs yeet/birds '("default bird is best bird"
-                                                 "they have got the spirit"
-                                                 "EMACS BIRD EMACS BIRD"
-                                                 "nananananan"
-                                                 "you spin me right round right round like a record baby"
-                                                 "science bitch!"
-                                                 "He is just happy to be here"))))
-      (cdr (assoc cand yeet/birds+annotations))))
+(defun bird-annotations (cand)
+  "Takes a CANDidate (which is a bird) and returns a description of said bird"
+  (let ((yeet/birds+annotations (-zip-pairs yeet/birds '("default bird is best bird"
+                                                         "they have got the spirit"
+                                                         "EMACS BIRD EMACS BIRD"
+                                                         "nananananan"
+                                                         "you spin me right round right round like a record baby"
+                                                         "science bitch!"
+                                                         "He is just happy to be here"))))
+    (cdr (assoc cand yeet/birds+annotations))))
 
-  ;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
+;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
 
 (use-package! dired-dragon
   :after dired
@@ -253,12 +313,16 @@ This is in an effort to streamline a very common usecase"
   ;; the view for all books
   (map! :map calibredb-search-mode-map
         :ne "?" #'calibredb-entry-dispatch
+        :ne "a" nil
+        :ne "a" #'calibredb-add
+        :ne "A" nil
+        :ne "A" #'calibredb-add-dir
         :ne "." #'calibredb-open-dired
         :ne "e" #'calibredb-export-dispatch
         :ne "m" #'calibredb-mark-at-point
         :ne "o" #'calibredb-find-file
         :ne "O" #'calibredb-find-file-other-frame
-        :ne "q" #'calibredb-entry-quit
+        :ne "q" #'calibredb-search-quit
         :ne "s" nil
         :ne "s" #'calibredb-sort-dispatch
         :ne "S" #'calibredb-set-metadata-dispatch
@@ -333,21 +397,34 @@ This is in an effort to streamline a very common usecase"
   :mode ("\\.epub\\'" . nov-mode)
   :config
   (add-hook! 'nov-mode-hook #'olivetti-mode ;; Centers the text making it easier to read
-             (defun yeet/nov-setup ()
-               (setq olivetti-body-width 125))))
+    (mixed-pitch-mode +1)
+    (defun yeet/nov-setup ()
+      (setq-local olivetti-body-width 125))))
 
 (after! olivetti)
 
 (use-package! websocket
-    :after org-roam)
+  :after org-roam)
 
 (use-package! org-roam-ui
-    :after org-roam
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
+
+;; center the board
+(add-hook! 'tetris-mode-hook
+           (defun yeet/center-tetris ()
+             (setq-local olivetti-body-width 102)
+             (olivetti-mode +1)))
+
+(map! :after tetris
+      :map tetris-mode-map
+      :n "g" #'tetris-move-bottom
+      :n "n" #'tetris-start-game
+      :n "p" #'tetris-pause-game)
 
 (after! company
   (setq company-idle-delay 6 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
@@ -363,13 +440,28 @@ This is in an effort to streamline a very common usecase"
 (setq-default history-length 10000)
 (setq-default prescient-history-length 10000)
 
+(defvar-local consult-toggle-preview-orig nil)
+
+(defun consult-toggle-preview ()
+  "Command to enable/disable preview."
+  (interactive)
+  (if consult-toggle-preview-orig
+      (setq consult--preview-function consult-toggle-preview-orig
+            consult-toggle-preview-orig nil)
+    (setq consult-toggle-preview-orig consult--preview-function
+          consult--preview-function #'ignore)))
+
+;; Bind to `vertico-map' or `selectrum-minibuffer-map'
+(after! vertico
+  (define-key vertico-map (kbd "M-o c") #'consult-toggle-preview))
+
 (defun yeet/face-annotator (cand)
-    "Annotate faces with dummy text and face documentation"
-    (when-let (sym (intern-soft cand))
-      (marginalia--fields
-       ("The Quick Brown Fox Jumped Over The Lazy Dog" :face sym)
-       ((documentation-property sym 'face-documentation)
-        :truncate marginalia-truncate-width :face 'marginalia-documentation))))
+  "Annotate faces with dummy text and face documentation"
+  (when-let (sym (intern-soft cand))
+    (marginalia--fields
+     ("The Quick Brown Fox Jumped Over The Lazy Dog" :face sym)
+     ((documentation-property sym 'face-documentation)
+      :truncate marginalia-truncate-width :face 'marginalia-documentation))))
 
 (after! marginalia
   (add-to-list 'marginalia-annotator-registry
@@ -502,6 +594,9 @@ This is in an effort to streamline a very common usecase"
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 
+(after! hl-todo
+  (add-to-list 'hl-todo-keyword-faces `("DONE" org-done bold)))
+
 ;; (set-popup-rule! "\\*info*\\" :side 'right)
 
 (after! doom-modeline
@@ -561,6 +656,8 @@ This is in an effort to streamline a very common usecase"
 (after! eros
   (setq eros-eval-result-prefix "->  "))
 
+(map! :leader "gw" #'magit-worktree)
+
 (setq lsp-enable-file-watchers nil)
 
 (after! (pdf-tools doom-modeline)
@@ -605,6 +702,8 @@ This is in an effort to streamline a very common usecase"
 
 (after! tree-sitter
   (pushnew! tree-sitter-major-mode-language-alist
+            '(scss-mode . css))
+  (pushnew! evil-textobj-tree-sitter-major-mode-language-alist
             '(scss-mode . css)))
 
 (use-package! hideshow-tree-sitter :after tree-sitter)
@@ -631,19 +730,50 @@ This is in an effort to streamline a very common usecase"
 (set-eshell-alias!
  "cls" "clear") ; this is what I use in my regular shell
 
+(defun yeet/current-git-branch ()
+  "liteally just to change the format string"
+  (let ((fstring " (%s)"))
+    (cl-destructuring-bind (status . output)
+        (doom-call-process "git" "symbolic-ref" "-q" "--short" "HEAD")
+      (if (equal status 0)
+          (format fstring output)
+        (cl-destructuring-bind (status . output)
+            (doom-call-process "git" "describe" "--all" "--always" "HEAD")
+          (if (equal status 0)
+              (format fstring output)
+            ""))))))
+
+(defun yeet/prompt-function ()
+  (concat tramp-default-host ":"
+          (format-time-string "(%a %d)")
+          (yeet/current-git-branch)
+          (propertize " ᐅ" 'face (if (zerop eshell-last-command-status) 'success 'error))
+          " "))
+
+;; (setq eshell-prompt-function #'yeet/prompt-function)
+;; (setq eshell-prompt-regexp "\\.+:\\(\\.+\\)\\.+ᐅ ")
+
 (map! (:after spell-fu
        (:map override ;; HACK spell-fu does not define a modemap
         :n [return]
         (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
                #'+spell/correct))))
 
+(add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
+
 (setq org-directory "~/org-notes/")
 (after! org
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "NEXT(n)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "+DAY(+)" "TODAY(T)" "|" "DONE(d)" "KILL(k)")
+          (sequence "[ ](b)" "[-](S)" "[?](W)" "|" "[X](D)")
+          (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
+
   (setq org-agenda-files (seq-map
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
-        org-hide-emphasis-markers nil) ;; this makes org feel more like a proper document and less like a mark up format
+        org-hide-emphasis-markers nil ;; this makes org feel more like a proper document and less like a mark up format
+        org-startup-with-latex-preview t)
 
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
@@ -677,33 +807,68 @@ This is in an effort to streamline a very common usecase"
         org-journal-encrypt-journal t))
 
 (use-package! org-super-agenda
-  :defer t
-  :config
-  (setq org-super-agenda-groups
-         '(;; Each group has an implicit boolean OR operator between its selectors.
-           (:name "Today"  ; Optionally specify section name
-            :time-grid t  ; Items that appear on the time grid
-            :todo "TODO")  ; Items that have this TODO keyword
-           (:name "Important"
-            ;; Single arguments given alon
-            :tag "bills"
-            :priority "A")
-           ;; Groups supply their own section names when none are given
-           (:todo "WAITING" :order 8)  ; Set order of this section
-           (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
-            ;; Show this group at the end of the agenda (since it has the
-            ;; highest number). If you specified this group last, items
-            ;; with these todo keywords that e.g. have priority A would be
-            ;; displayed in that group instead, because items are grouped
-            ;; out in the order the groups are listed.
-            :order 9    )
-           (:priority<= "B"
-            ;; Show this section after "Today" and "Important", becaus  e
-            ;; their order is unspecified, defaulting to 0. Sections
-            ;; are displayed lowest-number-first.
-            :order 1))
-         org-agenda-start-day "0d"
-         org-agenda-span 1))
+  :commands org-super-agenda-mode)
+
+(after! org-agenda
+  (org-super-agenda-mode))
+
+(setq org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-block-separator nil
+      org-agenda-tags-column 100 ;; from testing this seems to be a good value
+      org-agenda-compact-blocks t)
+
+(setq org-agenda-custom-commands
+      '(("o" "Overview"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((:name "Today"
+                          :time-grid t
+                          :date today
+                          :todo "TODAY"
+                          :scheduled today
+                          :order 1)))))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Next to do"
+                           :todo "NEXT"
+                           :order 1)
+                          (:name "Due Today"
+                           :deadline today
+                           :order 2)
+                          (:name "Important"
+                           :tag "Important"
+                           :priority "A"
+                           :order 6)
+                          (:name "Overdue"
+                           :deadline past
+                           :scheduled past
+                           :face error
+                           :order 7)
+                          (:name "Due Soon"
+                           :deadline future
+                           :order 8)
+                          (:name "University"
+                           :tag "uni"
+                           :order 10)
+                          (:name "Issues"
+                           :tag "issue"
+                           :order 12)
+                          (:name "Projects"
+                           :tag "project"
+                           :order 14)
+                          (:name "Twitch"
+                           :tag "twitch"
+                           :order 30)
+                          (:name "Back Burner"
+                           :order 40
+                           :todo "+DAY")
+                          (:name "Trivial"
+                           :priority<= "E"
+                           :tag ("Trivial" "Unimportant")
+                           :order 90)
+                          (:discard (:tag ("chore" "routine" "Daily")))))))))))
 
 (after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
   (when (featurep! :ui ligatures)
@@ -789,12 +954,12 @@ This is in an effort to streamline a very common usecase"
 
 (after! circe
   (set-irc-server! "irc.eu.libera.chat"
-                   `(:tls t
-                     :port 6697
-                     :nick "jeetelongname"
-                     :sasl-username "jeetelongname"
-                     :sasl-password ,(+pass-get-secret "social/freenode")
-                     :channels ("#emacs" "#haskell" "#doomemacs"))))
+    `(:tls t
+      :port 6697
+      :nick "jeetelongname"
+      :sasl-username "jeetelongname"
+      :sasl-password ,(+pass-get-secret "social/freenode")
+      :channels ("#emacs" "#haskell" "#doomemacs"))))
 
 (after! elfeed
   (setq elfeed-search-filter "@3-week-ago -fun") ;; /they post so much/
