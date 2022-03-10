@@ -32,38 +32,29 @@ Lets get this config started!
     - [[#globalsubword-mode][GlobalSubWord Mode]]
     - [[#type-break-mode][Type break mode]]
     - [[#battery-mode][Battery mode]]
-  - [[#async-config-tangling][async config tangling]]
 - [[#packages][Packages]]
-  - [[#fixes][Fixes]]
-  - [[#language-packages][Language packages]]
+  - [[#ui][ui]]
+    - [[#modeline-fun][modeline fun]]
+    - [[#sidebars][sidebars]]
+  - [[#emacs][emacs]]
+    - [[#dired][dired]]
+  - [[#tools][tools]]
+    - [[#pretty-code-shots][pretty code shots]]
+  - [[#lang][lang]]
+    - [[#org-mode][org mode]]
+    - [[#emacs-lisp][emacs lisp]]
+    - [[#sql][SQL]]
     - [[#caddy][Caddy]]
     - [[#vim][vim]]
     - [[#unit-tests][unit tests]]
-    - [[#emacs-lisp-editions][Emacs lisp editions]]
-    - [[#org-mode][org mode]]
     - [[#janet][janet]]
-  - [[#hugo-support][Hugo support]]
-  - [[#modeline-fun][modeline fun]]
-  - [[#evil-tutor][Evil tutor]]
-  - [[#dired-drag-and-drop][dired drag and drop]]
-  - [[#themes][themes]]
-  - [[#discord-rich-presence][discord rich presence]]
-  - [[#tldr-integration][tldr integration]]
-  - [[#atomic-chrome][atomic chrome]]
-  - [[#hacker-news][Hacker news]]
-  - [[#emacs-webkit][emacs webkit]]
-  - [[#pretty-code-shots][pretty code shots]]
-  - [[#selectric-mode][selectric-mode]]
-  - [[#games][Games]]
-  - [[#fixme-sql][FIXME SQL]]
-  - [[#sidebars][Sidebars]]
-    - [[#dired-sidebar][Dired sidebar]]
-    - [[#ibuffer-sidebar][Ibuffer sidebar]]
-    - [[#org-sidebar][Org Sidebar]]
-  - [[#elfeed][elfeed]]
-  - [[#novels-and-epubs][novels and epubs]]
-  - [[#org-roam][org roam]]
-  - [[#tetris][tetris]]
+  - [[#app][app]]
+    - [[#books][books]]
+    - [[#tldr-integration][tldr integration]]
+  - [[#other][other]]
+    - [[#tetris][tetris]]
+    - [[#fixes][fixes]]
+    - [[#discord-rich-presence][discord rich presence]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -71,7 +62,7 @@ Lets get this config started!
     - [[#vertico][vertico]]
   - [[#editor][editor]]
     - [[#evil][evil]]
-  - [[#ui][ui]]
+  - [[#ui-1][ui]]
     - [[#doom][Doom]]
     - [[#doom-dashboard][Doom Dashboard]]
     - [[#hl-todo][Hl TODO]]
@@ -79,21 +70,21 @@ Lets get this config started!
     - [[#modeline][Modeline]]
     - [[#treemacs][Treemacs]]
     - [[#workspaces][Workspaces]]
-  - [[#tools][tools]]
+  - [[#tools-1][tools]]
     - [[#eval][eval]]
     - [[#magit][magit]]
     - [[#lsp][lsp]]
     - [[#pdf][pdf]]
     - [[#tmux][tmux]]
     - [[#tree-sitter][tree-sitter]]
-  - [[#emacs][emacs]]
-    - [[#dired][dired]]
+  - [[#emacs-1][emacs]]
+    - [[#dired-1][dired]]
   - [[#term][term]]
     - [[#eshell][eshell]]
   - [[#checkers][checkers]]
     - [[#spell][spell]]
-  - [[#lang][lang]]
-    - [[#emacs-lisp][emacs-lisp]]
+  - [[#lang-1][lang]]
+    - [[#emacs-lisp-1][emacs-lisp]]
     - [[#org][Org]]
     - [[#deprecated-go][DEPRECATED Go]]
     - [[#haskell][haskell]]
@@ -103,10 +94,12 @@ Lets get this config started!
     - [[#web][Web]]
   - [[#email][email]]
     - [[#mu4e][mu4e]]
-  - [[#app][app]]
+  - [[#app-1][app]]
     - [[#irc][irc]]
     - [[#rss][rss]]
     - [[#everywhere][everywhere]]
+  - [[#config][config]]
+    - [[#literate][literate]]
 - [[#epilogue][Epilogue]]
 
 * Rudimentary configuration
@@ -127,6 +120,8 @@ This is the stuff that does not really belong in any module but is useful
   (setq pgtk-wait-for-event-timeout 0.001))
 
 (setq doom-leader-alt-key "C-,")
+
+
 #+END_SRC
 
 +I like a little separation so I put an empty line at the top of my emacs+
@@ -376,6 +371,46 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 #+end_src
 
 #+begin_src emacs-lisp
+(defun ar/consult-apple-search ()
+  "Ivy interface for dynamically querying apple.com docs."
+  (interactive)
+  (require 'request)
+  (require 'json)
+  (require 'url-http)
+  (consult--read "apple docs: "
+            (lambda (input)
+              (let* ((url (url-encode-url (format "https://developer.apple.com/search/search_data.php?q=%s" input)))
+                     (c1-width (round (* (- (window-width) 9) 0.3)))
+                     (c2-width (round (* (- (window-width) 9) 0.5)))
+                     (c3-width (- (window-width) 9 c1-width c2-width)))
+                (let ((request-curl-options (list "-H" (string-trim (url-http-user-agent-string)))))
+                   (request url
+                     :type "GET"
+                     :parser 'json-read
+                     :success (cl-function
+                               (lambda (&key data &allow-other-keys)
+                                 (ivy-update-candidates
+                                  (mapcar (lambda (item)
+                                            (let-alist item
+                                              (propertize
+                                               (format "%s   %s   %s"
+                                                       (truncate-string-to-width (propertize (or .title "")
+                                                                                             'face '(:foreground "yellow")) c1-width nil ?\s "…")
+                                                       (truncate-string-to-width (or .description "") c2-width nil ?\s "…")
+                                                       (truncate-string-to-width (propertize (string-join (or .api_ref_data.languages "") "/")
+                                                                                             'face '(:foreground "cyan1")) c3-width nil ?\s "…"))
+                                               'url .url)))
+                                          (cdr (car data)))))))
+                   0)))
+            :action (lambda (selection)
+                      (browse-url (concat "https://developer.apple.com"
+                                          (get-text-property 0 'url selection))))
+            :dynamic-collection t
+            :caller 'ar/counsel-apple-search))
+
+#+end_src
+
+#+begin_src emacs-lisp
 (map! :leader
       "w C-t" nil
       "w C-t" #'toggle-window-split)
@@ -442,67 +477,6 @@ I like my modeline busy
 #+begin_src emacs-lisp
 (display-battery-mode 1)
 #+end_src
-** async config tangling
-again stolen from @tecosaur, it basically allows for async config tangling.
-#+begin_src emacs-lisp
-(defvar +literate-tangle--proc nil)
-(defvar +literate-tangle--proc-start-time nil)
-
-(defadvice! +literate-tangle-async-h ()
-  "A very simplified version of `+literate-tangle-h', but async."
-  :override #'+literate-tangle-h
-  (unless (getenv "__NOTANGLE")
-    (let ((default-directory doom-private-dir))
-      (when +literate-tangle--proc
-        (message "Killing outdated tangle process...")
-        (set-process-sentinel +literate-tangle--proc #'ignore)
-        (kill-process +literate-tangle--proc)
-        (sit-for 0.3)) ; ensure the message is seen for a bit
-      (setq +literate-tangle--proc-start-time (float-time)
-            +literate-tangle--proc
-            (start-process "tangle-config"
-                           (get-buffer-create " *tangle config*")
-                           "emacs" "--batch" "--eval"
-                           (format "(progn \
-(require 'ox) \
-(require 'ob-tangle) \
-(setq org-confirm-babel-evaluate nil \
-      org-inhibit-startup t \
-      org-mode-hook nil \
-      write-file-functions nil \
-      before-save-hook nil \
-      after-save-hook nil \
-      vc-handled-backends nil \
-      org-startup-folded nil \
-      org-startup-indented nil) \
-(org-babel-tangle-file \"%s\" \"%s\"))"
-                                   +literate-config-file
-                                   (expand-file-name (concat doom-module-config-file ".el")))))
-      (set-process-sentinel +literate-tangle--proc #'+literate-tangle--sentinel)
-      (run-at-time nil nil (lambda () (message "Tangling config.org"))) ; ensure shown after a save message
-      "Tangling config.org...")))
-
-(defun +literate-tangle--sentinel (process signal)
-  (cond
-   ((and (eq 'exit (process-status process))
-         (= 0 (process-exit-status process)))
-    (message "Tangled config.org sucessfully (took %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))
-   ((memq (process-status process) (list 'exit 'signal))
-    (+popup-buffer (get-buffer " *tangle config*"))
-    (message "Failed to tangle config.org (after %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))))
-
-(defun +literate-tangle-check-finished ()
-  (when (and (process-live-p +literate-tangle--proc)
-             (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
-    (switch-to-buffer " *tangle config*")
-    (signal 'quit nil)))
-
-(add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
-#+end_src
 * Packages
 I have quite a few packages that I use. These are the packages and there
 subsequent configurations
@@ -510,145 +484,8 @@ subsequent configurations
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
-** Fixes
-#+begin_src emacs-lisp :tangle packages.el
-(package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
-#+end_src
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! gitconfig-mode
-  :recipe (:host github :repo "magit/git-modes"
-           :files ("gitconfig-mode.el")))
-(package! gitignore-mode
-  :recipe (:host github :repo "magit/git-modes"
-           :files ("gitignore-mode.el")))
-
-;; This is temporarily necessary due to an unrelated bug.
-(unpin! gitignore-mode gitconfig-mode)
-#+end_src
-** Language packages :lang:
-*** Caddy
-Caddy is a webserver with its own file format
-#+begin_src emacs-lisp :tangle packages.el
-(package! caddyfile-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! caddyfile-mode
-  :mode (("Caddyfile\\'" . caddyfile-mode)
-         ("caddy\\.conf\\'" . caddyfile-mode)))
-#+end_src
-*** TODO vim
-because sacrilege is fun
-(this is mostly a mental exercise but it does work...) I can (alleged) also get lsp
-support as well so this may be a fun project to take on
-#+begin_src emacs-lisp :tangle packages.el
-(package! vimrc-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! vimrc-mode
-  :mode "\\.vim$\\'"
-  :config)
-;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
-#+end_src
-*** TODO unit tests
-While I am in fact an incompetent programmer I do enjoy the sysiphisan task of
-writing tests +thanks in no small part to the ease that cucumber makes it+
-I was so ready to use it but it did not want too work with my ruby project :(
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! feature-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! feature-mode
-  :mode "\\.feature$\\'")
-#+end_src
-*** Emacs lisp editions :emacsLisp:
-in the ever growing emacs ecosystem the amount of prefixes you can use are
-shrinking and as microcosoms open up and connections need to be reenforced it
-all leads us down the slippery slope of ever lengthening prefixes. this godly
-package shortens them to make reading code a lot easier
-#+begin_src emacs-lisp :tangle packages.el
-(package! nameless)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! nameless
-  :defer t
-  :hook (emacs-lisp-mode-hook . nameless-mode)
-  :config
-  (setq nameless-global-aliases '(("d" . "doom"))
-        nameless-private-prefix t)
-
-  (map! :map emacs-lisp-mode-map
-        :localleader
-        "i" #'nameless-insert-name))
-#+end_src
-*** COMMENT Brainfuck
-me get errors need fix
-#+begin_src emacs-lisp :tangle packages.el
-(package! brainfuck-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! brainfuck-mode
-  :mode "\\.bf$\\'")
-#+end_src
-*** org mode :org:
-#+begin_src emacs-lisp :tangle packages.el
-(package! company-org-block)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! company-org-block
-  :after org
-  :config
-  (setq company-org-block-edit-style 'auto))
-
-(after! org
-  (set-company-backend! 'org-mode-hook '(company-org-block company-capf))
-
-  ;; (setq org-babel-load-languages
-  ;;       '((elisp   . t)
-  ;;         (python  . t)
-  ;;         (ruby    . t)
-  ;;         (haskell . t)
-  ;;         (scheme  . t)
-  ;;         (latex   . t)))
-  )
-
-#+end_src
-*** janet
-#+begin_src emacs-lisp :tangle packages.el
-(package! janet-mode :recipe
-  (:host github :repo "ALSchwalm/janet-mode"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! janet-mode
-  :mode "\\.janet$\\'")
-#+end_src
-
-** Hugo support
-I blog! [[https://jeetelongname.github.io/blog][Sometimes.. When I can.. Not really]]
-This is mostly just for the time stamp but it does come in handy
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! emacs-easy-hugo
-  :recipe (:host github
-           :repo "masasam/emacs-easy-hugo"
-           :files ("*el")))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
-(use-package! emacs-easy-hugo
-  :after markdown
-  :config
-  (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
-#+END_SRC
-** modeline fun :modeline:
+** ui
+*** modeline fun :modeline:
 /whats life without a little colour?/
 #+begin_src emacs-lisp :tangle packages.el
 (package! nyan-mode)
@@ -696,17 +533,74 @@ This is mostly just for the time stamp but it does come in handy
   (interactive (list (completing-read "Select bird: " birds)))
   (parrot-set-parrot-type bird))
 #+end_src
-** Evil tutor :evil:
-I wanted to see the differences with its vim counterparts (its a litle nicer)
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! evil-tutor)
-#+END_SRC
-** dired drag and drop :dired:
+*** sidebars :sidebars:
+By virtue of these things I seem to have 3 different sidebars (4 if you include
+treemacs) that I have taken a liking to so they get there own sub genre
+
+#+begin_src emacs-lisp
+(defun yeet/sidebar-toggle ()
+  "toggle both ibuffer and dired sidebars"
+  (interactive)
+  (ibuffer-sidebar-toggle-sidebar)
+  (dired-sidebar-toggle-sidebar))
+
+(map! :leader "o p" nil
+      :leader "o p" #'dired-sidebar-toggle-sidebar ;; this is more useful most of the time
+      :leader "o P" #'yeet/sidebar-toggle) ;; this is when I need too do some buffer management
+#+end_src
+
+**** Dired sidebar
+this is a replacement for treemacs. Now don't get me wrong. I like treemacs. Its
+great but its /not dired/. This preserves a lot of the dired configuration I could
+do and more importantly preserves keys which is nice
+#+begin_src emacs-lisp :tangle packages.el
+(package! dired-sidebar)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (after! dired-sidebar (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
+
+(use-package! dired-sidebar
+  :defer t
+  :commands dired-sidebar-toggle-sidebar
+  :config
+  (setq dired-sidebar-use-custom-modeline t
+        dired-sidebar-should-follow-file t))
+#+end_src
+
+**** Ibuffer sidebar
+this is the same thing as above made by the same [[https://github.com/jojojames][author]] and it works just like
+dired sidebar.. for Ibuffer
+#+begin_src emacs-lisp :tangle packages.el
+(package! ibuffer-sidebar)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! ibuffer-sidebar
+  :commands ibuffer-sidebar-toggle-sidebar
+  :defer t)
+#+end_src
+**** TODO Org Sidebar
+this does a bunch of org stuff like break stuff down into headings. there is a
+bit of work to be done
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-sidebar)
+#+end_src
+
+
+#+begin_src emacs-lisp
+(use-package! org-sidebar
+  :after org)
+#+end_src
+
+** emacs
+*** dired :dired:
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
 wellish
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
-(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
+(package! dired-dragon :recipe (:local-repo "~/code/emacs/dired-dragon"
+                                :build (:not compile)))
+;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
 #+end_src
 #+begin_src emacs-lisp
 (use-package! dired-dragon
@@ -719,141 +613,10 @@ wellish
          :n "i" #'dired-dragon-individual)))
 #+end_src
 
-** themes :doom:
-this was for a terminal  experiment that did not work
-#+begin_src emacs-lisp :tangle packages.el
-(package! horizon-theme)
-(unpin! doom-themes)
-(package! tao-theme)
-#+end_src
+#+RESULTS:
 
-** discord rich presence
-Why use emacs when you can't tell everyone your using emacs?
-I am now using elcord because.. peer pressure? I don't know but the config is
-nice
-#+begin_src emacs-lisp :tangle packages.el
-(package! elcord)
-#+end_src
-I use non daemon sessions for testing I would much rather it would not be used
-(and block the closing of emacs)
-
-#+begin_src emacs-lisp
-(when (daemonp)
-  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
-    :config
-    (defun yeet/elcord-buffer-info ()
-      "Get the buffer name or whether we are editing it or not and return a formatted string."
-      (format "%s %s" (if buffer-read-only
-                          "Reading"
-                        "Editing")
-              (buffer-name)))
-
-    (setq elcord-quiet t
-          elcord-use-major-mode-as-main-icon nil
-          elcord-show-small-icon t
-          elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
-
-    (elcord-mode +1)))
-#+end_src
-
-** tldr integration
-Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
-a lot of useless information and .. no information. Now in emacs!
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! tldr)
-#+END_SRC
-
-#+begin_src emacs-lisp
-(use-package! tldr
-  :config
-  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
-  (setq tldr-enabled-categories '("common" "linux")))
-#+end_src
-** atomic chrome
-#+begin_src emacs-lisp :tangle packages.el
-(package! atomic-chrome)
-#+end_src
-When writing a lot of markdown on github this helps (now all I need to do is get the
-button on a keybind in my browser)
-#+begin_src emacs-lisp
-(use-package! atomic-chrome
-  :after-call focus-out-hook
-  :config
-  (setq atomic-chrome-buffer-open-style 'frame
-        atomic-chrome-default-major-mode 'markdown-mode
-        atomic-chrome-url-major-mode-alist
-        '(("github.\\.com" . gfm-mode)
-          ("reddit\\.com" . fundamental-mode)))
-
-  (atomic-chrome-start-server))
-#+end_src
-** Hacker news
-I am a hacker.. I like news (sometimes) Now in emacs!
-#+begin_src emacs-lisp :tangle packages.el
-(package! hackernews)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! hackernews :defer t)
-#+end_src
-
-** COMMENT DEPRECATED emacs application framework
-#+begin_quote
-EAF does not work with pgtk. due to reasons I don't understand [[https://github.com/manateelazycat/emacs-application-framework/issues/449][check out this
-issue for more info]]
-I will be moving to emacs webkit because /I need my emacs browser/
-#+end_quote
-
-eaf is an application framework for writing pyqt applications in emacs. Its
-really cool!
-https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revisit
-You need a few dependencies for this to work. I don't recommend installing from
-pip as it can be buggy
-
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! eaf :recipe
-  (:host github
-   :repo "manateelazycat/emacs-application-framework"
-   :files ("*")
-   :build (:not compile)))
-
-(package! epc)
-(package! ctable)
-(package! deferred)
-#+END_SRC
-
-
-#+BEGIN_SRC emacs-lisp
-(use-package! eaf
-  :defer t
-  :init
-  (use-package! epc :defer t)
-  (use-package! ctable :defer t)
-  (use-package! deferred :defer t)
-  (use-package! s :defer t)
-  :config
-  (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-  (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
-  (setq eaf-browser-default-search-engine "duckduckgo")
-  (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
-
-(use-package! eaf-evil ;; evil bindings in my browser
-  :after eaf
-  :config
-  (setq eaf-evil-leader-keymap doom-leader-map)
-  (setq eaf-evil-leader-key "spc"))
-#+end_src
-
-** TODO emacs webkit
-because my emacs addiction is getting worse
-#+begin_src emacs-lisp :tangle packages.el
-(package! webkit
-  :recipe (:host github :repo "akirakyle/emacs-webkit"
-           :branch "main"
-           :files (:defaults "*")))
-#+end_src
-
-** pretty code shots
+** tools
+*** pretty code shots
 i missed the ability to make pretty code shots inside vscode now its come back to
 me through this package. its pretty cool and works well (it only does one thing)
 #+begin_src emacs-lisp :tangle packages.el
@@ -886,26 +649,86 @@ I just went back to firefox since eaf is deprecated in my config
 #+begin_src emacs-lisp
 ;; (use-package! screenshot :defer)
 #+end_src
-** selectric-mode
-I want to annoy people with a loud keyboard without having to carry around a
-loud keyboard
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! selectric-mode)
-#+END_SRC
-** Games
-I want to make a module full of fun games and addition's to easter eggs. its there
-to document what exists and just add a little more fun to the operating system
-we call home
-Some games I will probably add
-- https://web.archive.org/web/20070708044037/http://cedet.sourceforge.net/ftp/hangman.el-0.1.gz
-- https://www.emacswiki.org/emacs/CategoryGames
+** lang
+*** org mode
+**** TODO Company org block
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! emacs-2048
-;;   :recipe (:host github
-;;            :repo "sprang/emacs-2048"))
+(package! company-org-block)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! company-org-block
+  :after org
+  :config
+  (setq company-org-block-edit-style 'auto))
+
+(after! org
+  (set-company-backend! 'org-mode-hook '(company-org-block company-capf))
+
+  ;; (setq org-babel-load-languages
+  ;;       '((elisp   . t)
+  ;;         (python  . t)
+  ;;         (ruby    . t)
+  ;;         (haskell . t)
+  ;;         (scheme  . t)
+  ;;         (latex   . t)))
+  )
 
 #+end_src
-** FIXME SQL
+
+**** Org pandoc import
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo "tecosaur/org-pandoc-import"
+           :files ("*.el" "filters" "preprocessors")))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-pandoc-import :after org)
+#+end_src
+
+**** org roam :org:roam:
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! org-roam)
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
+#+end_src
+*** emacs lisp :emacsLisp:
+in the ever growing emacs ecosystem the amount of prefixes you can use are
+shrinking and as microcosoms open up and connections need to be reenforced it
+all leads us down the slippery slope of ever lengthening prefixes. this godly
+package shortens them to make reading code a lot easier
+#+begin_src emacs-lisp :tangle packages.el
+(package! nameless)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! nameless
+  :defer t
+  :hook (emacs-lisp-mode-hook . nameless-mode)
+  :config
+  (setq nameless-global-aliases '(("d" . "doom"))
+        nameless-private-prefix t)
+
+  (map! :map emacs-lisp-mode-map
+        :localleader
+        "i" #'nameless-insert-name))
+#+end_src
+*** TODO SQL
 #+begin_src emacs-lisp
 (after! sql
   (add-to-list 'sql-connection-alist
@@ -913,71 +736,68 @@ Some games I will probably add
                       (sql-port 22)
                       (sql-server (read-from-minibuffer "server ip: ")))))
 #+end_src
-** Sidebars :sidebars:
-By virtue of these things I seem to have 3 different sidebars (4 if you include
-treemacs) that I have taken a liking to so they get there own sub genre
 
-#+begin_src emacs-lisp
-(defun yeet/sidebar-toggle ()
-  "toggle both ibuffer and dired sidebars"
-  (interactive)
-  (ibuffer-sidebar-toggle-sidebar)
-  (dired-sidebar-toggle-sidebar))
-
-(map! :leader "o p" nil
-      :leader "o p" #'dired-sidebar-toggle-sidebar ;; this is more useful most of the time
-      :leader "o P" #'yeet/sidebar-toggle) ;; this is when I need too do some buffer management
-#+end_src
-
-*** Dired sidebar
-this is a replacement for treemacs. Now don't get me wrong. I like treemacs. Its
-great but its /not dired/. This preserves a lot of the dired configuration I could
-do and more importantly preserves keys which is nice
+*** Caddy
+Caddy is a webserver with its own file format
 #+begin_src emacs-lisp :tangle packages.el
-(package! dired-sidebar)
+(package! caddyfile-mode)
 #+end_src
 
 #+begin_src emacs-lisp
-;; (after! dired-sidebar (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
-
-(use-package! dired-sidebar
-  :defer t
-  :commands dired-sidebar-toggle-sidebar
-  :config
-  (setq dired-sidebar-use-custom-modeline t
-        dired-sidebar-should-follow-file t))
+(use-package! caddyfile-mode
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("caddy\\.conf\\'" . caddyfile-mode)))
 #+end_src
-
-*** Ibuffer sidebar
-this is the same thing as above made by the same [[https://github.com/jojojames][author]] and it works just like
-dired sidebar.. for Ibuffer
+*** TODO vim
+because sacrilege is fun
+(this is mostly a mental exercise but it does work...) I can (alleged) also get lsp
+support as well so this may be a fun project to take on
 #+begin_src emacs-lisp :tangle packages.el
-(package! ibuffer-sidebar)
+(package! vimrc-mode)
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! ibuffer-sidebar
-  :commands ibuffer-sidebar-toggle-sidebar
-  :defer t)
+(use-package! vimrc-mode
+  :mode "\\.vim$\\'"
+  :config)
+;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
 #+end_src
-*** TODO Org Sidebar
-this does a bunch of org stuff like break stuff down into headings. there is a
-bit of work to be done
+*** TODO unit tests
+While I am in fact an incompetent programmer I do enjoy the sysiphisan task of
+writing tests +thanks in no small part to the ease that cucumber makes it+
+I was so ready to use it but it did not want too work with my ruby project :(
+
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-sidebar)
+(package! feature-mode)
 #+end_src
-
 
 #+begin_src emacs-lisp
-(use-package! org-sidebar
-  :after org)
+(use-package! feature-mode
+  :mode "\\.feature$\\'")
+#+end_src
+*** COMMENT Brainfuck
+me get errors need fix
+#+begin_src emacs-lisp :tangle packages.el
+(package! brainfuck-mode)
 #+end_src
 
-** elfeed :app:rss:
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! elfeed-web)
-#+END_SRC
-** novels and epubs :books:
+#+begin_src emacs-lisp
+(use-package! brainfuck-mode
+  :mode "\\.bf$\\'")
+#+end_src
+*** janet
+#+begin_src emacs-lisp :tangle packages.el
+(package! janet-mode :recipe
+  (:host github :repo "ALSchwalm/janet-mode"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! janet-mode
+  :mode "\\.janet$\\'")
+#+end_src
+
+** app
+*** books :books:
 I am starting to read more books and papers online so it makes sense to include
 improve the experience somewhat
 #+begin_src emacs-lisp :tangle packages.el
@@ -1096,26 +916,21 @@ setup function that changes the theme and makes it pretty
 #+end_src
 
 #+RESULTS:
-** org roam :org:roam:
-#+begin_src emacs-lisp :tangle packages.el
-(unpin! org-roam)
-(package! websocket)
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
-#+end_src
+*** tldr integration
+Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
+a lot of useless information and .. no information. Now in emacs!
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! tldr)
+#+END_SRC
 
 #+begin_src emacs-lisp
-(use-package! websocket
-  :after org-roam)
-
-(use-package! org-roam-ui
-  :after org-roam
+(use-package! tldr
   :config
-  (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t))
+  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
+  (setq tldr-enabled-categories '("common" "linux")))
 #+end_src
-** tetris
+** other
+*** tetris
 who does not like a good game of tetris
 #+begin_src emacs-lisp
 ;; center the board
@@ -1129,6 +944,51 @@ who does not like a good game of tetris
       :n "g" #'tetris-move-bottom
       :n "n" #'tetris-start-game
       :n "p" #'tetris-pause-game)
+#+end_src
+
+*** fixes
+#+begin_src emacs-lisp :tangle packages.el
+(package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! gitconfig-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitconfig-mode.el")))
+(package! gitignore-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitignore-mode.el")))
+
+;; This is temporarily necessary due to an unrelated bug.
+(unpin! gitignore-mode gitconfig-mode)
+#+end_src
+*** discord rich presence
+Why use emacs when you can't tell everyone your using emacs?
+I am now using elcord because.. peer pressure? I don't know but the config is
+nice
+#+begin_src emacs-lisp :tangle packages.el
+(package! elcord)
+#+end_src
+I use non daemon sessions for testing I would much rather it would not be used
+(and block the closing of emacs)
+
+#+begin_src emacs-lisp
+(when (daemonp)
+  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
+    :config
+    (defun yeet/elcord-buffer-info ()
+      "Get the buffer name or whether we are editing it or not and return a formatted string."
+      (format "%s %s" (if buffer-read-only
+                          "Reading"
+                        "Editing")
+              (buffer-name)))
+
+    (setq elcord-quiet t
+          elcord-use-major-mode-as-main-icon nil
+          elcord-show-small-icon t
+          elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
+
+    (elcord-mode +1)))
 #+end_src
 
 * Modules
@@ -1245,6 +1105,12 @@ My theme
 this will load up 2 different themes one for the terminal and one for the gui.
 turns out that the emacs client works differently so this is not something that
 I can use... still works tho
+#+begin_src emacs-lisp :tangle packages.el
+(package! horizon-theme)
+(unpin! doom-themes)
+(package! tao-theme)
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme (if (or (daemonp) (display-graphic-p))
                      'doom-horizon
@@ -1381,8 +1247,8 @@ My modeline does a lot...
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'auto
         doom-modeline-height 30
-        doom-modeline-icon 't
-        doom-modeline-modal-icon 'nil
+        doom-modeline-icon t
+        doom-modeline-modal-icon nil
         doom-modeline-env-version t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
@@ -1475,6 +1341,10 @@ stick out a little more
 file watchers crash emacs. I never know what they do anyway
 #+begin_src emacs-lisp
 (setq lsp-enable-file-watchers nil)
+
+;; I also don't want suggested servers
+(after! lsp-mode
+  (setq lsp-enable-suggest-server-download nil))
 #+end_src
 *** pdf :pdf:
 custom modeline for pdf files stolen from tecosaur and hopefully it will become
@@ -1534,7 +1404,9 @@ current hack in testing
 #+begin_src emacs-lisp
 (after! tree-sitter
   (pushnew! tree-sitter-major-mode-language-alist
-            '(scss-mode . css))
+            '(scss-mode . css)))
+
+(after! evil-textobj-tree-sitter
   (pushnew! evil-textobj-tree-sitter-major-mode-language-alist
             '(scss-mode . css)))
 #+end_src
@@ -1653,7 +1525,7 @@ it
 (setq org-directory "~/org-notes/")
 (after! org
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "NEXT(n)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "+DAY(+)" "TODAY(T)" "|" "DONE(d)" "KILL(k)")
+        '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "NEXT(n)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "+DAY(+)" "TODAY(T)" "BLOG(B)" "|" "DONE(d)" "KILL(k)")
           (sequence "[ ](b)" "[-](S)" "[?](W)" "|" "[X](D)")
           (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
@@ -1741,56 +1613,56 @@ I don't need people snooping into my thoughts
       org-agenda-tags-column 100 ;; from testing this seems to be a good value
       org-agenda-compact-blocks t)
 
-(setq org-agenda-custom-commands
-      '(("o" "Overview"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                          :time-grid t
-                          :date today
-                          :todo "TODAY"
-                          :scheduled today
-                          :order 1)))))
-          (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Next to do"
-                           :todo "NEXT"
-                           :order 1)
-                          (:name "Due Today"
-                           :deadline today
-                           :order 2)
-                          (:name "Important"
-                           :tag "Important"
-                           :priority "A"
-                           :order 6)
-                          (:name "Overdue"
-                           :deadline past
-                           :scheduled past
-                           :face error
-                           :order 7)
-                          (:name "Due Soon"
-                           :deadline future
-                           :order 8)
-                          (:name "University"
-                           :tag "uni"
-                           :order 10)
-                          (:name "Issues"
-                           :tag "issue"
-                           :order 12)
-                          (:name "Projects"
-                           :tag "project"
-                           :order 14)
-                          (:name "Twitch"
-                           :tag "twitch"
-                           :order 30)
-                          (:name "Back Burner"
-                           :order 40
-                           :todo "+DAY")
-                          (:name "Trivial"
-                           :priority<= "E"
-                           :tag ("Trivial" "Unimportant")
-                           :order 90)
-                          (:discard (:tag ("chore" "routine" "Daily")))))))))))
+(after! org-agenda
+  (setq org-agenda-custom-commands
+        '(("o" "Overview"
+           ((agenda "" ((org-agenda-span 'day)
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                            :time-grid t
+                            :date today
+                            :todo "TODAY"
+                            :scheduled today
+                            :order 1)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:name "Next to do"
+                             :todo "NEXT"
+                             :order 1)
+                            (:name "Due Today"
+                             :deadline today
+                             :order 2)
+                            (:name "Important"
+                             :tag "Important"
+                             :priority "A"
+                             :order 6)
+                            (:name "Overdue"
+                             :deadline past
+                             :scheduled past
+                             :face error
+                             :order 7)
+                            (:name "Due Soon"
+                             :deadline future
+                             :order 8)
+                            (:name "University"
+                             :tag "uni"
+                             :order 10)
+                            (:name "Issues"
+                             :tag "issue"
+                             :order 12)
+                            (:name "Projects"
+                             :todo "PROJ"
+                             :tag "project"
+                             :order 14)
+                            (:name "Back Burner"
+                             :order 40
+                             :todo "+DAY"
+                             :todo "BLOG")
+                            (:name "Trivial"
+                             :priority<= "E"
+                             :tag ("Trivial" "Unimportant")
+                             :order 90)
+                            (:discard (:tag ("chore" "routine" "Daily"))))))))))))
 #+end_src
 
 *** DEPRECATED Go :go:
@@ -1924,7 +1796,7 @@ on the folders remember that they come from what you set in your [[https://githu
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
-  (setq mu4e-mu-version "1.6.6")
+  (setq mu4e-mu-version "1.6.10")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 #+END_SRC
@@ -2004,7 +1876,7 @@ I am now kinda the maintainer of elfeed-goodies...
 
 #+BEGIN_SRC emacs-lisp
 (after! elfeed
-  (setq elfeed-search-filter "@3-week-ago -fun") ;; /they post so much/
+  (setq elfeed-search-filter "@4-week-ago -fun") ;; /they post so much/
 
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
@@ -2043,6 +1915,69 @@ makes more sense to be the default (which is org)
 ;; (after! emacs-everywhere
 ;;   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
 ;;   (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
+#+end_src
+** config
+*** literate
+**** async config tangling
+again stolen from @tecosaur, it basically allows for async config tangling.
+#+begin_src emacs-lisp
+(defvar +literate-tangle--proc nil)
+(defvar +literate-tangle--proc-start-time nil)
+
+(defadvice! +literate-tangle-async-h ()
+  "A very simplified version of `+literate-tangle-h', but async."
+  :override #'+literate-tangle-h
+  (unless (getenv "__NOTANGLE")
+    (let ((default-directory doom-private-dir))
+      (when +literate-tangle--proc
+        (message "Killing outdated tangle process...")
+        (set-process-sentinel +literate-tangle--proc #'ignore)
+        (kill-process +literate-tangle--proc)
+        (sit-for 0.3)) ; ensure the message is seen for a bit
+      (setq +literate-tangle--proc-start-time (float-time)
+            +literate-tangle--proc
+            (start-process "tangle-config"
+                           (get-buffer-create " *tangle config*")
+                           "emacs" "--batch" "--eval"
+                           (format "(progn \
+(require 'ox) \
+(require 'ob-tangle) \
+(setq org-confirm-babel-evaluate nil \
+      org-inhibit-startup t \
+      org-mode-hook nil \
+      write-file-functions nil \
+      before-save-hook nil \
+      after-save-hook nil \
+      vc-handled-backends nil \
+      org-startup-folded nil \
+      org-startup-indented nil) \
+(org-babel-tangle-file \"%s\" \"%s\"))"
+                                   +literate-config-file
+                                   (expand-file-name (concat doom-module-config-file ".el")))))
+      (set-process-sentinel +literate-tangle--proc #'+literate-tangle--sentinel)
+      (run-at-time nil nil (lambda () (message "Tangling config.org"))) ; ensure shown after a save message
+      "Tangling config.org...")))
+
+(defun +literate-tangle--sentinel (process signal)
+  (cond
+   ((and (eq 'exit (process-status process))
+         (= 0 (process-exit-status process)))
+    (message "Tangled config.org sucessfully (took %.1fs)"
+             (- (float-time) +literate-tangle--proc-start-time))
+    (setq +literate-tangle--proc nil))
+   ((memq (process-status process) (list 'exit 'signal))
+    (+popup-buffer (get-buffer " *tangle config*"))
+    (message "Failed to tangle config.org (after %.1fs)"
+             (- (float-time) +literate-tangle--proc-start-time))
+    (setq +literate-tangle--proc nil))))
+
+(defun +literate-tangle-check-finished ()
+  (when (and (process-live-p +literate-tangle--proc)
+             (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
+    (switch-to-buffer " *tangle config*")
+    (signal 'quit nil)))
+
+(add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
 #+end_src
 * Epilogue
 And that was my config! I hope you liked it! If you did not then you can make an

@@ -47,6 +47,6 @@ in {
   xdg.configFile = {
     "chemacs/profiles.el".source =
       config.lib.file.mkOutOfStoreSymlink ../../config/emacs/profiles.el;
-    # "doom".source = ../config/emacs/doom;
+    "doom".source = config.lib.file.mkOutOfStoreSymlink ../../config/doom;
   };
 }

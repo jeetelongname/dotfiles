@@ -42,6 +42,43 @@
 (map! :leader
       "h r c" #'yeet/reload)
 
+(defun ar/consult-apple-search ()
+  "Ivy interface for dynamically querying apple.com docs."
+  (interactive)
+  (require 'request)
+  (require 'json)
+  (require 'url-http)
+  (consult--read "apple docs: "
+            (lambda (input)
+              (let* ((url (url-encode-url (format "https://developer.apple.com/search/search_data.php?q=%s" input)))
+                     (c1-width (round (* (- (window-width) 9) 0.3)))
+                     (c2-width (round (* (- (window-width) 9) 0.5)))
+                     (c3-width (- (window-width) 9 c1-width c2-width)))
+                (let ((request-curl-options (list "-H" (string-trim (url-http-user-agent-string)))))
+                   (request url
+                     :type "GET"
+                     :parser 'json-read
+                     :success (cl-function
+                               (lambda (&key data &allow-other-keys)
+                                 (ivy-update-candidates
+                                  (mapcar (lambda (item)
+                                            (let-alist item
+                                              (propertize
+                                               (format "%s   %s   %s"
+                                                       (truncate-string-to-width (propertize (or .title "")
+                                                                                             'face '(:foreground "yellow")) c1-width nil ?\s "…")
+                                                       (truncate-string-to-width (or .description "") c2-width nil ?\s "…")
+                                                       (truncate-string-to-width (propertize (string-join (or .api_ref_data.languages "") "/")
+                                                                                             'face '(:foreground "cyan1")) c3-width nil ?\s "…"))
+                                               'url .url)))
+                                          (cdr (car data)))))))
+                   0)))
+            :action (lambda (selection)
+                      (browse-url (concat "https://developer.apple.com"
+                                          (get-text-property 0 'url selection))))
+            :dynamic-collection t
+            :caller 'ar/counsel-apple-search))
+
 (map! :leader
       "w C-t" nil
       "w C-t" #'toggle-window-split)
@@ -78,113 +115,6 @@ This is in an effort to streamline a very common usecase"
 
 (display-battery-mode 1)
 
-(defvar +literate-tangle--proc nil)
-(defvar +literate-tangle--proc-start-time nil)
-
-(defadvice! +literate-tangle-async-h ()
-  "A very simplified version of `+literate-tangle-h', but async."
-  :override #'+literate-tangle-h
-  (unless (getenv "__NOTANGLE")
-    (let ((default-directory doom-private-dir))
-      (when +literate-tangle--proc
-        (message "Killing outdated tangle process...")
-        (set-process-sentinel +literate-tangle--proc #'ignore)
-        (kill-process +literate-tangle--proc)
-        (sit-for 0.3)) ; ensure the message is seen for a bit
-      (setq +literate-tangle--proc-start-time (float-time)
-            +literate-tangle--proc
-            (start-process "tangle-config"
-                           (get-buffer-create " *tangle config*")
-                           "emacs" "--batch" "--eval"
-                           (format "(progn \
-(require 'ox) \
-(require 'ob-tangle) \
-(setq org-confirm-babel-evaluate nil \
-      org-inhibit-startup t \
-      org-mode-hook nil \
-      write-file-functions nil \
-      before-save-hook nil \
-      after-save-hook nil \
-      vc-handled-backends nil \
-      org-startup-folded nil \
-      org-startup-indented nil) \
-(org-babel-tangle-file \"%s\" \"%s\"))"
-                                   +literate-config-file
-                                   (expand-file-name (concat doom-module-config-file ".el")))))
-      (set-process-sentinel +literate-tangle--proc #'+literate-tangle--sentinel)
-      (run-at-time nil nil (lambda () (message "Tangling config.org"))) ; ensure shown after a save message
-      "Tangling config.org...")))
-
-(defun +literate-tangle--sentinel (process signal)
-  (cond
-   ((and (eq 'exit (process-status process))
-         (= 0 (process-exit-status process)))
-    (message "Tangled config.org sucessfully (took %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))
-   ((memq (process-status process) (list 'exit 'signal))
-    (+popup-buffer (get-buffer " *tangle config*"))
-    (message "Failed to tangle config.org (after %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))))
-
-(defun +literate-tangle-check-finished ()
-  (when (and (process-live-p +literate-tangle--proc)
-             (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
-    (switch-to-buffer " *tangle config*")
-    (signal 'quit nil)))
-
-(add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
-
-(use-package! caddyfile-mode
-  :mode (("Caddyfile\\'" . caddyfile-mode)
-         ("caddy\\.conf\\'" . caddyfile-mode)))
-
-(use-package! vimrc-mode
-  :mode "\\.vim$\\'"
-  :config)
-;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
-
-(use-package! feature-mode
-  :mode "\\.feature$\\'")
-
-(use-package! nameless
-  :defer t
-  :hook (emacs-lisp-mode-hook . nameless-mode)
-  :config
-  (setq nameless-global-aliases '(("d" . "doom"))
-        nameless-private-prefix t)
-
-  (map! :map emacs-lisp-mode-map
-        :localleader
-        "i" #'nameless-insert-name))
-
-(use-package! company-org-block
-  :after org
-  :config
-  (setq company-org-block-edit-style 'auto))
-
-(after! org
-  (set-company-backend! 'org-mode-hook '(company-org-block company-capf))
-
-  ;; (setq org-babel-load-languages
-  ;;       '((elisp   . t)
-  ;;         (python  . t)
-  ;;         (ruby    . t)
-  ;;         (haskell . t)
-  ;;         (scheme  . t)
-  ;;         (latex   . t)))
-  )
-
-(use-package! janet-mode
-  :mode "\\.janet$\\'")
-
-;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
-(use-package! emacs-easy-hugo
-  :after markdown
-  :config
-  (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
-
 (defvar yeet/birds '(default confused emacs nyan rotating science thumbsup))
 
 (use-package! nyan-mode
@@ -217,68 +147,6 @@ This is in an effort to streamline a very common usecase"
 
 ;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
 
-(use-package! dired-dragon
-  :after dired
-  :config
-  (map! :map dired-mode-map
-        (:prefix "C-s"
-         :n "d" #'dired-dragon
-         :n "s" #'dired-dragon-stay
-         :n "i" #'dired-dragon-individual)))
-
-(when (daemonp)
-  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
-    :config
-    (defun yeet/elcord-buffer-info ()
-      "Get the buffer name or whether we are editing it or not and return a formatted string."
-      (format "%s %s" (if buffer-read-only
-                          "Reading"
-                        "Editing")
-              (buffer-name)))
-
-    (setq elcord-quiet t
-          elcord-use-major-mode-as-main-icon nil
-          elcord-show-small-icon t
-          elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
-
-    (elcord-mode +1)))
-
-(use-package! tldr
-  :config
-  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
-  (setq tldr-enabled-categories '("common" "linux")))
-
-(use-package! atomic-chrome
-  :after-call focus-out-hook
-  :config
-  (setq atomic-chrome-buffer-open-style 'frame
-        atomic-chrome-default-major-mode 'markdown-mode
-        atomic-chrome-url-major-mode-alist
-        '(("github.\\.com" . gfm-mode)
-          ("reddit\\.com" . fundamental-mode)))
-
-  (atomic-chrome-start-server))
-
-(use-package! hackernews :defer t)
-
-(use-package! carbon-now-sh
-  :config
-  (defun yeet/carbon-use-eaf ()
-    (interactive)
-    (split-window-right)
-    (let ((browse-url-browser-function 'browse-url-firefox))
-      (browse-url (concat carbon-now-sh-baseurl "?code="
-                          (url-hexify-string (carbon-now-sh--region))))))
-  (map! :n "g C-c" #'yeet/carbon-use-eaf))
-
-;; (use-package! screenshot :defer)
-
-(after! sql
-  (add-to-list 'sql-connection-alist
-               '(psql (sql-product 'postgres)
-                      (sql-port 22)
-                      (sql-server (read-from-minibuffer "server ip: ")))))
-
 (defun yeet/sidebar-toggle ()
   "toggle both ibuffer and dired sidebars"
   (interactive)
@@ -304,6 +172,89 @@ This is in an effort to streamline a very common usecase"
 
 (use-package! org-sidebar
   :after org)
+
+(use-package! dired-dragon
+  :after dired
+  :config
+  (map! :map dired-mode-map
+        (:prefix "C-s"
+         :n "d" #'dired-dragon
+         :n "s" #'dired-dragon-stay
+         :n "i" #'dired-dragon-individual)))
+
+(use-package! carbon-now-sh
+  :config
+  (defun yeet/carbon-use-eaf ()
+    (interactive)
+    (split-window-right)
+    (let ((browse-url-browser-function 'browse-url-firefox))
+      (browse-url (concat carbon-now-sh-baseurl "?code="
+                          (url-hexify-string (carbon-now-sh--region))))))
+  (map! :n "g C-c" #'yeet/carbon-use-eaf))
+
+;; (use-package! screenshot :defer)
+
+(use-package! company-org-block
+  :after org
+  :config
+  (setq company-org-block-edit-style 'auto))
+
+(after! org
+  (set-company-backend! 'org-mode-hook '(company-org-block company-capf))
+
+  ;; (setq org-babel-load-languages
+  ;;       '((elisp   . t)
+  ;;         (python  . t)
+  ;;         (ruby    . t)
+  ;;         (haskell . t)
+  ;;         (scheme  . t)
+  ;;         (latex   . t)))
+  )
+
+(use-package! org-pandoc-import :after org)
+
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
+
+(use-package! nameless
+  :defer t
+  :hook (emacs-lisp-mode-hook . nameless-mode)
+  :config
+  (setq nameless-global-aliases '(("d" . "doom"))
+        nameless-private-prefix t)
+
+  (map! :map emacs-lisp-mode-map
+        :localleader
+        "i" #'nameless-insert-name))
+
+(after! sql
+  (add-to-list 'sql-connection-alist
+               '(psql (sql-product 'postgres)
+                      (sql-port 22)
+                      (sql-server (read-from-minibuffer "server ip: ")))))
+
+(use-package! caddyfile-mode
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("caddy\\.conf\\'" . caddyfile-mode)))
+
+(use-package! vimrc-mode
+  :mode "\\.vim$\\'"
+  :config)
+;; (sp-local-pair 'vimrc-mode "\"" nil :actions :rem))
+
+(use-package! feature-mode
+  :mode "\\.feature$\\'")
+
+(use-package! janet-mode
+  :mode "\\.janet$\\'")
 
 (use-package! calibredb
   :defer t
@@ -403,16 +354,10 @@ This is in an effort to streamline a very common usecase"
 
 (after! olivetti)
 
-(use-package! websocket
-  :after org-roam)
-
-(use-package! org-roam-ui
-  :after org-roam
+(use-package! tldr
   :config
-  (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t))
+  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
+  (setq tldr-enabled-categories '("common" "linux")))
 
 ;; center the board
 (add-hook! 'tetris-mode-hook
@@ -425,6 +370,23 @@ This is in an effort to streamline a very common usecase"
       :n "g" #'tetris-move-bottom
       :n "n" #'tetris-start-game
       :n "p" #'tetris-pause-game)
+
+(when (daemonp)
+  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
+    :config
+    (defun yeet/elcord-buffer-info ()
+      "Get the buffer name or whether we are editing it or not and return a formatted string."
+      (format "%s %s" (if buffer-read-only
+                          "Reading"
+                        "Editing")
+              (buffer-name)))
+
+    (setq elcord-quiet t
+          elcord-use-major-mode-as-main-icon nil
+          elcord-show-small-icon t
+          elcord-buffer-details-format-function #'yeet/elcord-buffer-info)
+
+    (elcord-mode +1)))
 
 (after! company
   (setq company-idle-delay 6 ; I like my autocomplete like my tea. Mostly made by me but appreciated when someone else makes it for me
@@ -602,8 +564,8 @@ This is in an effort to streamline a very common usecase"
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'auto
         doom-modeline-height 30
-        doom-modeline-icon 't
-        doom-modeline-modal-icon 'nil
+        doom-modeline-icon t
+        doom-modeline-modal-icon nil
         doom-modeline-env-version t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
@@ -660,6 +622,10 @@ This is in an effort to streamline a very common usecase"
 
 (setq lsp-enable-file-watchers nil)
 
+;; I also don't want suggested servers
+(after! lsp-mode
+  (setq lsp-enable-suggest-server-download nil))
+
 (after! (pdf-tools doom-modeline)
   (doom-modeline-def-segment pdf-icon
     (concat
@@ -702,7 +668,9 @@ This is in an effort to streamline a very common usecase"
 
 (after! tree-sitter
   (pushnew! tree-sitter-major-mode-language-alist
-            '(scss-mode . css))
+            '(scss-mode . css)))
+
+(after! evil-textobj-tree-sitter
   (pushnew! evil-textobj-tree-sitter-major-mode-language-alist
             '(scss-mode . css)))
 
@@ -764,7 +732,7 @@ This is in an effort to streamline a very common usecase"
 (setq org-directory "~/org-notes/")
 (after! org
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "NEXT(n)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "+DAY(+)" "TODAY(T)" "|" "DONE(d)" "KILL(k)")
+        '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "NEXT(n)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "+DAY(+)" "TODAY(T)" "BLOG(B)" "|" "DONE(d)" "KILL(k)")
           (sequence "[ ](b)" "[-](S)" "[?](W)" "|" "[X](D)")
           (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
@@ -819,56 +787,56 @@ This is in an effort to streamline a very common usecase"
       org-agenda-tags-column 100 ;; from testing this seems to be a good value
       org-agenda-compact-blocks t)
 
-(setq org-agenda-custom-commands
-      '(("o" "Overview"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                          :time-grid t
-                          :date today
-                          :todo "TODAY"
-                          :scheduled today
-                          :order 1)))))
-          (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Next to do"
-                           :todo "NEXT"
-                           :order 1)
-                          (:name "Due Today"
-                           :deadline today
-                           :order 2)
-                          (:name "Important"
-                           :tag "Important"
-                           :priority "A"
-                           :order 6)
-                          (:name "Overdue"
-                           :deadline past
-                           :scheduled past
-                           :face error
-                           :order 7)
-                          (:name "Due Soon"
-                           :deadline future
-                           :order 8)
-                          (:name "University"
-                           :tag "uni"
-                           :order 10)
-                          (:name "Issues"
-                           :tag "issue"
-                           :order 12)
-                          (:name "Projects"
-                           :tag "project"
-                           :order 14)
-                          (:name "Twitch"
-                           :tag "twitch"
-                           :order 30)
-                          (:name "Back Burner"
-                           :order 40
-                           :todo "+DAY")
-                          (:name "Trivial"
-                           :priority<= "E"
-                           :tag ("Trivial" "Unimportant")
-                           :order 90)
-                          (:discard (:tag ("chore" "routine" "Daily")))))))))))
+(after! org-agenda
+  (setq org-agenda-custom-commands
+        '(("o" "Overview"
+           ((agenda "" ((org-agenda-span 'day)
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                            :time-grid t
+                            :date today
+                            :todo "TODAY"
+                            :scheduled today
+                            :order 1)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:name "Next to do"
+                             :todo "NEXT"
+                             :order 1)
+                            (:name "Due Today"
+                             :deadline today
+                             :order 2)
+                            (:name "Important"
+                             :tag "Important"
+                             :priority "A"
+                             :order 6)
+                            (:name "Overdue"
+                             :deadline past
+                             :scheduled past
+                             :face error
+                             :order 7)
+                            (:name "Due Soon"
+                             :deadline future
+                             :order 8)
+                            (:name "University"
+                             :tag "uni"
+                             :order 10)
+                            (:name "Issues"
+                             :tag "issue"
+                             :order 12)
+                            (:name "Projects"
+                             :todo "PROJ"
+                             :tag "project"
+                             :order 14)
+                            (:name "Back Burner"
+                             :order 40
+                             :todo "+DAY"
+                             :todo "BLOG")
+                            (:name "Trivial"
+                             :priority<= "E"
+                             :tag ("Trivial" "Unimportant")
+                             :order 90)
+                            (:discard (:tag ("chore" "routine" "Daily"))))))))))))
 
 (after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
   (when (featurep! :ui ligatures)
@@ -921,7 +889,7 @@ This is in an effort to streamline a very common usecase"
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
 
 (after! mu4e
-  (setq mu4e-mu-version "1.6.6")
+  (setq mu4e-mu-version "1.6.10")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 
@@ -962,7 +930,7 @@ This is in an effort to streamline a very common usecase"
       :channels ("#emacs" "#haskell" "#doomemacs"))))
 
 (after! elfeed
-  (setq elfeed-search-filter "@3-week-ago -fun") ;; /they post so much/
+  (setq elfeed-search-filter "@4-week-ago -fun") ;; /they post so much/
 
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
@@ -977,3 +945,61 @@ This is in an effort to streamline a very common usecase"
 ;; (after! emacs-everywhere
 ;;   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
 ;;   (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
+
+(defvar +literate-tangle--proc nil)
+(defvar +literate-tangle--proc-start-time nil)
+
+(defadvice! +literate-tangle-async-h ()
+  "A very simplified version of `+literate-tangle-h', but async."
+  :override #'+literate-tangle-h
+  (unless (getenv "__NOTANGLE")
+    (let ((default-directory doom-private-dir))
+      (when +literate-tangle--proc
+        (message "Killing outdated tangle process...")
+        (set-process-sentinel +literate-tangle--proc #'ignore)
+        (kill-process +literate-tangle--proc)
+        (sit-for 0.3)) ; ensure the message is seen for a bit
+      (setq +literate-tangle--proc-start-time (float-time)
+            +literate-tangle--proc
+            (start-process "tangle-config"
+                           (get-buffer-create " *tangle config*")
+                           "emacs" "--batch" "--eval"
+                           (format "(progn \
+(require 'ox) \
+(require 'ob-tangle) \
+(setq org-confirm-babel-evaluate nil \
+      org-inhibit-startup t \
+      org-mode-hook nil \
+      write-file-functions nil \
+      before-save-hook nil \
+      after-save-hook nil \
+      vc-handled-backends nil \
+      org-startup-folded nil \
+      org-startup-indented nil) \
+(org-babel-tangle-file \"%s\" \"%s\"))"
+                                   +literate-config-file
+                                   (expand-file-name (concat doom-module-config-file ".el")))))
+      (set-process-sentinel +literate-tangle--proc #'+literate-tangle--sentinel)
+      (run-at-time nil nil (lambda () (message "Tangling config.org"))) ; ensure shown after a save message
+      "Tangling config.org...")))
+
+(defun +literate-tangle--sentinel (process signal)
+  (cond
+   ((and (eq 'exit (process-status process))
+         (= 0 (process-exit-status process)))
+    (message "Tangled config.org sucessfully (took %.1fs)"
+             (- (float-time) +literate-tangle--proc-start-time))
+    (setq +literate-tangle--proc nil))
+   ((memq (process-status process) (list 'exit 'signal))
+    (+popup-buffer (get-buffer " *tangle config*"))
+    (message "Failed to tangle config.org (after %.1fs)"
+             (- (float-time) +literate-tangle--proc-start-time))
+    (setq +literate-tangle--proc nil))))
+
+(defun +literate-tangle-check-finished ()
+  (when (and (process-live-p +literate-tangle--proc)
+             (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
+    (switch-to-buffer " *tangle config*")
+    (signal 'quit nil)))
+
+(add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
