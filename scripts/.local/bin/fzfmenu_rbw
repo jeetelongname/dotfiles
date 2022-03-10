@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+rbw ls | fzfmenu +m | xargs rbw get --full
