@@ -67,7 +67,8 @@
       config.lib.file.mkOutOfStoreSymlink ../../config/shell/keys.zsh;
     "aliases".source =
       config.lib.file.mkOutOfStoreSymlink ../../config/shell/aliases;
-
+    # "environment.d".source =
+    #   config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile.conf;
   };
 
   home.file = {

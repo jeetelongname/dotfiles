@@ -14,6 +14,8 @@
     peek
     beancount
     tokei
+    zotero
+    rbw
 
     lua
     lua52Packages.luarocks

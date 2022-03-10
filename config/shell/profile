@@ -27,7 +27,7 @@ export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/opt/shell-color-scripts
 export PATH=$PATH:$CARGO_HOME/bin
-export PATH=$PATH:~/.config/emacs.doom/bin
+export PATH=$PATH:~/.config/emacs/bin
 #pass stuff
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS="true"

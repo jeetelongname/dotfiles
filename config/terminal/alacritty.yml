@@ -23,8 +23,8 @@ window:
     y: 10
 
   padding:
-    x: 5
-    y: 5
+    x: 0
+    y: 0
 
   dynamic_padding: false
 
@@ -56,7 +56,7 @@ font:
     y: 1
 
   glyph_offset:
-    x: 0
+    x: 2
     y: 0
 # fonts end here
 
@@ -89,10 +89,11 @@ colors:
     cyan: '0x6be4e6'
     white: '0xd5d8da'
 
-background_opacity: 1
+window:
+  opacity: 1
 
 # Allow terminal applications to change Alacritty's window title.
-#dynamic_title: true
+dynamic_title: true
 
 cursor:
   style: Block
