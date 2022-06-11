@@ -13,20 +13,21 @@
 #                       for alacritty :)
 env:
   TERM: screen-256color
+
 window:
   dimensions:
-    columns: 0
-    lines: 0
+    columns: 10
+    lines: 10
 
   position:
     x: 10
     y: 10
 
   padding:
-    x: 0
-    y: 0
+    x: 5
+    y: 5
 
-  dynamic_padding: false
+  dynamic_padding: true
 
   # Window title
 title: Alacritty

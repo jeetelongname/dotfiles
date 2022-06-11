@@ -13,14 +13,18 @@
 
 (package! org-sidebar)
 
-(package! dired-dragon :recipe (:local-repo "~/code/emacs/dired-dragon"
+;; (package! dired-dragon :recipe (:local-repo "~/code/emacs/dired-dragon"
+;;                                 :build (:not compile)))
+(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"
                                 :build (:not compile)))
-;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
 
 (package! carbon-now-sh)
 
 ;; (package! screenshot. :recipe
 ;;   (:host github :repo "tecosaur/screenshot"))
+
+(package! aas)
+(package! tempel)
 
 (package! company-org-block)
 
@@ -64,6 +68,8 @@
 (unpin! gitignore-mode gitconfig-mode)
 
 (package! elcord)
+
+(package! arr :recipe (:local-repo "~/code/emacs/arrows"))
 
 (package! horizon-theme)
 (unpin! doom-themes)

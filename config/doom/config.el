@@ -1,6 +1,7 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;; Don't edit this file directly unless you like your changes being wiped
 
+(message "in config")
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
@@ -73,11 +74,12 @@
                                                'url .url)))
                                           (cdr (car data)))))))
                    0)))
-            :action (lambda (selection)
-                      (browse-url (concat "https://developer.apple.com"
-                                          (get-text-property 0 'url selection))))
-            :dynamic-collection t
-            :caller 'ar/counsel-apple-search))
+            ;; :action (lambda (selection)
+            ;;           (browse-url (concat "https://developer.apple.com"
+            ;;                               (get-text-property 0 'url selection))))
+            ;; :dynamic-collection t
+            ;; :caller 'ar/counsel-apple-search)
+  ))
 
 (map! :leader
       "w C-t" nil
@@ -102,6 +104,27 @@ This is in an effort to streamline a very common usecase"
      (progn ,@BODY)
      (buffer-string)))
 
+;; I plan on upstreamin this.
+(defmacro thread-as (initial-form var &rest forms)
+  "Thread INITIAL-FORM through FORMS as VAR to there successor.
+Example:
+     (thread-as
+       5
+       my-var
+       (+ my-var 20)
+       (/ 25 my-var)
+       (+ my-var 40))
+Is equivalent to:
+     (+ (/ 25 (+ 5 20)) 40 )
+Note that unlike the other threading macro's that every call needs to
+explicitly use the variable."
+  `(let* ,(mapcar (lambda (form)
+                    (list var form))
+                  (cons initial-form forms))
+     ,var))
+
+(thread-as 3 my-var (+ 2 my-var) (+ 4 my-var))
+
 (display-time-mode +1)
 
 (global-subword-mode +1)
@@ -122,14 +145,14 @@ This is in an effort to streamline a very common usecase"
   :config
   (setq nyan-bar-length 15
         nyan-wavy-trail t)
-  (nyan-mode)
+  (nyan-mode +1)
   (nyan-start-animation))
 
 (use-package! parrot
   :defer t
   :config
   (parrot-set-parrot-type (nth (random (length yeet/birds)) yeet/birds)) ;; this chooses a random bird on startup
-  (parrot-mode)
+  (parrot-mode +1)
   (parrot-start-animation))
 
 ;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
@@ -193,6 +216,8 @@ This is in an effort to streamline a very common usecase"
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
 
 ;; (use-package! screenshot :defer)
+
+(use-package! aas)
 
 (use-package! company-org-block
   :after org
@@ -309,6 +334,7 @@ This is in an effort to streamline a very common usecase"
         :ne "e" #'calibredb-export-dispatch
         :ne "r" #'calibredb-search-refresh-and-clear-filter
         :ne "R" #'calibredb-search-clear-filter
+        :ne "q" nil
         :ne "q" #'calibredb-search-quit
         :ne "m" #'calibredb-mark-and-forward
         :ne "f" #'calibredb-toggle-favorite-at-point
@@ -327,6 +353,8 @@ This is in an effort to streamline a very common usecase"
         :ne "M-A" #'calibredb-set-metadata--authors
         :ne "M-T" #'calibredb-set-metadata--title
         :ne "M-c" #'calibredb-set-metadata--comments))
+
+(defun +book/quit ())
 
 (defun =book ()
   (interactive)
@@ -429,18 +457,22 @@ This is in an effort to streamline a very common usecase"
   (add-to-list 'marginalia-annotator-registry
                '(face yeet/face-annotator marginalia-annotate-face builtin none)))
 
-(setq evil-split-window-below  t
-      evil-vsplit-window-right t)
+(after! evil
+  (setq evil-split-window-below  t
+        evil-vsplit-window-right t
+        evil-disable-insert-state-bindings t
+        evil-want-fine-undo t))
 
-(setq! doom-font
-       (font-spec :family "Iosevka" :size 16)
-       doom-big-font
-       (font-spec :family "Iosevka" :size 25)
-       doom-variable-pitch-font
-       (font-spec :family "Merriweather" :size 17))
+;; Change out fonts quickly
+ (setq yeet/font-name "Iosevka")
 
-(delete "Noto Emoji" doom-emoji-fallback-font-families)
-(delete "Noto Color Emoji" doom-emoji-fallback-font-families)
+ (setq! doom-font (font-spec :family yeet/font-name :size 16)
+        doom-big-font (font-spec :family yeet/font-name :size 25)
+        doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
+
+;; HACK to get rid of weird black circles in mu4e screen.
+ (delete "Noto Emoji" doom-emoji-fallback-font-families)
+ (delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 
 (after! doom-themes
   (setq! doom-themes-enable-bold t
@@ -683,10 +715,11 @@ This is in an effort to streamline a very common usecase"
 
 (custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
 
-(map! (:map +tree-sitter-outer-text-objects-map
-       "m" (evil-textobj-tree-sitter-get-textobj "import"
-             '((python-mode . [(import_statement) @import])
-               (rust-mode . [(use_declaration) @import])))))
+(after! evil-textobj-tree-sitter
+  (map! (:map +tree-sitter-outer-text-objects-map
+         "m" (+tree-sitter-get-textobj "import"
+                                       '((python-mode . [(import_statement) @import])
+                                         (rust-mode . [(use_declaration) @import]))))))
 
 (setq dired-dwim-target t)
 
@@ -759,9 +792,9 @@ This is in an effort to streamline a very common usecase"
 
 (after! org-capture
   (setq org-capture-templates
-        '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+        '(("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
           ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
+          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
 ;; (use-package! org-cook
@@ -769,6 +802,15 @@ This is in an effort to streamline a very common usecase"
 
 (setq org-roam-directory (concat org-directory "roam/")
       org-roam-db-location (concat org-roam-directory ".org-roam.db"))
+
+(defadvice! yeet/org-roam-in-own-workspace-a (&rest _)
+  "Open all roam buffers in there own workspace."
+  :before #'org-roam-node-find
+  :before #'org-roam-node-random
+  :before #'org-roam-buffer-display-dedicated
+  :before #'org-roam-buffer-toggle
+  (when (featurep! :ui workspaces)
+    (+workspace-switch "*roam*" t)))
 
 (after! org-journal
   (setq org-journal-enable-encryption t

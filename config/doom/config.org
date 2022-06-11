@@ -40,6 +40,7 @@ Lets get this config started!
     - [[#dired][dired]]
   - [[#tools][tools]]
     - [[#pretty-code-shots][pretty code shots]]
+    - [[#snippets][snippets]]
   - [[#lang][lang]]
     - [[#org-mode][org mode]]
     - [[#emacs-lisp][emacs lisp]]
@@ -55,6 +56,7 @@ Lets get this config started!
     - [[#tetris][tetris]]
     - [[#fixes][fixes]]
     - [[#discord-rich-presence][discord rich presence]]
+    - [[#arrows][arrows]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -85,7 +87,7 @@ Lets get this config started!
     - [[#spell][spell]]
   - [[#lang-1][lang]]
     - [[#emacs-lisp-1][emacs-lisp]]
-    - [[#org][Org]]
+    - [[#org][org]]
     - [[#deprecated-go][DEPRECATED Go]]
     - [[#haskell][haskell]]
     - [[#python][python]]
@@ -105,6 +107,7 @@ Lets get this config started!
 * Rudimentary configuration
 This is the stuff that does not really belong in any module but is useful
 #+BEGIN_SRC emacs-lisp
+(message "in config")
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
@@ -402,11 +405,12 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
                                                'url .url)))
                                           (cdr (car data)))))))
                    0)))
-            :action (lambda (selection)
-                      (browse-url (concat "https://developer.apple.com"
-                                          (get-text-property 0 'url selection))))
-            :dynamic-collection t
-            :caller 'ar/counsel-apple-search))
+            ;; :action (lambda (selection)
+            ;;           (browse-url (concat "https://developer.apple.com"
+            ;;                               (get-text-property 0 'url selection))))
+            ;; :dynamic-collection t
+            ;; :caller 'ar/counsel-apple-search)
+  ))
 
 #+end_src
 
@@ -452,6 +456,29 @@ This is in an effort to streamline a very common usecase"
 : hello
 : world!
 
+#+begin_src emacs-lisp
+;; I plan on upstreamin this.
+(defmacro thread-as (initial-form var &rest forms)
+  "Thread INITIAL-FORM through FORMS as VAR to there successor.
+Example:
+     (thread-as
+       5
+       my-var
+       (+ my-var 20)
+       (/ 25 my-var)
+       (+ my-var 40))
+Is equivalent to:
+     (+ (/ 25 (+ 5 20)) 40 )
+Note that unlike the other threading macro's that every call needs to
+explicitly use the variable."
+  `(let* ,(mapcar (lambda (form)
+                    (list var form))
+                  (cons initial-form forms))
+     ,var))
+
+(thread-as 3 my-var (+ 2 my-var) (+ 4 my-var))
+#+end_src
+
 ** Random modes
 *** display time mode
 #+begin_src emacs-lisp
@@ -479,7 +506,9 @@ I like my modeline busy
 #+end_src
 * Packages
 I have quite a few packages that I use. These are the packages and there
-subsequent configurations
+subsequent configurations.
+Here they are organised into the catagories and modules they would be if they
+were doom modules
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
@@ -500,14 +529,14 @@ subsequent configurations
   :config
   (setq nyan-bar-length 15
         nyan-wavy-trail t)
-  (nyan-mode)
+  (nyan-mode +1)
   (nyan-start-animation))
 
 (use-package! parrot
   :defer t
   :config
   (parrot-set-parrot-type (nth (random (length yeet/birds)) yeet/birds)) ;; this chooses a random bird on startup
-  (parrot-mode)
+  (parrot-mode +1)
   (parrot-start-animation))
 
 ;; (add-to-list 'marginalia-prompt-categories '("bird" . bird))
@@ -598,10 +627,12 @@ bit of work to be done
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
 wellish
 #+begin_src emacs-lisp :tangle packages.el
-(package! dired-dragon :recipe (:local-repo "~/code/emacs/dired-dragon"
+;; (package! dired-dragon :recipe (:local-repo "~/code/emacs/dired-dragon"
+;;                                 :build (:not compile)))
+(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"
                                 :build (:not compile)))
-;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
 #+end_src
+
 #+begin_src emacs-lisp
 (use-package! dired-dragon
   :after dired
@@ -648,6 +679,17 @@ I just went back to firefox since eaf is deprecated in my config
 
 #+begin_src emacs-lisp
 ;; (use-package! screenshot :defer)
+#+end_src
+*** snippets
+I really need to play with snippets more
+I need more gremlins
+#+begin_src emacs-lisp :tangle packages.el
+(package! aas)
+(package! tempel)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! aas)
 #+end_src
 ** lang
 *** org mode
@@ -707,6 +749,7 @@ I just went back to firefox since eaf is deprecated in my config
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
 #+end_src
+
 *** emacs lisp :emacsLisp:
 in the ever growing emacs ecosystem the amount of prefixes you can use are
 shrinking and as microcosoms open up and connections need to be reenforced it
@@ -864,6 +907,7 @@ work so I don't have to) I have slightly modified them though to fit my needs.
         :ne "e" #'calibredb-export-dispatch
         :ne "r" #'calibredb-search-refresh-and-clear-filter
         :ne "R" #'calibredb-search-clear-filter
+        :ne "q" nil
         :ne "q" #'calibredb-search-quit
         :ne "m" #'calibredb-mark-and-forward
         :ne "f" #'calibredb-toggle-favorite-at-point
@@ -883,6 +927,8 @@ work so I don't have to) I have slightly modified them though to fit my needs.
         :ne "M-T" #'calibredb-set-metadata--title
         :ne "M-c" #'calibredb-set-metadata--comments))
 
+(defun +book/quit ())
+
 (defun =book ()
   (interactive)
   (if (featurep! :ui workspaces)
@@ -899,6 +945,9 @@ work so I don't have to) I have slightly modified them though to fit my needs.
       "ob" #'=book
       "oB" #'browse-url-of-file)
 #+end_src
+
+#+RESULTS:
+: browse-url-of-file
 
 Nov is how we do the reading!
 I don't configre it too much for the time being though I do plan on adding a
@@ -990,6 +1039,10 @@ I use non daemon sessions for testing I would much rather it would not be used
 
     (elcord-mode +1)))
 #+end_src
+*** arrows
+#+begin_src emacs-lisp :tangle packages.el
+(package! arr :recipe (:local-repo "~/code/emacs/arrows"))
+#+end_src
 
 * Modules
 These are the configurations for the doom specific modules. some are big like
@@ -1058,8 +1111,11 @@ of fun!
 Frankly I don't know why this is not default
 (it automatically switches to a split)
 #+BEGIN_SRC emacs-lisp
-(setq evil-split-window-below  t
-      evil-vsplit-window-right t)
+(after! evil
+  (setq evil-split-window-below  t
+        evil-vsplit-window-right t
+        evil-disable-insert-state-bindings t
+        evil-want-fine-undo t))
 #+END_SRC
 ** ui :ui:
 *** Doom :doom:
@@ -1072,16 +1128,16 @@ settings and all of that fun stuff here
 Iosevka is my new best friend
 
 #+BEGIN_SRC emacs-lisp
-(setq! doom-font
-       (font-spec :family "Iosevka" :size 16)
-       doom-big-font
-       (font-spec :family "Iosevka" :size 25)
-       doom-variable-pitch-font
-       (font-spec :family "Merriweather" :size 17))
+ ;; Change out fonts quickly
+ (setq yeet/font-name "Iosevka")
 
-(delete "Noto Emoji" doom-emoji-fallback-font-families)
-(delete "Noto Color Emoji" doom-emoji-fallback-font-families)
+ (setq! doom-font (font-spec :family yeet/font-name :size 16)
+        doom-big-font (font-spec :family yeet/font-name :size 25)
+        doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
 
+;; HACK to get rid of weird black circles in mu4e screen.
+ (delete "Noto Emoji" doom-emoji-fallback-font-families)
+ (delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 #+end_src
 
 the comments for horizon are borderline unreadable so now we have brighter
@@ -1435,10 +1491,11 @@ The yellow used for function calls was the same colour used for strings (in
 #+begin_src emacs-lisp
 (custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
 
-(map! (:map +tree-sitter-outer-text-objects-map
-       "m" (evil-textobj-tree-sitter-get-textobj "import"
-             '((python-mode . [(import_statement) @import])
-               (rust-mode . [(use_declaration) @import])))))
+(after! evil-textobj-tree-sitter
+  (map! (:map +tree-sitter-outer-text-objects-map
+         "m" (+tree-sitter-get-textobj "import"
+                                       '((python-mode . [(import_statement) @import])
+                                         (rust-mode . [(use_declaration) @import]))))))
 #+end_src
 
 ** emacs :emacs:
@@ -1517,7 +1574,7 @@ This readds the functionality of spelling on =return=
 (add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
 #+end_src
 
-*** TODO Org :org:
+*** org :org:
 Org mode. our favorite plain text markup format! these are my configurations for
 it
 
@@ -1563,9 +1620,9 @@ directly
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
   (setq org-capture-templates
-        '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+        '(("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
           ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
+          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 
@@ -1584,6 +1641,19 @@ on paper I recommend both
 #+begin_src emacs-lisp
 (setq org-roam-directory (concat org-directory "roam/")
       org-roam-db-location (concat org-roam-directory ".org-roam.db"))
+#+end_src
+
+I dislike having org roam buffers litter my workspaces so I just force them into
+there own workspace for ease and peace of mind
+#+begin_src emacs-lisp
+(defadvice! yeet/org-roam-in-own-workspace-a (&rest _)
+  "Open all roam buffers in there own workspace."
+  :before #'org-roam-node-find
+  :before #'org-roam-node-random
+  :before #'org-roam-buffer-display-dedicated
+  :before #'org-roam-buffer-toggle
+  (when (featurep! :ui workspaces)
+    (+workspace-switch "*roam*" t)))
 #+end_src
 **** Journal
 I don't need people snooping into my thoughts
