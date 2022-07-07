@@ -7,7 +7,7 @@
     bat
     bitwarden-cli
     calc
-    dragon-drop
+    xdragon
     exa
     fd
     htop

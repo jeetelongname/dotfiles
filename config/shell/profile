@@ -12,6 +12,7 @@ export TERMINAL="alacritty"
 export BROWSER="firefox"
 export FILEMANAGER="nautilus"
 export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma fdm=indent' -\""
+export PAGER="less"
 # export MANPAGER="/bin/sh -c \"col -b | nvim -u '~/.config/nvim/init.man.vim' -\""
 #cleanup
 export ZDOTDIR="$HOME/.config/zsh"
@@ -28,6 +29,8 @@ export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/opt/shell-color-scripts
 export PATH=$PATH:$CARGO_HOME/bin
 export PATH=$PATH:~/.config/emacs/bin
+export PATH=$PATH:$HOME/.local/bin/
+
 #pass stuff
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
@@ -36,13 +39,6 @@ export PASSWORD_STORE_ENABLE_EXTENSIONS="true"
 
 export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib:/lib"
 export SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
-## PATH Variables# set PATH so it includes users private bin if it existis
-if [ -d "$HOME/.local/bin/" ]; then
-    PATH="$HOME/.local/bin/:$PATH"
-fi
-if [ "$PAGER" = "most" ]; then
-    PAGER="less"
-fi
 
 export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 

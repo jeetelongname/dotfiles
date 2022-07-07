@@ -1,22 +1,23 @@
 { config, lib, pkgs, ... }:
 
 {
-  home.packages = with pkgs;
-    [
-      alacritty
-      # abduco
-      # dvtm-unstable
-      # termite
+  home.packages = with pkgs; [
+    alacritty
+    foot
+    # abduco
+    # dvtm-unstable
+    # termite
 
-    ];
+  ];
 
   xdg.configFile = {
     "alacritty/alacritty.yml".source =
       config.lib.file.mkOutOfStoreSymlink ../config/terminal/alacritty.yml;
-    # "termite/config".source = ../config/terminal/termite.conf;
+    "foot/foot.ini".source =
+      config.lib.file.mkOutOfStoreSymlink ../config/terminal/foot.ini;
   };
 
-  # TODO: move more of my tmux config into home manager
+  # TODO: move /less/ of my tmux config into home manager
   programs.tmux = {
     enable = true;
     # config
