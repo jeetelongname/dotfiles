@@ -16,6 +16,7 @@
     tokei
     zotero
     rbw
+    vale
 
     lua
     lua52Packages.luarocks
