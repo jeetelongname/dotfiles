@@ -36,11 +36,14 @@ Lets get this config started!
   - [[#ui][ui]]
     - [[#modeline-fun][modeline fun]]
     - [[#sidebars][sidebars]]
+  - [[#checkers][checkers]]
+    - [[#syntax][syntax]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
   - [[#tools][tools]]
     - [[#pretty-code-shots][pretty code shots]]
     - [[#snippets][snippets]]
+    - [[#dictionary][dictionary]]
   - [[#lang][lang]]
     - [[#org-mode][org mode]]
     - [[#emacs-lisp][emacs lisp]]
@@ -52,6 +55,7 @@ Lets get this config started!
   - [[#app][app]]
     - [[#books][books]]
     - [[#tldr-integration][tldr integration]]
+    - [[#rss][rss]]
   - [[#other][other]]
     - [[#tetris][tetris]]
     - [[#fixes][fixes]]
@@ -83,7 +87,7 @@ Lets get this config started!
     - [[#dired-1][dired]]
   - [[#term][term]]
     - [[#eshell][eshell]]
-  - [[#checkers][checkers]]
+  - [[#checkers-1][checkers]]
     - [[#spell][spell]]
   - [[#lang-1][lang]]
     - [[#emacs-lisp-1][emacs-lisp]]
@@ -94,11 +98,10 @@ Lets get this config started!
     - [[#racket][racket]]
     - [[#latex][LaTeX]]
     - [[#web][Web]]
-  - [[#email][email]]
-    - [[#mu4e][mu4e]]
   - [[#app-1][app]]
     - [[#irc][irc]]
-    - [[#rss][rss]]
+    - [[#rss-1][rss]]
+    - [[#mu4e][mu4e]]
     - [[#everywhere][everywhere]]
   - [[#config][config]]
     - [[#literate][literate]]
@@ -622,6 +625,61 @@ bit of work to be done
   :after org)
 #+end_src
 
+** checkers
+*** syntax
+I have swapped out flycheck for flymake for a couple of reasons
+- its built in
+- its an easy switch
+- its probably what doom is going to switch to
+- 4th reason
+
+**** TODO Autostart on buffer entry
+
+#+begin_src emacs-lisp
+(add-hook! (prog-mode text-mode) #'flymake-mode)
+#+end_src
+**** popon hover
+#+begin_src emacs-lisp :tangle packages.el
+(package! popon :recipe (:repo "https://codeberg.org/akib/emacs-popon"))
+(package! flymake-popon :recipe (:repo "https://codeberg.org/akib/emacs-flymake-popon"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! flymake-popon
+  :hook (flymake-mode . flymake-popon-mode))
+#+end_src
+**** Flymake Vale
+this replaces =:checkers grammer= and parts of =:checkers spell=
+#+begin_src emacs-lisp :tangle packages.el
+(package! flymake-vale :recipe (:host github :repo "tpeacock19/flymake-vale"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! flymake-vale
+  :hook ((text-mode       . flymake-vale-load)
+         (latex-mode      . flymake-vale-load)
+         (org-mode        . flymake-vale-load)
+         (markdown-mode   . flymake-vale-load)
+         (message-mode    . flymake-vale-load)))
+
+(add-hook! 'org-msg-mode-hook
+  (setq flymake-vale-file-ext ".org")
+  (flymake-vale-load))
+#+end_src
+
+**** remove checkdoc in certain buffers
+#+begin_src emacs-lisp
+(add-hook! 'flymake-mode-hook
+  (defun +emacs-lisp-reduce-flymake-errors-in-emacs-config-h ()
+    (when (and (bound-and-true-p flymake-mode)
+             (eq major-mode 'emacs-lisp-mode)
+             (or (not default-directory)
+                 (null (buffer-file-name (buffer-base-buffer)))
+                 (cl-find-if (doom-partial #'file-in-directory-p default-directory)
+                             +emacs-lisp-disable-flycheck-in-dirs)))
+      (remove-hook 'flymake-diagnostic-functions #'elisp-flymake-checkdoc))))
+#+end_src
+
 ** emacs
 *** dired :dired:
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
@@ -644,7 +702,6 @@ wellish
          :n "i" #'dired-dragon-individual)))
 #+end_src
 
-#+RESULTS:
 
 ** tools
 *** pretty code shots
@@ -691,6 +748,48 @@ I need more gremlins
 #+begin_src emacs-lisp
 (use-package! aas)
 #+end_src
+*** dictionary
+tecosaurs [[https://github.com/tecosaur/lexic][lexic]] package is now powering my dictionary usage, This configuration
+is basically stolen from [[https://tecosaur.github.io/emacs-config/config.html#dictionary][his config]] (like most things)
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! lexic)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
+  :config
+  (map! :map lexic-mode-map
+        :n "q" #'lexic-return-from-lexic
+        :nv "RET" #'lexic-search-word-at-point
+        :n "a" #'outline-show-all
+        :n "h" (cmd! (outline-hide-sublevels 3))
+        :n "o" #'lexic-toggle-entry
+        :n "n" #'lexic-next-entry
+        :n "N" (cmd! (lexic-next-entry t))
+        :n "p" #'lexic-previous-entry
+        :n "P" (cmd! (lexic-previous-entry t))
+        :n "E" (cmd! (lexic-return-from-lexic) ; expand
+                     (switch-to-buffer (lexic-get-buffer)))
+        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
+                     (lexic-goto-lexic))
+        :n "C-p" #'lexic-search-history-backwards
+        :n "C-n" #'lexic-search-history-forwards
+        :n "/" (cmd! (call-interactively #'lexic-search))))
+#+end_src
+
+#+begin_src emacs-lisp
+(defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
+  "Look up the definition of the word at point (or selection) using `lexic-search'."
+  :override #'+lookup/dictionary-definition
+  (interactive
+   (list (or (doom-thing-at-point-or-region 'word)
+             (read-string "Look up in dictionary: "))
+         current-prefix-arg))
+  (lexic-search identifier nil nil t))
+  #+end_src
+
 ** lang
 *** org mode
 **** TODO Company org block
@@ -748,6 +847,33 @@ I need more gremlins
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
+#+end_src
+**** org modern
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-modern)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-modern :defer t)
+#+end_src
+**** org-remark
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-remark)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-remark
+   :defer t
+   :init
+   (map! :g "C-c n m" #'org-remark-mark
+         (:after org-remark
+          (:map org-remap-mode-map
+           (:prefix "C-c n"
+            :g "o" #'org-remark-open
+            :g "]" #'org-remark-view-next
+            :g "[" #'org-remark-view-previous
+            :g "r" #'org-remark-remove)))))
 #+end_src
 
 *** emacs lisp :emacsLisp:
@@ -977,6 +1103,25 @@ a lot of useless information and .. no information. Now in emacs!
   :config
   (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
   (setq tldr-enabled-categories '("common" "linux")))
+#+end_src
+*** rss
+#+begin_src emacs-lisp :tangle packages.el
+(package! elfeed-tube :recipe (:host github :repo "karthink/elfeed-tube"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package elfeed-tube
+  :after elfeed
+  :config
+  (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
+  (elfeed-tube-setup)
+
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
 #+end_src
 ** other
 *** tetris
@@ -1322,7 +1467,7 @@ whats the fun in that?
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(objed-state misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process checker " " bar " ")))
+    '(misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding checker major-mode process " " bar " ")))
 #+end_src
 
 I stole this from @tecosaur Its frankly a great addition (this is a theme
@@ -1564,7 +1709,7 @@ This readds the functionality of spelling on =return=
 (map! (:after spell-fu
        (:map override ;; HACK spell-fu does not define a modemap
         :n [return]
-        (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+        (cmds! (memq 'flymake-error-face (face-at-point nil t))
                #'+spell/correct))))
 #+end_src
 
@@ -1848,7 +1993,74 @@ stick with the lsp less life for css
                 sass-mode-local-vars-hook)
   #'lsp!)
 #+end_src
-** email :email:
+** app :app:
+*** irc :irc:
+I have a beard and I do like wasting time...
+#+begin_src emacs-lisp
+(after! circe
+  (set-irc-server! "irc.eu.libera.chat"
+    `(:tls t
+      :port 6697
+      :nick "jeetelongname"
+      :sasl-username "jeetelongname"
+      :sasl-password ,(+pass-get-secret "social/freenode")
+      :channels ("#emacs" "#haskell" "#doomemacs"))))
+#+end_src
+
+I don't really need the notifications
+#+begin_src emacs-lisp :tangle packages.el
+(package! circe-notifications :disable t)
+#+end_src
+*** rss :rss:
+Elfeed is great. I just need more blogs
+
+I am now kinda the maintainer of elfeed-goodies...
+#+begin_src emacs-lisp :tangle packages.el
+(package! elfeed-goodies
+  :recipe (:local-repo "~/code/emacs/elfeed-goodies"
+           :build (:not compile))
+  :disable nil)
+#+end_src
+
+#+BEGIN_SRC emacs-lisp
+(after! elfeed
+  (setq elfeed-search-filter "@4-week-ago -fun") ;; /they post so much/
+
+  (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
+
+(after! elfeed-goodies
+  (setq elfeed-goodies/powerline-default-separator 'bar))
+
+(defadvice! yeet/open-content-in-eww-a (orig-fun &rest args)
+  :around #'elfeed-search-browse-url
+  (let ((browse-url-browser-function #'eww-browse-url))
+    (funcall orig-fun args)))
+#+END_SRC
+
+There have been times where I wanted to share a link to an interesting blog or a
+comic that made me laugh. this just automated that process
+#+begin_src emacs-lisp :tangle autoload.el
+;; not actually useful as you can just use =title to filter by title
+;;;###autoload
+(defun yeet/search-feeds-by-title (feed-title)
+  (interactive
+   (list (completing-read
+          "Select Feed"
+          (let (feed-titles)
+            (dolist (feed elfeed-feeds feed-titles)
+              (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
+                          (car feed))
+                    feed-titles))))))
+  (message "%s"  feed-title))
+#+end_src
+
+#+begin_src emacs-lisp
+;; (map! (:map elfeed-show-mode-map
+;;        :n "gc" nil
+;;        :n "gc" #'yeet/elfeed-copy-link))
+#+end_src
+
 *** mu4e :mu4e:
 Whats better than email? email in emacs! mu4e has been fine for me so I dont
 think I will be switching to notmuch or what notj
@@ -1866,7 +2078,7 @@ on the folders remember that they come from what you set in your [[https://githu
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
-  (setq mu4e-mu-version "1.6.10")
+  (setq mu4e-mu-version "1.6.11")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 #+END_SRC
@@ -1916,68 +2128,6 @@ I update my mail when I feel like it so this is a little redundant for me
 #+begin_src emacs-lisp :tangle packages.el
 (package! mu4e-alert :disable t)
 #+end_src
-** app :app:
-*** irc :irc:
-I have a beard and I do like wasting time...
-#+begin_src emacs-lisp
-(after! circe
-  (set-irc-server! "irc.eu.libera.chat"
-    `(:tls t
-      :port 6697
-      :nick "jeetelongname"
-      :sasl-username "jeetelongname"
-      :sasl-password ,(+pass-get-secret "social/freenode")
-      :channels ("#emacs" "#haskell" "#doomemacs"))))
-#+end_src
-
-I don't really need the notifications
-#+begin_src emacs-lisp :tangle packages.el
-(package! circe-notifications :disable t)
-#+end_src
-*** rss :rss:
-Elfeed is great. I just need more blogs
-
-I am now kinda the maintainer of elfeed-goodies...
-#+begin_src emacs-lisp :tangle packages.el
-(package! elfeed-goodies
-  :recipe (:local-repo "~/code/emacs/elfeed-goodies"
-           :build (:not compile)))
-#+end_src
-
-#+BEGIN_SRC emacs-lisp
-(after! elfeed
-  (setq elfeed-search-filter "@4-week-ago -fun") ;; /they post so much/
-
-  (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
-  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
-
-(after! elfeed-goodies
-  (setq elfeed-goodies/powerline-default-separator 'bar))
-#+END_SRC
-
-There have been times where I wanted to share a link to an interesting blog or a
-comic that made me laugh. this just automated that process
-#+begin_src emacs-lisp :tangle autoload.el
-;; not actually useful as you can just use =title to filter by title
-;;;###autoload
-(defun yeet/search-feeds-by-title (feed-title)
-  (interactive
-   (list (completing-read
-          "Select Feed"
-          (let (feed-titles)
-            (dolist (feed elfeed-feeds feed-titles)
-              (push (cons (elfeed-feed-title (elfeed-entry-feed (car (elfeed-feed-entries (car feed)))))
-                          (car feed))
-                    feed-titles))))))
-  (message "%s"  feed-title))
-#+end_src
-
-#+begin_src emacs-lisp
-;; (map! (:map elfeed-show-mode-map
-;;        :n "gc" nil
-;;        :n "gc" #'yeet/elfeed-copy-link))
-#+end_src
-
 *** everywhere :everywhere:
 I prefer to write in the language that is going to be posted so markdown mode
 makes more sense to be the default (which is org)

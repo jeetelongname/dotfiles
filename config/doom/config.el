@@ -196,6 +196,32 @@ explicitly use the variable."
 (use-package! org-sidebar
   :after org)
 
+(add-hook! (prog-mode text-mode) #'flymake-mode)
+
+(use-package! flymake-popon
+  :hook (flymake-mode . flymake-popon-mode))
+
+(use-package! flymake-vale
+  :hook ((text-mode       . flymake-vale-load)
+         (latex-mode      . flymake-vale-load)
+         (org-mode        . flymake-vale-load)
+         (markdown-mode   . flymake-vale-load)
+         (message-mode    . flymake-vale-load)))
+
+(add-hook! 'org-msg-mode-hook
+  (setq flymake-vale-file-ext ".org")
+  (flymake-vale-load))
+
+(add-hook! 'flymake-mode-hook
+  (defun +emacs-lisp-reduce-flymake-errors-in-emacs-config-h ()
+    (when (and (bound-and-true-p flymake-mode)
+             (eq major-mode 'emacs-lisp-mode)
+             (or (not default-directory)
+                 (null (buffer-file-name (buffer-base-buffer)))
+                 (cl-find-if (doom-partial #'file-in-directory-p default-directory)
+                             +emacs-lisp-disable-flycheck-in-dirs)))
+      (remove-hook 'flymake-diagnostic-functions #'elisp-flymake-checkdoc))))
+
 (use-package! dired-dragon
   :after dired
   :config
@@ -218,6 +244,36 @@ explicitly use the variable."
 ;; (use-package! screenshot :defer)
 
 (use-package! aas)
+
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
+  :config
+  (map! :map lexic-mode-map
+        :n "q" #'lexic-return-from-lexic
+        :nv "RET" #'lexic-search-word-at-point
+        :n "a" #'outline-show-all
+        :n "h" (cmd! (outline-hide-sublevels 3))
+        :n "o" #'lexic-toggle-entry
+        :n "n" #'lexic-next-entry
+        :n "N" (cmd! (lexic-next-entry t))
+        :n "p" #'lexic-previous-entry
+        :n "P" (cmd! (lexic-previous-entry t))
+        :n "E" (cmd! (lexic-return-from-lexic) ; expand
+                     (switch-to-buffer (lexic-get-buffer)))
+        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
+                     (lexic-goto-lexic))
+        :n "C-p" #'lexic-search-history-backwards
+        :n "C-n" #'lexic-search-history-forwards
+        :n "/" (cmd! (call-interactively #'lexic-search))))
+
+(defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
+  "Look up the definition of the word at point (or selection) using `lexic-search'."
+  :override #'+lookup/dictionary-definition
+  (interactive
+   (list (or (doom-thing-at-point-or-region 'word)
+             (read-string "Look up in dictionary: "))
+         current-prefix-arg))
+  (lexic-search identifier nil nil t))
 
 (use-package! company-org-block
   :after org
@@ -248,6 +304,20 @@ explicitly use the variable."
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
+
+(use-package! org-modern :defer t)
+
+(use-package! org-remark
+   :defer t
+   :init
+   (map! :g "C-c n m" #'org-remark-mark
+         (:after org-remark
+          (:map org-remap-mode-map
+           (:prefix "C-c n"
+            :g "o" #'org-remark-open
+            :g "]" #'org-remark-view-next
+            :g "[" #'org-remark-view-previous
+            :g "r" #'org-remark-remove)))))
 
 (use-package! nameless
   :defer t
@@ -386,6 +456,19 @@ explicitly use the variable."
   :config
   (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
   (setq tldr-enabled-categories '("common" "linux")))
+
+(use-package elfeed-tube
+  :after elfeed
+  :config
+  (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
+  (elfeed-tube-setup)
+
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
 
 ;; center the board
 (add-hook! 'tetris-mode-hook
@@ -611,7 +694,7 @@ explicitly use the variable."
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(objed-state misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process checker " " bar " ")))
+    '(misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding checker major-mode process " " bar " ")))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
@@ -757,7 +840,7 @@ explicitly use the variable."
 (map! (:after spell-fu
        (:map override ;; HACK spell-fu does not define a modemap
         :n [return]
-        (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+        (cmds! (memq 'flymake-error-face (face-at-point nil t))
                #'+spell/correct))))
 
 (add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
@@ -923,6 +1006,33 @@ explicitly use the variable."
                 sass-mode-local-vars-hook)
   #'lsp!)
 
+(after! circe
+  (set-irc-server! "irc.eu.libera.chat"
+    `(:tls t
+      :port 6697
+      :nick "jeetelongname"
+      :sasl-username "jeetelongname"
+      :sasl-password ,(+pass-get-secret "social/freenode")
+      :channels ("#emacs" "#haskell" "#doomemacs"))))
+
+(after! elfeed
+  (setq elfeed-search-filter "@4-week-ago -fun") ;; /they post so much/
+
+  (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
+
+(after! elfeed-goodies
+  (setq elfeed-goodies/powerline-default-separator 'bar))
+
+(defadvice! yeet/open-content-in-eww-a (orig-fun &rest args)
+  :around #'elfeed-search-browse-url
+  (let ((browse-url-browser-function #'eww-browse-url))
+    (funcall orig-fun args)))
+
+;; (map! (:map elfeed-show-mode-map
+;;        :n "gc" nil
+;;        :n "gc" #'yeet/elfeed-copy-link))
+
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
                       (mu4e-drafts-folder     . "/gmail/\[Gmail\]/Drafts")
@@ -931,7 +1041,7 @@ explicitly use the variable."
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
 
 (after! mu4e
-  (setq mu4e-mu-version "1.6.10")
+  (setq mu4e-mu-version "1.6.11")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 
@@ -961,28 +1071,6 @@ explicitly use the variable."
  #+end_signature"))
 
 (custom-set-faces! `(mu4e-replied-face :foreground ,(doom-color 'red) :inherit font-lock-builtin-face))
-
-(after! circe
-  (set-irc-server! "irc.eu.libera.chat"
-    `(:tls t
-      :port 6697
-      :nick "jeetelongname"
-      :sasl-username "jeetelongname"
-      :sasl-password ,(+pass-get-secret "social/freenode")
-      :channels ("#emacs" "#haskell" "#doomemacs"))))
-
-(after! elfeed
-  (setq elfeed-search-filter "@4-week-ago -fun") ;; /they post so much/
-
-  (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
-  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)) ; update on entry
-
-(after! elfeed-goodies
-  (setq elfeed-goodies/powerline-default-separator 'bar))
-
-;; (map! (:map elfeed-show-mode-map
-;;        :n "gc" nil
-;;        :n "gc" #'yeet/elfeed-copy-link))
 
 ;; (after! emacs-everywhere
 ;;   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)

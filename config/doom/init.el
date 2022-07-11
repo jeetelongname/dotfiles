@@ -110,7 +110,7 @@
          +github
          +unicode)
        hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       hydra
+       ;;hydra
        ;;indent-guides     ; highlighted indent columns
        ;;ligatures         ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
@@ -158,13 +158,13 @@
        vterm               ; the best terminal emulation in Emacs
 
        :checkers
-       (syntax +childframe) ; tasing you for every semicolon you forget
-       (spell  +aspell)     ; tasing you for misspelling mispelling
-       grammar              ; tasing grammar mistake every you make
+       ;;syntax            ; tasing you for every semicolon you forget
+       (spell  +aspell)    ; tasing you for misspelling mispelling
+       ;;grammar           ; tasing grammar mistake every you make
 
        :tools
        ;;ansible
-       debugger            ; FIXME stepping through code, to help you add bugs
+       ;;debugger          ; FIXME stepping through code, to help you add bugs
        direnv
        ;;docker
        editorconfig        ; let someone else argue about tabs vs spaces
@@ -193,7 +193,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
-       beancount           ; the accounting system in Emacs
+       ;;beancount         ; the accounting system in Emacs
        (cc +lsp            ; C/C++/Obj-C madness
            +tree-sitter)
        ;;clojure           ; java with a lisp
@@ -212,7 +212,7 @@
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;gdscript          ; the language you waited for
-       (go +lsp)           ; the hipster dialect
+       ;;(go +lsp)         ; the hipster dialect
        (haskell +lsp)      ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
@@ -254,14 +254,14 @@
        ;;qt                ; the 'cutest' gui framework ever
        (racket +lsp +xp)   ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
-       ;;rest              ; Emacs as a REST client
+       rest                ; Emacs as a REST client
        ;;rst               ; ReST in peace
        (ruby +rails        ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
              +lsp
              +tree-sitter)
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
-       (scheme +guile)     ; a fully conniving family of lisps
+       ;;(scheme +guile)   ; a fully conniving family of lisps
        sh                  ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
        ;;solidity          ; do you need a blockchain? No.
