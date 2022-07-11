@@ -5,58 +5,11 @@
 Welcome to my dotfiles! I have spent countless hours writing, stressing and
 redeploying them so I should know them like the back of my hand. That being said
 I am me and I am stupid. Hence why I am on my 3rd rewrite of them (all hail
-nix!) anyway there is a config for (split into its modules)
+nix!).
 
-There is nothing special here. this is a generic home manager configuration. It
-may be a good reasource for people who want to make a good home manager config
+There is nothing special here. This is a generic home manager configuration with
+a little bit of stow and a lot of =config.lib.file.mkOutOfStoreSymlink=
 
-- chat
-  installs
-  + discord canary
-  + element
-- cli
-  installs
-  + a bunch of stuff [[file:modules/cli.nix][(check it out!)]]
-  configures
-  + TODO lf
-  + neofetch
-  + pulsemixer
-  + topgrade
-- emacs
-  installs
-  + emacs (pgtk-nativecomp)
-  configures
-  + (doom) :: you will need to symlink this
-- email
-  installs and configures
-  + mbsync (isync) FIXME
-  + msmtp
-- fun
-  just a bunch of jokes at this point
-- git
-  Pretty much just deals with git and the github cli
-- neovim
-  installs
-  + neovim nightly
-    configures
-  + neovim :: you will need to symlink this yourself
-- shell
-  + zsh (with zplug for plugins)
-    a hybrid between home manager and shell :)
-- terminal
-  + alacritty
-  + tmux
-    its another hybrid
-- misc
-  + castor
-  # + libinput gestures
-
-there are also a bunch of scripts I have and some other stuff I probably have
-forgot about. Most config things are in ~config~ (duh)
-
-* TODO
-I need to do some stuff
-- fix gtk apps
 * Installations
 You need to install [[https://nixos.org/guides/install-nix.html][nix]]
 #+begin_src shell
