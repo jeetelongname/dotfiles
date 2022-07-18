@@ -198,6 +198,9 @@ explicitly use the variable."
 
 (add-hook! (prog-mode text-mode) #'flymake-mode)
 
+(after! lsp-mode
+  (setq lsp-diagnostics-provider :flymake))
+
 (use-package! flymake-popon
   :hook (flymake-mode . flymake-popon-mode))
 

@@ -632,11 +632,12 @@ I have swapped out flycheck for flymake for a couple of reasons
 - its an easy switch
 - its probably what doom is going to switch to
 - 4th reason
-
-**** TODO Autostart on buffer entry
-
+**** Autostart on buffer entry
 #+begin_src emacs-lisp
 (add-hook! (prog-mode text-mode) #'flymake-mode)
+
+(after! lsp-mode
+  (setq lsp-diagnostics-provider :flymake))
 #+end_src
 **** popon hover
 #+begin_src emacs-lisp :tangle packages.el
@@ -701,7 +702,6 @@ wellish
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
 #+end_src
-
 
 ** tools
 *** pretty code shots
@@ -1906,7 +1906,6 @@ I have been pretty lazy when it comes to learning haskell
 (after! lsp-haskell
   (setq lsp-haskell-formatting-provider "ormolu"))
 #+end_src
-
 *** python :python:
 Python is great is it not 🐍
 #+BEGIN_SRC emacs-lisp
