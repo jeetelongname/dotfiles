@@ -5,87 +5,9 @@
 ;; I add it to the list early.. for no reason. put in your config.el
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
 
-;; drop in $DOOMDIR/init.el
-(defadvice! fix-doom--straight-fallback-to-tty-prompt-a (fn prompt actions)
-  :override #'doom--straight-fallback-to-tty-prompt-a
-  (if doom-interactive-p
-      (funcall fn prompt actions)
-    (let ((doom--straight-auto-options doom--straight-auto-options)
-          (last-resort
-           (lambda ()
-             (unless straight--default-directory
-               (error "Can't determine package"))
-             (let (packages)
-               (dolist (recipe
-                        (let ((repo (file-name-base (directory-file-name straight--default-directory))))
-                          (seq-filter (lambda (r)
-                                        (string= (plist-get r :local-repo) repo))
-                                      (hash-table-values straight--recipe-cache))))
-                 (straight--with-plist recipe (local-repo package)
-                   (push (intern package) packages)
-                   (when local-repo
-                     (print! (warn "Deleting repo: %S" (straight--repos-dir local-repo)))
-                     (delete-directory (straight--repos-dir local-repo) t))
-                   (when package
-                     (print! (warn "Deleting package: %S" (straight--build-dir package)))
-                     (delete-directory (straight--build-dir package) t))))
-               (mapc #'straight-use-package packages)))))
-      ;; We can't intercept C-g, so no point displaying any options for this key
-      ;; when C-c is the proper way to abort batch Emacs.
-      (delq! "C-g" actions 'assoc)
-      ;; HACK These are associated with opening dired or magit, which isn't
-      ;;      possible in tty Emacs, so...
-      (delq! "e" actions 'assoc)
-      (delq! "g" actions 'assoc)
-      (setf (alist-get "X" actions nil nil #'equal)
-            (list "Reclone and rebuild the package" last-resort))
-      (unless
-          (and doom-auto-discard
-               (or (cl-loop with doom-auto-accept = t
-                            for (_key desc func) in actions
-                            when (doom--straight-recommended-option-p prompt desc)
-                            return (progn (funcall func) t))
-                   (funcall last-resort)))
-        (print! (start "%s") (red prompt))
-        (print-group!
-         (terpri)
-         (let (recommended options)
-           (print-group!
-            (print! " 1) Abort")
-            (cl-loop for (_key desc func) in actions
-                     when desc
-                     do (push func options)
-                     and do
-                     (print! "%2s) %s" (1+ (length options))
-                             (if (or (doom--straight-recommended-option-p prompt desc)
-                                     (and (not recommended)
-                                          (equal func last-resort)))
-                                 (progn
-                                   (setq doom--straight-auto-options nil
-                                         recommended (length options))
-                                   (green (concat desc " (Choose this if unsure)")))
-                               desc))))
-           (terpri)
-           (let* ((options
-                   (cons (lambda ()
-                           (let ((doom-output-indent 0))
-                             (terpri)
-                             (print! (warn "Aborted")))
-                           (kill-emacs 1))
-                         (nreverse options)))
-                  (prompt
-                   (format! "How to proceed? (%s%s) "
-                            (mapconcat #'number-to-string
-                                       (number-sequence 1 (length options))
-                                       ", ")
-                            (if (not recommended) ""
-                              (format "; don't know? Pick %d" (1+ recommended)))))
-                  answer fn)
-             (while (null (nth (setq answer (1- (read-number prompt)))
-                               options))
-               (print! (warn "%s is not a valid answer, try again.")
-                       answer))
-             (funcall (nth answer options)))))))))
+(defadvice! fixed-doom-module-list (fn &rest args)
+  :around #'doom-module-list
+  (nreverse (apply fn args)))
 
 (doom! :input
        ;;chinese
@@ -114,7 +36,7 @@
        ;;indent-guides     ; highlighted indent columns
        ;;ligatures         ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
-       modeline            ; snazzy, Atom-inspired modeline, plus API
+       (modeline -light)   ; snazzy, Atom-inspired modeline, plus API
        nav-flash           ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
@@ -122,7 +44,8 @@
        ;; tabs             ; a tab bar for Emacs
        (treemacs +lsp)     ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
-       vc-gutter           ; vcs diff in the fringe
+       (vc-gutter          ; vcs diff in the fringe
+        +diff-hl)
        vi-tilde-fringe     ; fringe tildes to mark beyond EOB
        (window-select      ; visually switch windows
         +numbers)
@@ -158,7 +81,8 @@
        vterm               ; the best terminal emulation in Emacs
 
        :checkers
-       ;;syntax            ; tasing you for every semicolon you forget
+       (syntax +flymake    ; tasing you for every semicolon you forget
+               +childframe)
        (spell  +aspell)    ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
@@ -202,7 +126,8 @@
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
        data                ; config/data formats
-       ;;(dart +flutter)   ; paint ui and not much else
+       (dart +lsp          ; paint ui and not much else
+             +flutter)
        (elixir +lsp        ; erlang done right
                +tree-sitter)
        ;;elm               ; care for a cup of TEA?
@@ -287,5 +212,5 @@
 
        :config
        literate
-       tutorial
+       ;;tutorial
        (default +bindings +smartparens))

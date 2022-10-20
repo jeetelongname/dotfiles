@@ -2,6 +2,7 @@
 ;; Don't edit this file directly unless you like your changes being wiped
 
 (message "in config")
+(load! "+private.el") ;; Stuff I don't want on the web (emails and other boring things)
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
@@ -16,7 +17,7 @@
 (when (boundp 'pgtk-wait-for-event-timeout)
   (setq pgtk-wait-for-event-timeout 0.001))
 
-(setq doom-leader-alt-key "C-,")
+(setq doom-leader-alt-key "M-SPC")
 
 ;; (setq-default header-line-format (concat (propertize battery-mode-line-format 'display '((space :align-to 0))) " ")))
 
@@ -33,6 +34,8 @@
  ;; I recompile more than I compile
  "cc" #'recompile
  "cC" #'compile)
+
+(map! :map minibuffer-local-map doom-leader-alt-key #'doom/leader)
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
@@ -138,6 +141,14 @@ explicitly use the variable."
 
 (display-battery-mode 1)
 
+(setq whitespace-style '(space-mark))
+(setq whitespace-display-mappings '((space-mark 32 [183] [46])))
+(global-whitespace-mode)
+
+(set-popup-rules!
+  '(("^\\*info\\*"
+     :slot 1 :vslot 1 :side right :width 0.45 :quit nil)))
+
 (defvar yeet/birds '(default confused emacs nyan rotating science thumbsup))
 
 (use-package! nyan-mode
@@ -196,13 +207,13 @@ explicitly use the variable."
 (use-package! org-sidebar
   :after org)
 
-(add-hook! (prog-mode text-mode) #'flymake-mode)
+(use-package ef-themes :defer t)
 
-(after! lsp-mode
-  (setq lsp-diagnostics-provider :flymake))
-
-(use-package! flymake-popon
-  :hook (flymake-mode . flymake-popon-mode))
+(use-package! tao-theme ; messing around with tao
+  :defer
+  :config
+  (setq tao-theme-use-sepia t
+        tao-theme-sepia-depth 50))
 
 (use-package! flymake-vale
   :hook ((text-mode       . flymake-vale-load)
@@ -214,16 +225,6 @@ explicitly use the variable."
 (add-hook! 'org-msg-mode-hook
   (setq flymake-vale-file-ext ".org")
   (flymake-vale-load))
-
-(add-hook! 'flymake-mode-hook
-  (defun +emacs-lisp-reduce-flymake-errors-in-emacs-config-h ()
-    (when (and (bound-and-true-p flymake-mode)
-             (eq major-mode 'emacs-lisp-mode)
-             (or (not default-directory)
-                 (null (buffer-file-name (buffer-base-buffer)))
-                 (cl-find-if (doom-partial #'file-in-directory-p default-directory)
-                             +emacs-lisp-disable-flycheck-in-dirs)))
-      (remove-hook 'flymake-diagnostic-functions #'elisp-flymake-checkdoc))))
 
 (use-package! dired-dragon
   :after dired
@@ -278,6 +279,11 @@ explicitly use the variable."
          current-prefix-arg))
   (lexic-search identifier nil nil t))
 
+(use-package info-colors
+  :hook (Info-selection-hook . info-colors-fontify-node))
+
+;; (map! "C-h i" #'info-buffer)
+
 (use-package! company-org-block
   :after org
   :config
@@ -322,6 +328,9 @@ explicitly use the variable."
             :g "[" #'org-remark-view-previous
             :g "r" #'org-remark-remove)))))
 
+(use-package simple-comment-markup
+  :hook (org-mode . simple-comment-markup-mode))
+
 (use-package! nameless
   :defer t
   :hook (emacs-lisp-mode-hook . nameless-mode)
@@ -353,6 +362,11 @@ explicitly use the variable."
 
 (use-package! janet-mode
   :mode "\\.janet$\\'")
+
+(use-package! flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 
 (use-package! calibredb
   :defer t
@@ -431,7 +445,7 @@ explicitly use the variable."
 
 (defun =book ()
   (interactive)
-  (if (featurep! :ui workspaces)
+  (if (modulep! :ui workspaces)
       (progn
         (+workspace-switch "*book*" t)
         (doom/switch-to-scratch-buffer)
@@ -550,21 +564,23 @@ explicitly use the variable."
         evil-want-fine-undo t))
 
 ;; Change out fonts quickly
- (setq yeet/font-name "Iosevka")
+ (defvar yeet/font-name "Iosevka")
 
- (setq! doom-font (font-spec :family yeet/font-name :size 16)
-        doom-big-font (font-spec :family yeet/font-name :size 25)
-        doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
+ (setq!
+  doom-font (font-spec :family yeet/font-name :size 16)
+  doom-big-font (font-spec :family yeet/font-name :size 25)
+  ;; doom-font (font-spec :family yeet/font-name :size 16)
+  ;; doom-big-font (font-spec :family yeet/font-name :size 25)
+  doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
 
 ;; HACK to get rid of weird black circles in mu4e screen.
  (delete "Noto Emoji" doom-emoji-fallback-font-families)
  (delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 
-(after! doom-themes
-  (setq! doom-themes-enable-bold t
-         doom-themes-enable-italic t
-         doom-horizon-brighter-comments t
-         doom-flatwhite-brighter-modeline t))
+(setq! doom-themes-enable-bold t
+        doom-themes-enable-italic t
+        doom-horizon-brighter-comments t
+        doom-flatwhite-brighter-modeline t)
 
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
@@ -573,14 +589,6 @@ explicitly use the variable."
 (setq doom-theme (if (or (daemonp) (display-graphic-p))
                      'doom-horizon
                    'horizon))
-
-(use-package! tao-theme ; messing around with tao
-  :defer
-  :config
-  (setq tao-theme-use-sepia t
-        tao-theme-sepia-depth 50))
-
-;; (setq doom-theme 'tao-yang)
 
 (setq fancy-splash-image "~/code/other/doom-banners/splashes/emacs/emacs-gnu-logo.png")
 
@@ -790,7 +798,7 @@ explicitly use the variable."
 
 (after! evil-textobj-tree-sitter
   (pushnew! evil-textobj-tree-sitter-major-mode-language-alist
-            '(scss-mode . css)))
+            '(scss-mode . "css")))
 
 (use-package! hideshow-tree-sitter :after tree-sitter)
 (use-package! tree-sitter-playground
@@ -806,6 +814,9 @@ explicitly use the variable."
          "m" (+tree-sitter-get-textobj "import"
                                        '((python-mode . [(import_statement) @import])
                                          (rust-mode . [(use_declaration) @import]))))))
+
+(use-package! evil-tree-edit
+  :hook (python-mode . evil-tree-edit-mode))
 
 (setq dired-dwim-target t)
 
@@ -846,7 +857,7 @@ explicitly use the variable."
         (cmds! (memq 'flymake-error-face (face-at-point nil t))
                #'+spell/correct))))
 
-(add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
+;; (add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
 
 (setq org-directory "~/org-notes/")
 (after! org
@@ -862,7 +873,7 @@ explicitly use the variable."
         org-hide-emphasis-markers nil ;; this makes org feel more like a proper document and less like a mark up format
         org-startup-with-latex-preview t)
 
-  (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
+  (when (modulep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
 
@@ -895,7 +906,7 @@ explicitly use the variable."
   :before #'org-roam-node-random
   :before #'org-roam-buffer-display-dedicated
   :before #'org-roam-buffer-toggle
-  (when (featurep! :ui workspaces)
+  (when (modulep! :ui workspaces)
     (+workspace-switch "*roam*" t)))
 
 (after! org-journal
@@ -966,19 +977,6 @@ explicitly use the variable."
                              :order 90)
                             (:discard (:tag ("chore" "routine" "Daily"))))))))))))
 
-(after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
-  (when (featurep! :ui ligatures)
-    (set-ligatures! 'go-mode
-                    :def "func"
-                    :true "true" :false "false"
-                    :int "int" :str "string"
-                    :float "float" :bool "bool"
-                    :for "for"
-                    :return "return" )))
-
-(setq-hook! 'go-mode-hook
-  lsp-enable-file-watchers nil)
-
 (after! lsp-haskell
   (setq lsp-haskell-formatting-provider "ormolu"))
 
@@ -1041,10 +1039,17 @@ explicitly use the variable."
                       (mu4e-drafts-folder     . "/gmail/\[Gmail\]/Drafts")
                       (mu4e-trash-folder      . "/gmail/\[Gmail\]/Trash")
                       (mu4e-refile-folder     . "/gmail/\[Gmail\]/All Mail")
-                      (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
+                      (smtpmail-smtp-user     . "jeetelongname@gmail.com")
+                      (org-msg-greeting-fmt   . "\nHi %s,\n\n")
+                      (org-msg-signature      . "\nRegards,
+ ,#+begin_signature
+ -- *Jeetaditya Chatterjee* \\\\
+ /Sent using my text editor/
+ ,#+end_signature"))
+                    t)
 
 (after! mu4e
-  (setq mu4e-mu-version "1.6.11")
+  (setq mu4e-mu-version "1.8.10")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 
@@ -1063,76 +1068,10 @@ explicitly use the variable."
         "b" #'org-msg-goto-body
         "a" #'org-msg-attach)))
 
-(after! mu4e
-  (setq
-   ;; org-msg-default-alternatives '(html)
-   org-msg-greeting-fmt "\nHi *%s*,\n\n"
-   org-msg-signature "\nRegards,
- #+begin_signature
- -- *Jeetaditya Chatterjee* \\\\
- /Sent using my text editor/
- #+end_signature"))
+
 
 (custom-set-faces! `(mu4e-replied-face :foreground ,(doom-color 'red) :inherit font-lock-builtin-face))
 
 ;; (after! emacs-everywhere
 ;;   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
 ;;   (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
-
-(defvar +literate-tangle--proc nil)
-(defvar +literate-tangle--proc-start-time nil)
-
-(defadvice! +literate-tangle-async-h ()
-  "A very simplified version of `+literate-tangle-h', but async."
-  :override #'+literate-tangle-h
-  (unless (getenv "__NOTANGLE")
-    (let ((default-directory doom-private-dir))
-      (when +literate-tangle--proc
-        (message "Killing outdated tangle process...")
-        (set-process-sentinel +literate-tangle--proc #'ignore)
-        (kill-process +literate-tangle--proc)
-        (sit-for 0.3)) ; ensure the message is seen for a bit
-      (setq +literate-tangle--proc-start-time (float-time)
-            +literate-tangle--proc
-            (start-process "tangle-config"
-                           (get-buffer-create " *tangle config*")
-                           "emacs" "--batch" "--eval"
-                           (format "(progn \
-(require 'ox) \
-(require 'ob-tangle) \
-(setq org-confirm-babel-evaluate nil \
-      org-inhibit-startup t \
-      org-mode-hook nil \
-      write-file-functions nil \
-      before-save-hook nil \
-      after-save-hook nil \
-      vc-handled-backends nil \
-      org-startup-folded nil \
-      org-startup-indented nil) \
-(org-babel-tangle-file \"%s\" \"%s\"))"
-                                   +literate-config-file
-                                   (expand-file-name (concat doom-module-config-file ".el")))))
-      (set-process-sentinel +literate-tangle--proc #'+literate-tangle--sentinel)
-      (run-at-time nil nil (lambda () (message "Tangling config.org"))) ; ensure shown after a save message
-      "Tangling config.org...")))
-
-(defun +literate-tangle--sentinel (process signal)
-  (cond
-   ((and (eq 'exit (process-status process))
-         (= 0 (process-exit-status process)))
-    (message "Tangled config.org sucessfully (took %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))
-   ((memq (process-status process) (list 'exit 'signal))
-    (+popup-buffer (get-buffer " *tangle config*"))
-    (message "Failed to tangle config.org (after %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))))
-
-(defun +literate-tangle-check-finished ()
-  (when (and (process-live-p +literate-tangle--proc)
-             (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
-    (switch-to-buffer " *tangle config*")
-    (signal 'quit nil)))
-
-(add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)

@@ -32,18 +32,22 @@ Lets get this config started!
     - [[#globalsubword-mode][GlobalSubWord Mode]]
     - [[#type-break-mode][Type break mode]]
     - [[#battery-mode][Battery mode]]
+    - [[#whitespace-mode][whitespace mode]]
+  - [[#popup-rules][popup rules]]
 - [[#packages][Packages]]
   - [[#ui][ui]]
     - [[#modeline-fun][modeline fun]]
     - [[#sidebars][sidebars]]
+    - [[#themes][themes]]
   - [[#checkers][checkers]]
-    - [[#syntax][syntax]]
+    - [[#flymake-vale][Flymake Vale]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
   - [[#tools][tools]]
     - [[#pretty-code-shots][pretty code shots]]
     - [[#snippets][snippets]]
     - [[#dictionary][dictionary]]
+    - [[#info][info]]
   - [[#lang][lang]]
     - [[#org-mode][org mode]]
     - [[#emacs-lisp][emacs lisp]]
@@ -52,6 +56,7 @@ Lets get this config started!
     - [[#vim][vim]]
     - [[#unit-tests][unit tests]]
     - [[#janet][janet]]
+    - [[#shell][shell]]
   - [[#app][app]]
     - [[#books][books]]
     - [[#tldr-integration][tldr integration]]
@@ -92,7 +97,6 @@ Lets get this config started!
   - [[#lang-1][lang]]
     - [[#emacs-lisp-1][emacs-lisp]]
     - [[#org][org]]
-    - [[#deprecated-go][DEPRECATED Go]]
     - [[#haskell][haskell]]
     - [[#python][python]]
     - [[#racket][racket]]
@@ -103,14 +107,13 @@ Lets get this config started!
     - [[#rss-1][rss]]
     - [[#mu4e][mu4e]]
     - [[#everywhere][everywhere]]
-  - [[#config][config]]
-    - [[#literate][literate]]
 - [[#epilogue][Epilogue]]
 
 * Rudimentary configuration
 This is the stuff that does not really belong in any module but is useful
 #+BEGIN_SRC emacs-lisp
 (message "in config")
+(load! "+private.el") ;; Stuff I don't want on the web (emails and other boring things)
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
@@ -125,10 +128,9 @@ This is the stuff that does not really belong in any module but is useful
 (when (boundp 'pgtk-wait-for-event-timeout)
   (setq pgtk-wait-for-event-timeout 0.001))
 
-(setq doom-leader-alt-key "C-,")
-
-
+(setq doom-leader-alt-key "M-SPC")
 #+END_SRC
+
 
 +I like a little separation so I put an empty line at the top of my emacs+
 +instance (I may put something in it later)+
@@ -157,6 +159,8 @@ get stuck here
  ;; I recompile more than I compile
  "cc" #'recompile
  "cC" #'compile)
+
+(map! :map minibuffer-local-map doom-leader-alt-key #'doom/leader)
 #+end_src
 ** Hooky hooks
 hl-line and rainbow mode don't play all too well so if one is on the other
@@ -507,6 +511,18 @@ I like my modeline busy
 #+begin_src emacs-lisp
 (display-battery-mode 1)
 #+end_src
+*** whitespace mode
+#+begin_src emacs-lisp
+(setq whitespace-style '(space-mark))
+(setq whitespace-display-mappings '((space-mark 32 [183] [46])))
+(global-whitespace-mode)
+#+end_src
+** popup rules
+#+begin_src emacs-lisp
+(set-popup-rules!
+  '(("^\\*info\\*"
+     :slot 1 :vslot 1 :side right :width 0.45 :quit nil)))
+#+end_src
 * Packages
 I have quite a few packages that I use. These are the packages and there
 subsequent configurations.
@@ -624,20 +640,38 @@ bit of work to be done
 (use-package! org-sidebar
   :after org)
 #+end_src
+*** themes
+I set my themes in my  [[#doom][Doom config]]
+#+begin_src emacs-lisp :tangle packages.el
+(package! ef-themes :recipe (:host nil :repo "https://git.sr.ht/~protesilaos/ef-themes"))
+(package! tao-theme)
+#+end_src
 
+#+begin_src emacs-lisp
+(use-package ef-themes :defer t)
+
+(use-package! tao-theme ; messing around with tao
+  :defer
+  :config
+  (setq tao-theme-use-sepia t
+        tao-theme-sepia-depth 50))
+#+end_src
 ** checkers
-*** syntax
+*** COMMENT syntax
+this is now a module doomemacs/doomemacs#6660
 I have swapped out flycheck for flymake for a couple of reasons
 - its built in
 - its an easy switch
 - its probably what doom is going to switch to
 - 4th reason
-**** Autostart on buffer entry
 #+begin_src emacs-lisp
 (add-hook! (prog-mode text-mode) #'flymake-mode)
 
 (after! lsp-mode
   (setq lsp-diagnostics-provider :flymake))
+
+(after! flymake
+  (setq flymake-fringe-indicator-position 'right-fringe))
 #+end_src
 **** popon hover
 #+begin_src emacs-lisp :tangle packages.el
@@ -649,7 +683,18 @@ I have swapped out flycheck for flymake for a couple of reasons
 (use-package! flymake-popon
   :hook (flymake-mode . flymake-popon-mode))
 #+end_src
-**** Flymake Vale
+**** remove checkdoc in certain buffers
+#+begin_src emacs-lisp
+(add-hook! 'flymake-mode-hook
+  (defun +emacs-lisp-reduce-flymake-errors-in-emacs-config-h ()
+    (when (and (bound-and-true-p flymake-mode)
+               (eq major-mode 'emacs-lisp-mode)
+               (cl-find-if (doom-partial #'file-in-directory-p default-directory)
+                           +emacs-lisp-disable-flycheck-in-dirs))
+      (remove-hook 'flymake-diagnostic-functions #'elisp-flymake-checkdoc))))
+#+end_src
+
+*** Flymake Vale
 this replaces =:checkers grammer= and parts of =:checkers spell=
 #+begin_src emacs-lisp :tangle packages.el
 (package! flymake-vale :recipe (:host github :repo "tpeacock19/flymake-vale"))
@@ -666,19 +711,6 @@ this replaces =:checkers grammer= and parts of =:checkers spell=
 (add-hook! 'org-msg-mode-hook
   (setq flymake-vale-file-ext ".org")
   (flymake-vale-load))
-#+end_src
-
-**** remove checkdoc in certain buffers
-#+begin_src emacs-lisp
-(add-hook! 'flymake-mode-hook
-  (defun +emacs-lisp-reduce-flymake-errors-in-emacs-config-h ()
-    (when (and (bound-and-true-p flymake-mode)
-             (eq major-mode 'emacs-lisp-mode)
-             (or (not default-directory)
-                 (null (buffer-file-name (buffer-base-buffer)))
-                 (cl-find-if (doom-partial #'file-in-directory-p default-directory)
-                             +emacs-lisp-disable-flycheck-in-dirs)))
-      (remove-hook 'flymake-diagnostic-functions #'elisp-flymake-checkdoc))))
 #+end_src
 
 ** emacs
@@ -789,7 +821,18 @@ is basically stolen from [[https://tecosaur.github.io/emacs-config/config.html#d
          current-prefix-arg))
   (lexic-search identifier nil nil t))
   #+end_src
+*** info
+#+begin_src emacs-lisp :tangle packages.el
+(package! info-colors)
+(package! info-buffer)
+#+end_src
 
+#+begin_src emacs-lisp
+(use-package info-colors
+  :hook (Info-selection-hook . info-colors-fontify-node))
+
+;; (map! "C-h i" #'info-buffer)
+#+end_src
 ** lang
 *** org mode
 **** TODO Company org block
@@ -874,6 +917,15 @@ is basically stolen from [[https://tecosaur.github.io/emacs-config/config.html#d
             :g "]" #'org-remark-view-next
             :g "[" #'org-remark-view-previous
             :g "r" #'org-remark-remove)))))
+#+end_src
+**** simple-comment-markup
+#+begin_src emacs-lisp :tangle packages.el
+(package! simple-comment-markup :recipe (:repo "https://git.tecosaur.net/tec/simple-comment-markup.git"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package simple-comment-markup
+  :hook (org-mode . simple-comment-markup-mode))
 #+end_src
 
 *** emacs lisp :emacsLisp:
@@ -963,6 +1015,17 @@ me get errors need fix
 #+begin_src emacs-lisp
 (use-package! janet-mode
   :mode "\\.janet$\\'")
+#+end_src
+*** shell
+#+begin_src emacs-lisp :tangle packages.el
+(package! flymake-shellcheck)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 #+end_src
 
 ** app
@@ -1057,7 +1120,7 @@ work so I don't have to) I have slightly modified them though to fit my needs.
 
 (defun =book ()
   (interactive)
-  (if (featurep! :ui workspaces)
+  (if (modulep! :ui workspaces)
       (progn
         (+workspace-switch "*book*" t)
         (doom/switch-to-scratch-buffer)
@@ -1071,9 +1134,6 @@ work so I don't have to) I have slightly modified them though to fit my needs.
       "ob" #'=book
       "oB" #'browse-url-of-file)
 #+end_src
-
-#+RESULTS:
-: browse-url-of-file
 
 Nov is how we do the reading!
 I don't configre it too much for the time being though I do plan on adding a
@@ -1274,11 +1334,14 @@ Iosevka is my new best friend
 
 #+BEGIN_SRC emacs-lisp
  ;; Change out fonts quickly
- (setq yeet/font-name "Iosevka")
+ (defvar yeet/font-name "Iosevka")
 
- (setq! doom-font (font-spec :family yeet/font-name :size 16)
-        doom-big-font (font-spec :family yeet/font-name :size 25)
-        doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
+ (setq!
+  doom-font (font-spec :family yeet/font-name :size 16)
+  doom-big-font (font-spec :family yeet/font-name :size 25)
+  ;; doom-font (font-spec :family yeet/font-name :size 16)
+  ;; doom-big-font (font-spec :family yeet/font-name :size 25)
+  doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
 
 ;; HACK to get rid of weird black circles in mu4e screen.
  (delete "Noto Emoji" doom-emoji-fallback-font-families)
@@ -1288,11 +1351,10 @@ Iosevka is my new best friend
 the comments for horizon are borderline unreadable so now we have brighter
 comments
 #+begin_src emacs-lisp
-(after! doom-themes
-  (setq! doom-themes-enable-bold t
-         doom-themes-enable-italic t
-         doom-horizon-brighter-comments t
-         doom-flatwhite-brighter-modeline t))
+(setq! doom-themes-enable-bold t
+        doom-themes-enable-italic t
+        doom-horizon-brighter-comments t
+        doom-flatwhite-brighter-modeline t)
 #+end_src
 
 I wanted my comments and keywords to be italics.
@@ -1309,21 +1371,12 @@ I can use... still works tho
 #+begin_src emacs-lisp :tangle packages.el
 (package! horizon-theme)
 (unpin! doom-themes)
-(package! tao-theme)
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme (if (or (daemonp) (display-graphic-p))
                      'doom-horizon
                    'horizon))
-
-(use-package! tao-theme ; messing around with tao
-  :defer
-  :config
-  (setq tao-theme-use-sepia t
-        tao-theme-sepia-depth 50))
-
-;; (setq doom-theme 'tao-yang)
 #+end_src
 
 *** Doom Dashboard :dashboard:
@@ -1609,7 +1662,7 @@ current hack in testing
 
 (after! evil-textobj-tree-sitter
   (pushnew! evil-textobj-tree-sitter-major-mode-language-alist
-            '(scss-mode . css)))
+            '(scss-mode . "css")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -1641,6 +1694,16 @@ The yellow used for function calls was the same colour used for strings (in
          "m" (+tree-sitter-get-textobj "import"
                                        '((python-mode . [(import_statement) @import])
                                          (rust-mode . [(use_declaration) @import]))))))
+#+end_src
+**** Tree edit
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
+(package! evil-tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! evil-tree-edit
+  :hook (python-mode . evil-tree-edit-mode))
 #+end_src
 
 ** emacs :emacs:
@@ -1716,7 +1779,7 @@ This readds the functionality of spelling on =return=
 ** lang :lang:
 *** emacs-lisp
 #+begin_src emacs-lisp
-(add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
+;; (add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
 #+end_src
 
 *** org :org:
@@ -1738,7 +1801,7 @@ it
         org-hide-emphasis-markers nil ;; this makes org feel more like a proper document and less like a mark up format
         org-startup-with-latex-preview t)
 
-  (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
+  (when (modulep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
 #+end_src
@@ -1797,7 +1860,7 @@ there own workspace for ease and peace of mind
   :before #'org-roam-node-random
   :before #'org-roam-buffer-display-dedicated
   :before #'org-roam-buffer-toggle
-  (when (featurep! :ui workspaces)
+  (when (modulep! :ui workspaces)
     (+workspace-switch "*roam*" t)))
 #+end_src
 **** Journal
@@ -1879,26 +1942,6 @@ I don't need people snooping into my thoughts
                              :order 90)
                             (:discard (:tag ("chore" "routine" "Daily"))))))))))))
 #+end_src
-
-*** DEPRECATED Go :go:
-I have not written much go (at all)
-Go and lsp have not been behaving like they should. the file watchers have been
-misbehaving and now they have been disabled for go mode. That fixes the issue
-but means lsp will not watch files in the workspace (a small price to pay imo)
-#+BEGIN_SRC emacs-lisp
-(after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
-  (when (featurep! :ui ligatures)
-    (set-ligatures! 'go-mode
-                    :def "func"
-                    :true "true" :false "false"
-                    :int "int" :str "string"
-                    :float "float" :bool "bool"
-                    :for "for"
-                    :return "return" )))
-
-(setq-hook! 'go-mode-hook
-  lsp-enable-file-watchers nil)
-#+END_SRC
 
 *** haskell
 I have been pretty lazy when it comes to learning haskell
@@ -2072,12 +2115,19 @@ on the folders remember that they come from what you set in your [[https://githu
                       (mu4e-drafts-folder     . "/gmail/\[Gmail\]/Drafts")
                       (mu4e-trash-folder      . "/gmail/\[Gmail\]/Trash")
                       (mu4e-refile-folder     . "/gmail/\[Gmail\]/All Mail")
-                      (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
+                      (smtpmail-smtp-user     . "jeetelongname@gmail.com")
+                      (org-msg-greeting-fmt   . "\nHi %s,\n\n")
+                      (org-msg-signature      . "\nRegards,
+ ,,#+begin_signature
+ -- *Jeetaditya Chatterjee* \\\\
+ /Sent using my text editor/
+ ,,#+end_signature"))
+                    t)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
-  (setq mu4e-mu-version "1.6.11")
+  (setq mu4e-mu-version "1.8.10")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 #+END_SRC
@@ -2107,15 +2157,6 @@ do mail stuff. I do like =C-c C-c= to send tho
 These are the settings for org-msg I may switch them to a snippet tho as I can
 toggle the kind of signature I want to use then
 #+BEGIN_SRC emacs-lisp
-(after! mu4e
-  (setq
-   ;; org-msg-default-alternatives '(html)
-   org-msg-greeting-fmt "\nHi *%s*,\n\n"
-   org-msg-signature "\nRegards,
- ,#+begin_signature
- -- *Jeetaditya Chatterjee* \\\\
- /Sent using my text editor/
- ,#+end_signature"))
 #+END_SRC
 
 I don't like the default replied face
@@ -2127,6 +2168,7 @@ I update my mail when I feel like it so this is a little redundant for me
 #+begin_src emacs-lisp :tangle packages.el
 (package! mu4e-alert :disable t)
 #+end_src
+
 *** everywhere :everywhere:
 I prefer to write in the language that is going to be posted so markdown mode
 makes more sense to be the default (which is org)
@@ -2134,69 +2176,6 @@ makes more sense to be the default (which is org)
 ;; (after! emacs-everywhere
 ;;   (add-hook! 'emacs-everywhere-init-hooks 'markdown-mode)
 ;;   (remove-hook! 'emacs-everywhere-init-hooks 'org-mode))
-#+end_src
-** config
-*** literate
-**** async config tangling
-again stolen from @tecosaur, it basically allows for async config tangling.
-#+begin_src emacs-lisp
-(defvar +literate-tangle--proc nil)
-(defvar +literate-tangle--proc-start-time nil)
-
-(defadvice! +literate-tangle-async-h ()
-  "A very simplified version of `+literate-tangle-h', but async."
-  :override #'+literate-tangle-h
-  (unless (getenv "__NOTANGLE")
-    (let ((default-directory doom-private-dir))
-      (when +literate-tangle--proc
-        (message "Killing outdated tangle process...")
-        (set-process-sentinel +literate-tangle--proc #'ignore)
-        (kill-process +literate-tangle--proc)
-        (sit-for 0.3)) ; ensure the message is seen for a bit
-      (setq +literate-tangle--proc-start-time (float-time)
-            +literate-tangle--proc
-            (start-process "tangle-config"
-                           (get-buffer-create " *tangle config*")
-                           "emacs" "--batch" "--eval"
-                           (format "(progn \
-(require 'ox) \
-(require 'ob-tangle) \
-(setq org-confirm-babel-evaluate nil \
-      org-inhibit-startup t \
-      org-mode-hook nil \
-      write-file-functions nil \
-      before-save-hook nil \
-      after-save-hook nil \
-      vc-handled-backends nil \
-      org-startup-folded nil \
-      org-startup-indented nil) \
-(org-babel-tangle-file \"%s\" \"%s\"))"
-                                   +literate-config-file
-                                   (expand-file-name (concat doom-module-config-file ".el")))))
-      (set-process-sentinel +literate-tangle--proc #'+literate-tangle--sentinel)
-      (run-at-time nil nil (lambda () (message "Tangling config.org"))) ; ensure shown after a save message
-      "Tangling config.org...")))
-
-(defun +literate-tangle--sentinel (process signal)
-  (cond
-   ((and (eq 'exit (process-status process))
-         (= 0 (process-exit-status process)))
-    (message "Tangled config.org sucessfully (took %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))
-   ((memq (process-status process) (list 'exit 'signal))
-    (+popup-buffer (get-buffer " *tangle config*"))
-    (message "Failed to tangle config.org (after %.1fs)"
-             (- (float-time) +literate-tangle--proc-start-time))
-    (setq +literate-tangle--proc nil))))
-
-(defun +literate-tangle-check-finished ()
-  (when (and (process-live-p +literate-tangle--proc)
-             (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
-    (switch-to-buffer " *tangle config*")
-    (signal 'quit nil)))
-
-(add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
 #+end_src
 * Epilogue
 And that was my config! I hope you liked it! If you did not then you can make an

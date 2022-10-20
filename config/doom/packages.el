@@ -13,8 +13,8 @@
 
 (package! org-sidebar)
 
-(package! popon :recipe (:repo "https://codeberg.org/akib/emacs-popon"))
-(package! flymake-popon :recipe (:repo "https://codeberg.org/akib/emacs-flymake-popon"))
+(package! ef-themes :recipe (:host nil :repo "https://git.sr.ht/~protesilaos/ef-themes"))
+(package! tao-theme)
 
 (package! flymake-vale :recipe (:host github :repo "tpeacock19/flymake-vale"))
 
@@ -33,6 +33,9 @@
 
 (package! lexic)
 
+(package! info-colors)
+(package! info-buffer)
+
 (package! company-org-block)
 
 (package! org-pandoc-import
@@ -48,6 +51,8 @@
 
 (package! org-remark)
 
+(package! simple-comment-markup :recipe (:repo "https://git.tecosaur.net/tec/simple-comment-markup.git"))
+
 (package! nameless)
 
 (package! caddyfile-mode)
@@ -58,6 +63,8 @@
 
 (package! janet-mode :recipe
   (:host github :repo "ALSchwalm/janet-mode"))
+
+(package! flymake-shellcheck)
 
 (package! nov)
 (package! calibredb)
@@ -86,7 +93,6 @@
 
 (package! horizon-theme)
 (unpin! doom-themes)
-(package! tao-theme)
 
 (unpin! pdf-tools)
 
@@ -97,6 +103,9 @@
 
 (package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
                                           :build (:not compile)))
+
+;; (package! tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
+(package! evil-tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
 
 (package! origami)
 (package! org-super-agenda)
