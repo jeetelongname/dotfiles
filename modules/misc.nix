@@ -17,6 +17,7 @@
     zotero
     rbw
     vale
+    wl-clipboard
 
     lua
     lua52Packages.luarocks

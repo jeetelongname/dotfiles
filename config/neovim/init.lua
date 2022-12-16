@@ -29,11 +29,11 @@ packer.startup(function()
    -- language support
    use 'sheerun/vim-polyglot' -- language support for the lazy
    use 'sherylynn/vim-elisp' -- what can I say except I enjoy living in sin
-   use {
-      'nvim-treesitter/nvim-treesitter',
-      run = ':TSUpdate'
-   }
-   use "nvim-treesitter/playground"
+   -- use {
+   --    'nvim-treesitter/nvim-treesitter',
+   --    run = ':TSUpdate'
+   -- }
+   -- use "nvim-treesitter/playground"
    -- lang server's
    use 'neovim/nvim-lspconfig' -- all the completion
    use 'hrsh7th/nvim-compe'  -- for actual completion
@@ -239,14 +239,14 @@ lspconfig.solargraph.setup{} -- ruby
 lspconfig.texlab.setup{} -- latex
 
 -- treesitter
-require'nvim-treesitter.configs'.setup {
-   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-   ignore_install = { "javascript" }, -- List of parsers to ignore installing
-   highlight = {
-      enable = true,              -- false will disable the whole extension
-      -- disable = { "c", "rust" },  -- list of language that will be disabled
-   },
-}
+-- require'nvim-treesitter.configs'.setup {
+--    ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+--    ignore_install = { "javascript" }, -- List of parsers to ignore installing
+--    highlight = {
+--       enable = true,              -- false will disable the whole extension
+--       -- disable = { "c", "rust" },  -- list of language that will be disabled
+--    },
+-- }
 -- ui -- basic ui settings ------------------------------------------------------------
 o.termguicolors = true
 vim.cmd("colorscheme horizon")

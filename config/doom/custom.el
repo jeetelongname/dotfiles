@@ -5,11 +5,12 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("fce8c428aa62c06dfb5becf9d538ff24bcba7b0f2fc6d8892f2fbf7d19ba746b" default))
+ '(pdf-misc-print-program-executable "/usr/bin/lp")
  '(safe-local-variable-values
    '((org-export-with-author)
      (org-log-done quote time)
-     (org-re-reveal-root\. "../reveal.js")
-     (org-re-reveal-root\. "./presentations/reveal.js")
+     (org-re-reveal-root. "../reveal.js")
+     (org-re-reveal-root. "./presentations/reveal.js")
      (org-re-reveal-root . "presentations/reveal.js"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -31,6 +32,8 @@
  '(org-level-4 ((t (:foreground "#58cfd1" :height 1.0 :weight normal))))
  '(org-level-5 ((t (:foreground "#9093ae" :weight normal))))
  '(org-level-6 ((t (:foreground "#90dfe0" :weight normal))))
- '(tree-sitter-hl-face:function\.call ((t (:foreground "#21bfc2"))))
+ '(tree-sitter-hl-face:function.call ((t (:foreground "#21bfc2"))))
  '(ts-fold-replacement-face ((t (:foreground nil :box nil :inherit font-lock-comment-face :weight light)))))
 (put 'erase-buffer 'disabled nil)
+
+(put 'set-goal-column 'disabled nil)

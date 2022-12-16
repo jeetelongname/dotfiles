@@ -23,6 +23,8 @@
 (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"
                                 :build (:not compile)))
 
+(package! mmm-mode)
+
 (package! carbon-now-sh)
 
 ;; (package! screenshot. :recipe
@@ -53,6 +55,8 @@
 
 (package! simple-comment-markup :recipe (:repo "https://git.tecosaur.net/tec/simple-comment-markup.git"))
 
+(package! ox-chameleon :recipe (:host github :repo "tecosaur/ox-chameleon"))
+
 (package! nameless)
 
 (package! caddyfile-mode)
@@ -76,6 +80,7 @@
 (package! elfeed-tube :recipe (:host github :repo "karthink/elfeed-tube"))
 
 (package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
+(package! straight :pin "3eca39d")
 
 (package! gitconfig-mode
   :recipe (:host github :repo "magit/git-modes"
@@ -94,7 +99,7 @@
 (package! horizon-theme)
 (unpin! doom-themes)
 
-(unpin! pdf-tools)
+;; (unpin! pdf-tools)
 
 (package! hideshow-tree-sitter
   :recipe

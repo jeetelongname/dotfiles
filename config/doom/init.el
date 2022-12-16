@@ -4,10 +4,13 @@
 
 ;; I add it to the list early.. for no reason. put in your config.el
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
+;; (doom-module-set :config 'use-package
+;;                  :path (doom-module-locate-path :config 'use-package)
+;;                  :depth 0)
 
-(defadvice! fixed-doom-module-list (fn &rest args)
-  :around #'doom-module-list
-  (nreverse (apply fn args)))
+;; (defadvice! fixed-doom-module-list (fn &rest args)
+;;   :around #'doom-module-list
+;;   (nreverse (apply fn args)))
 
 (doom! :input
        ;;chinese
@@ -120,7 +123,7 @@
        ;;beancount         ; the accounting system in Emacs
        (cc +lsp            ; C/C++/Obj-C madness
            +tree-sitter)
-       ;;clojure           ; java with a lisp
+       (clojure +lsp)      ; java with a lisp
        common-lisp         ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
@@ -139,7 +142,8 @@
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;gdscript          ; the language you waited for
        ;;(go +lsp)         ; the hipster dialect
-       (haskell +lsp)      ; a language that's lazier than I am
+       (haskell +lsp       ; a language that's lazier than I am
+                +tree-sitter)
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        json                ; At least it ain't XML
@@ -156,7 +160,8 @@
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
-       (lua  +fennel)      ; one-based indices? one-based indices
+       (lua  +fennel       ; one-based indices? one-based indices
+             +tree-sitter)
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        nix                 ; I hereby declare "nix geht mehr!"
@@ -212,5 +217,7 @@
 
        :config
        literate
+       ;; use-package
+       
        ;;tutorial
        (default +bindings +smartparens))

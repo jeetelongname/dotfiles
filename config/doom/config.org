@@ -43,6 +43,7 @@ Lets get this config started!
     - [[#flymake-vale][Flymake Vale]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
+    - [[#multi-modes][multi modes]]
   - [[#tools][tools]]
     - [[#pretty-code-shots][pretty code shots]]
     - [[#snippets][snippets]]
@@ -95,6 +96,7 @@ Lets get this config started!
   - [[#checkers-1][checkers]]
     - [[#spell][spell]]
   - [[#lang-1][lang]]
+    - [[#clojure][clojure]]
     - [[#emacs-lisp-1][emacs-lisp]]
     - [[#org][org]]
     - [[#haskell][haskell]]
@@ -428,6 +430,7 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 #+end_src
 
 I need more cats in my life
+
 #+begin_src emacs-lisp
 (defvar yeet/insert-cat-width nil
   "the width of the cats")
@@ -440,6 +443,30 @@ I need more cats in my life
                                                           yeet/insert-cat-width
                                                         60)))))
 #+end_src
+
+#+begin_src emacs-lisp
+(defun yeet/export-with-pandoc (start end)
+  "take a region pass it to pandoc, get back a temp buffer as well as copied to your clipboard."
+  (interactive "r")
+  (let ((str (buffer-substring-no-properties start end))
+        (from (read-from-minibuffer "Enter mode from: "))
+        (to (read-from-minibuffer "Enter mode to: ")))
+    (with-current-buffer (get-buffer-create "*pandoc-export*")
+      (erase-buffer)
+      (funcall (intern (format "%s-mode" to)))
+      (insert (shell-command-to-string (format "echo '%s' | %s -f %s -t %s -o -"
+                                               str
+                                               (executable-find "pandoc")
+                                               from
+                                               to)))
+      (kill-new (buffer-string))
+      (message "copied to kill ring")
+      (pop-to-buffer (current-buffer)))))
+#+end_src
+
+#+RESULTS:
+: yeet/export-with-pandoc
+
 ** macros
 this is a small helper macro that wraps ~with-temp-buffer~ with an implicit call
 to ~buffer-string~ I did this as I see this patter all over the place and
@@ -513,7 +540,7 @@ I like my modeline busy
 #+end_src
 *** whitespace mode
 #+begin_src emacs-lisp
-(setq whitespace-style '(space-mark))
+(setq whitespace-style '(space-mark newline-mark))
 (setq whitespace-display-mappings '((space-mark 32 [183] [46])))
 (global-whitespace-mode)
 #+end_src
@@ -734,7 +761,23 @@ wellish
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
 #+end_src
+*** multi modes
+#+begin_src emacs-lisp :tangle packages.el
+(package! mmm-mode)
+#+end_src
 
+#+begin_src emacs-lisp
+(require 'mmm-auto)
+
+(setq mmm-global-mode 'maybe)
+
+(mmm-add-classes
+ '((ruby-html
+    :submode web
+    :delimiter-mode nil
+    :front "__END__"
+    :back "<!-- end -->")))             ;; hack because I can't be bothered to write a search
+#+end_src
 ** tools
 *** pretty code shots
 i missed the ability to make pretty code shots inside vscode now its come back to
@@ -926,6 +969,14 @@ is basically stolen from [[https://tecosaur.github.io/emacs-config/config.html#d
 #+begin_src emacs-lisp
 (use-package simple-comment-markup
   :hook (org-mode . simple-comment-markup-mode))
+#+end_src
+**** ox chameleon
+#+begin_src emacs-lisp :tangle packages.el
+(package! ox-chameleon :recipe (:host github :repo "tecosaur/ox-chameleon"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! ox-chameleon :after ox)
 #+end_src
 
 *** emacs lisp :emacsLisp:
@@ -1203,6 +1254,7 @@ who does not like a good game of tetris
 *** fixes
 #+begin_src emacs-lisp :tangle packages.el
 (package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
+(package! straight :pin "3eca39d")
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -1499,20 +1551,23 @@ I want a done face for TODO's that are now done ala org mode
 My modeline does a lot...
 #+BEGIN_SRC emacs-lisp
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'auto
-        doom-modeline-height 30
-        doom-modeline-icon t
-        doom-modeline-modal-icon nil
-        doom-modeline-env-version t
-        doom-modeline-buffer-modification-icon t
-        doom-modeline-enable-word-count t
-        doom-modeline-continuous-word-count-modes '(text-mode)
-        doom-modeline-icon (display-graphic-p)
-        doom-modeline-persp-name t
-        doom-modeline-persp-icon t
-        doom-modeline-github t
-        doom-modeline-mu4e t))
+  (setq! doom-modeline-buffer-file-name-style 'auto
+         doom-modeline-height 30
+         ;; doom-modeline-icon t ;; for some reason this line causes an error
+         doom-modeline-modal-icon nil
+         doom-modeline-env-version t
+         doom-modeline-buffer-modification-icon t
+         doom-modeline-enable-word-count t
+         doom-modeline-continuous-word-count-modes '(text-mode)
+         doom-modeline-icon (display-graphic-p)
+         doom-modeline-persp-name t
+         doom-modeline-persp-icon t
+         doom-modeline-github t
+         doom-modeline-mu4e t))
 #+END_SRC
+
+#+RESULTS:
+
 This was all for a little padding. I could remove the stuff I don't need but
 whats the fun in that?
 
@@ -1604,7 +1659,7 @@ file watchers crash emacs. I never know what they do anyway
 custom modeline for pdf files stolen from tecosaur and hopefully it will become
 a default
 #+begin_src emacs-lisp :tangle packages.el
-(unpin! pdf-tools)
+;; (unpin! pdf-tools)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1777,6 +1832,13 @@ This readds the functionality of spelling on =return=
 #+end_src
 
 ** lang :lang:
+*** clojure
+#+begin_src emacs-lisp
+(set-popup-rules!
+    '(("^\\*cider-error*" :ignore t)
+      ("^\\*cider-repl" :quit nil :ttl nil :slot 1 :vslot 2 :side right :witdth 0.5)
+      ("^\\*cider-repl-history" :vslot 2 :ttl nil)))
+#+end_src
 *** emacs-lisp
 #+begin_src emacs-lisp
 ;; (add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
@@ -1786,6 +1848,7 @@ This readds the functionality of spelling on =return=
 Org mode. our favorite plain text markup format! these are my configurations for
 it
 
+**** General
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/org-notes/")
 (after! org
@@ -1798,7 +1861,7 @@ it
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
-        org-hide-emphasis-markers nil ;; this makes org feel more like a proper document and less like a mark up format
+        org-hide-emphasis-markers t ;; this makes org feel more like a proper document and less like a mark up format
         org-startup-with-latex-preview t)
 
   (when (modulep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
@@ -1806,6 +1869,7 @@ it
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
 #+end_src
 
+**** Subheadings
 As org has a lot of subheading's I wanted to tweak stuff ever so slightly thus
 here we are. do note that I have copied all of the foreground info over that
 because the ~inherit~ value (setter?, key? idk) did not exist until I looked it
@@ -1825,6 +1889,7 @@ directly
   `(org-level-6 :foreground ,(doom-color 'blue) :weight normal))
 #+END_SRC
 
+**** Capture
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
   (setq org-capture-templates
@@ -1833,19 +1898,20 @@ directly
           ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
-
-Cooking in org has never been this easy!
-FIXME
+**** Export settings
+Better defaults for links.
 #+begin_src emacs-lisp
-;; (use-package! org-cook
-;;   :after org)
+(after! org
+  (setq org-latex-hyperref-template
+        "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L}, \n colorlinks=true, \n linkcolor=false, \n urlcolor=blue}\n"))
 #+end_src
+**** Roam
 Below you will see a configuration for roam and journal. The reason I have both
 is because I make 2 kinds of notes. one is for my head (which are linear) and
 the other is for my school (which are non linear) roam has been a god sent for
 note taking while journal has been a god sent for just getting my thoughts out
 on paper I recommend both
-**** Roam
+
 #+begin_src emacs-lisp
 (setq org-roam-directory (concat org-directory "roam/")
       org-roam-db-location (concat org-roam-directory ".org-roam.db"))
@@ -1968,6 +2034,10 @@ adding unicode input
 #+BEGIN_SRC emacs-lisp
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 #+END_SRC
+
+#+begin_src emacs-lisp
+(add-hook! latex-mode #'hl-todo-mode)
+#+end_src
 
 #+BEGIN_SRC emacs-lisp
 (map! :map cdlatex-mode-map
@@ -2127,7 +2197,7 @@ on the folders remember that they come from what you set in your [[https://githu
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
-  (setq mu4e-mu-version "1.8.10")
+  (setq mu4e-mu-version "1.8.11")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 #+END_SRC

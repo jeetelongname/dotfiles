@@ -99,6 +99,24 @@
                                                           yeet/insert-cat-width
                                                         60)))))
 
+(defun yeet/export-with-pandoc (start end)
+  "take a region pass it to pandoc, get back a temp buffer as well as copied to your clipboard."
+  (interactive "r")
+  (let ((str (buffer-substring-no-properties start end))
+        (from (read-from-minibuffer "Enter mode from: "))
+        (to (read-from-minibuffer "Enter mode to: ")))
+    (with-current-buffer (get-buffer-create "*pandoc-export*")
+      (erase-buffer)
+      (funcall (intern (format "%s-mode" to)))
+      (insert (shell-command-to-string (format "echo '%s' | %s -f %s -t %s -o -"
+                                               str
+                                               (executable-find "pandoc")
+                                               from
+                                               to)))
+      (kill-new (buffer-string))
+      (message "copied to kill ring")
+      (pop-to-buffer (current-buffer)))))
+
 (defmacro with-temp-buffer! (&rest BODY)
   "A wrapper around `with-temp-buffer' that implicitly calls `buffer-string'
 This is in an effort to streamline a very common usecase"
@@ -141,7 +159,7 @@ explicitly use the variable."
 
 (display-battery-mode 1)
 
-(setq whitespace-style '(space-mark))
+(setq whitespace-style '(space-mark newline-mark))
 (setq whitespace-display-mappings '((space-mark 32 [183] [46])))
 (global-whitespace-mode)
 
@@ -234,6 +252,17 @@ explicitly use the variable."
          :n "d" #'dired-dragon
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
+
+(require 'mmm-auto)
+
+(setq mmm-global-mode 'maybe)
+
+(mmm-add-classes
+ '((ruby-html
+    :submode web
+    :delimiter-mode nil
+    :front "__END__"
+    :back "<!-- end -->")))             ;; hack because I can't be bothered to write a search
 
 (use-package! carbon-now-sh
   :config
@@ -330,6 +359,8 @@ explicitly use the variable."
 
 (use-package simple-comment-markup
   :hook (org-mode . simple-comment-markup-mode))
+
+(use-package! ox-chameleon :after ox)
 
 (use-package! nameless
   :defer t
@@ -688,19 +719,19 @@ explicitly use the variable."
 ;; (set-popup-rule! "\\*info*\\" :side 'right)
 
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'auto
-        doom-modeline-height 30
-        doom-modeline-icon t
-        doom-modeline-modal-icon nil
-        doom-modeline-env-version t
-        doom-modeline-buffer-modification-icon t
-        doom-modeline-enable-word-count t
-        doom-modeline-continuous-word-count-modes '(text-mode)
-        doom-modeline-icon (display-graphic-p)
-        doom-modeline-persp-name t
-        doom-modeline-persp-icon t
-        doom-modeline-github t
-        doom-modeline-mu4e t))
+  (setq! doom-modeline-buffer-file-name-style 'auto
+         doom-modeline-height 30
+         ;; doom-modeline-icon t ;; for some reason this line causes an error
+         doom-modeline-modal-icon nil
+         doom-modeline-env-version t
+         doom-modeline-buffer-modification-icon t
+         doom-modeline-enable-word-count t
+         doom-modeline-continuous-word-count-modes '(text-mode)
+         doom-modeline-icon (display-graphic-p)
+         doom-modeline-persp-name t
+         doom-modeline-persp-icon t
+         doom-modeline-github t
+         doom-modeline-mu4e t))
 
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
@@ -857,6 +888,11 @@ explicitly use the variable."
         (cmds! (memq 'flymake-error-face (face-at-point nil t))
                #'+spell/correct))))
 
+(set-popup-rules!
+    '(("^\\*cider-error*" :ignore t)
+      ("^\\*cider-repl" :quit nil :ttl nil :slot 1 :vslot 2 :side right :witdth 0.5)
+      ("^\\*cider-repl-history" :vslot 2 :ttl nil)))
+
 ;; (add-to-list '+emacs-lisp-disable-flycheck-in-dirs "~/code/emacs/tutorial")
 
 (setq org-directory "~/org-notes/")
@@ -870,7 +906,7 @@ explicitly use the variable."
                           (lambda (x)
                             (concat org-directory x))
                           '("tasks.org" "blog-ideas.org" "hitlist.org")) ;; FIXME make it more specific
-        org-hide-emphasis-markers nil ;; this makes org feel more like a proper document and less like a mark up format
+        org-hide-emphasis-markers t ;; this makes org feel more like a proper document and less like a mark up format
         org-startup-with-latex-preview t)
 
   (when (modulep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
@@ -894,8 +930,9 @@ explicitly use the variable."
           ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
-;; (use-package! org-cook
-;;   :after org)
+(after! org
+  (setq org-latex-hyperref-template
+        "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L}, \n colorlinks=true, \n linkcolor=false, \n urlcolor=blue}\n"))
 
 (setq org-roam-directory (concat org-directory "roam/")
       org-roam-db-location (concat org-roam-directory ".org-roam.db"))
@@ -988,6 +1025,8 @@ explicitly use the variable."
 
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 
+(add-hook! latex-mode #'hl-todo-mode)
+
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
 
@@ -1049,7 +1088,7 @@ explicitly use the variable."
                     t)
 
 (after! mu4e
-  (setq mu4e-mu-version "1.8.10")
+  (setq mu4e-mu-version "1.8.11")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 

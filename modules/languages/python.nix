@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    poetry # dep manager
+    # poetry # dep manager
     black # formatter
     python39Packages.pyflakes # something
     python39Packages.isort # import managment
