@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+/home/jeet/.nix-profile/bin/vale --config "${XDG_CONFIG_HOME:-$HOME/.config}/vale/vale.ini" "$@"

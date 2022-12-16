@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+env -i HOME=/home/jeet sh -l -c env >~/.config/environment.d/profile.conf
+echo "Done. Now log out for things to take effect."
