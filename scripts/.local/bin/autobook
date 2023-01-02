@@ -1,3 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-curl -L "$1" | pandoc -o "$2".epub --metadata title="$2" --metadata author="$3"
+abort 'autobook URL TITLE AUTHOR' if ARGV.empty? || ARGV[0] == '-h'
+
+file = ARGV[1].gsub ' ', '_'
+
+exec "curl -L '#{ARGV[0]}' | pandoc -o #{file}.epub --metadata title='#{ARGV[1]}' --metadata author='#{ARGV[2]}'"
