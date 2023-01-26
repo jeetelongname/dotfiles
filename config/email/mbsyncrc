@@ -19,7 +19,7 @@ User jeetelongname@gmail.com
 PassCmd "pass show email/mu4e | grep -v login:"
 AuthMechs LOGIN
 SSLType IMAPS
-SSLVersions TLSv1.1
+SSLVersions TLSv1.3
 CertificateFile /etc/ssl/certs/ca-bundle.crt
 
 IMAPStore gmail-remote
