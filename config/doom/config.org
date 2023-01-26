@@ -160,7 +160,10 @@ get stuck here
  :desc "Open Irc" "o c" #'=irc
  ;; I recompile more than I compile
  "cc" #'recompile
- "cC" #'compile)
+ "cC" #'compile
+ "pc" #'projectile-repeat-last-command
+ "pC" #'projectile-compile-project)
+
 
 (map! :map minibuffer-local-map doom-leader-alt-key #'doom/leader)
 #+end_src
@@ -777,6 +780,31 @@ wellish
     :delimiter-mode nil
     :front "__END__"
     :back "<!-- end -->")))             ;; hack because I can't be bothered to write a search
+
+(add-hook 'haskell-mode-hook 'my-mmm-mode)
+
+(mmm-add-classes
+ '((literate-haskell-bird
+    :submode text-mode
+    :front "^[^>]"
+    :include-front true
+    :back "^>\\|$"
+    )
+   (literate-haskell-latex
+    :submode literate-haskell-mode
+    :front "^\\\\begin{code}"
+    :front-offset (end-of-line 1)
+    :back "^\\\\end{code}"
+    :include-back nil
+    :back-offset (beginning-of-line -1)
+    )))
+
+(defun my-mmm-mode ()
+  ;; go into mmm minor mode when class is given
+  (make-local-variable 'mmm-global-mode)
+  (setq mmm-global-mode 'true))
+
+(setq mmm-submode-decoration-level 0)
 #+end_src
 ** tools
 *** pretty code shots
@@ -817,11 +845,19 @@ I really need to play with snippets more
 I need more gremlins
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas)
+(package! laas)
 (package! tempel)
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! aas)
+(use-package! aas
+  :hook (org-mode . aas-activate-for-major-mode)
+  :config
+  (aas-set-snippets 'org-mode
+    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil"))
+
+(use-package! laas
+  :hook (LaTeX-mode . laas-mode))
 #+end_src
 *** dictionary
 tecosaurs [[https://github.com/tecosaur/lexic][lexic]] package is now powering my dictionary usage, This configuration
@@ -1713,11 +1749,14 @@ current hack in testing
 #+begin_src emacs-lisp
 (after! tree-sitter
   (pushnew! tree-sitter-major-mode-language-alist
-            '(scss-mode . css)))
+            '(scss-mode . css)
+            '(haskell-literate-mode . haskell)))
 
 (after! evil-textobj-tree-sitter
   (pushnew! evil-textobj-tree-sitter-major-mode-language-alist
-            '(scss-mode . "css")))
+            '(scss-mode . "css")
+            '(haskell-literate-mode . "haskell")))
+
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -2014,6 +2053,9 @@ I have been pretty lazy when it comes to learning haskell
 #+begin_src emacs-lisp
 (after! lsp-haskell
   (setq lsp-haskell-formatting-provider "ormolu"))
+
+(map! :map haskell-error-mode-map
+      :ng "q" #'+popup/quit-window)
 #+end_src
 *** python :python:
 Python is great is it not 🐍

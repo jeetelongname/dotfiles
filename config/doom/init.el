@@ -4,13 +4,6 @@
 
 ;; I add it to the list early.. for no reason. put in your config.el
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
-;; (doom-module-set :config 'use-package
-;;                  :path (doom-module-locate-path :config 'use-package)
-;;                  :depth 0)
-
-;; (defadvice! fixed-doom-module-list (fn &rest args)
-;;   :around #'doom-module-list
-;;   (nreverse (apply fn args)))
 
 (doom! :input
        ;;chinese
@@ -136,7 +129,8 @@
        ;;elm               ; care for a cup of TEA?
        emacs-lisp          ; drown in parentheses
        erlang              ; an elegant language for a more civilized age
-       ;;ess               ; emacs speaks statistics
+       (ess +tree-sitter   ; emacs speaks statistics
+            +lsp)
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3

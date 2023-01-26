@@ -31,6 +31,7 @@
 ;;   (:host github :repo "tecosaur/screenshot"))
 
 (package! aas)
+(package! laas)
 (package! tempel)
 
 (package! lexic)

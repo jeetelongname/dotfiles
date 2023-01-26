@@ -33,7 +33,10 @@
  :desc "Open Irc" "o c" #'=irc
  ;; I recompile more than I compile
  "cc" #'recompile
- "cC" #'compile)
+ "cC" #'compile
+ "pc" #'projectile-repeat-last-command
+ "pC" #'projectile-compile-project)
+
 
 (map! :map minibuffer-local-map doom-leader-alt-key #'doom/leader)
 
@@ -264,6 +267,31 @@ explicitly use the variable."
     :front "__END__"
     :back "<!-- end -->")))             ;; hack because I can't be bothered to write a search
 
+(add-hook 'haskell-mode-hook 'my-mmm-mode)
+
+(mmm-add-classes
+ '((literate-haskell-bird
+    :submode text-mode
+    :front "^[^>]"
+    :include-front true
+    :back "^>\\|$"
+    )
+   (literate-haskell-latex
+    :submode literate-haskell-mode
+    :front "^\\\\begin{code}"
+    :front-offset (end-of-line 1)
+    :back "^\\\\end{code}"
+    :include-back nil
+    :back-offset (beginning-of-line -1)
+    )))
+
+(defun my-mmm-mode ()
+  ;; go into mmm minor mode when class is given
+  (make-local-variable 'mmm-global-mode)
+  (setq mmm-global-mode 'true))
+
+(setq mmm-submode-decoration-level 0)
+
 (use-package! carbon-now-sh
   :config
   (defun yeet/carbon-use-eaf ()
@@ -276,7 +304,14 @@ explicitly use the variable."
 
 ;; (use-package! screenshot :defer)
 
-(use-package! aas)
+(use-package! aas
+  :hook (org-mode . aas-activate-for-major-mode)
+  :config
+  (aas-set-snippets 'org-mode
+    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil"))
+
+(use-package! laas
+  :hook (LaTeX-mode . laas-mode))
 
 (use-package! lexic
   :commands lexic-search lexic-list-dictionary
@@ -825,11 +860,13 @@ explicitly use the variable."
 
 (after! tree-sitter
   (pushnew! tree-sitter-major-mode-language-alist
-            '(scss-mode . css)))
+            '(scss-mode . css)
+            '(haskell-literate-mode . haskell)))
 
 (after! evil-textobj-tree-sitter
   (pushnew! evil-textobj-tree-sitter-major-mode-language-alist
-            '(scss-mode . "css")))
+            '(scss-mode . "css")
+            '(haskell-literate-mode . "haskell")))
 
 (use-package! hideshow-tree-sitter :after tree-sitter)
 (use-package! tree-sitter-playground
@@ -1016,6 +1053,9 @@ explicitly use the variable."
 
 (after! lsp-haskell
   (setq lsp-haskell-formatting-provider "ormolu"))
+
+(map! :map haskell-error-mode-map
+      :ng "q" #'+popup/quit-window)
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
