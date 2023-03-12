@@ -2,7 +2,10 @@
 ;; Don't edit this file directly unless you like your changes being wiped
 
 (message "in config")
-(load! "+private.el") ;; Stuff I don't want on the web (emails and other boring things)
+
+(when (file-exists-p! "+private.el")
+  (load! "+private.el")) ;; Stuff I don't want on the web (emails and other boring things)
+
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
@@ -225,10 +228,10 @@ explicitly use the variable."
   :commands ibuffer-sidebar-toggle-sidebar
   :defer t)
 
-(use-package! org-sidebar
-  :after org)
+;; (use-package! org-sidebar
+;;   :after org)
 
-(use-package ef-themes :defer t)
+;; (use-package ef-themes :defer t)
 
 (use-package! tao-theme ; messing around with tao
   :defer
@@ -396,6 +399,10 @@ explicitly use the variable."
   :hook (org-mode . simple-comment-markup-mode))
 
 (use-package! ox-chameleon :after ox)
+
+(after! org
+  (require 'edraw-org)
+  (edraw-org-setup-default))
 
 (use-package! nameless
   :defer t
@@ -637,7 +644,8 @@ explicitly use the variable."
   doom-big-font (font-spec :family yeet/font-name :size 25)
   ;; doom-font (font-spec :family yeet/font-name :size 16)
   ;; doom-big-font (font-spec :family yeet/font-name :size 25)
-  doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
+  ;; doom-variable-pitch-font (font-spec :family "Merriweather" :size 17)
+  )
 
 ;; HACK to get rid of weird black circles in mu4e screen.
  (delete "Noto Emoji" doom-emoji-fallback-font-families)
@@ -868,12 +876,13 @@ explicitly use the variable."
             '(scss-mode . "css")
             '(haskell-literate-mode . "haskell")))
 
-(use-package! hideshow-tree-sitter :after tree-sitter)
-(use-package! tree-sitter-playground
-  :after tree-sitter
-  :config
-  (setq tree-sitter-playground-jump-buttons t
-        tree-sitter-playground-highlight-jump-region t))
+;; (use-package! hideshow-tree-sitter :after tree-sitter)
+
+;; (use-package! tree-sitter-playground
+;;   :after tree-sitter
+;;   :config
+;;   (setq tree-sitter-playground-jump-buttons t
+;;         tree-sitter-playground-highlight-jump-region t))
 
 (custom-set-faces!  `(tree-sitter-hl-face:function.call :foreground ,(doom-color 'blue)))
 
@@ -1128,7 +1137,7 @@ explicitly use the variable."
                     t)
 
 (after! mu4e
-  (setq mu4e-mu-version "1.8.11")
+  (setq mu4e-mu-version "1.8.14")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 
@@ -1146,8 +1155,6 @@ explicitly use the variable."
         "s" #'message-goto-subject
         "b" #'org-msg-goto-body
         "a" #'org-msg-attach)))
-
-
 
 (custom-set-faces! `(mu4e-replied-face :foreground ,(doom-color 'red) :inherit font-lock-builtin-face))
 

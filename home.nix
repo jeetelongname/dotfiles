@@ -26,7 +26,7 @@
     modules/editors/emacs.nix
     modules/languages/cc.nix
     modules/languages/haskell.nix
-    modules/languages/python.nix
+    #  modules/languages/python.nix
     modules/languages/racket.nix
     modules/languages/ruby.nix
     modules/chat.nix

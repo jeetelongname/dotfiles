@@ -115,7 +115,10 @@ Lets get this config started!
 This is the stuff that does not really belong in any module but is useful
 #+BEGIN_SRC emacs-lisp
 (message "in config")
-(load! "+private.el") ;; Stuff I don't want on the web (emails and other boring things)
+
+(when (file-exists-p! "+private.el")
+  (load! "+private.el")) ;; Stuff I don't want on the web (emails and other boring things)
+
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com" ;; god I can't wait to get away from gmail
       doom-scratch-initial-major-mode 'lisp-interaction-mode
@@ -662,23 +665,23 @@ dired sidebar.. for Ibuffer
 this does a bunch of org stuff like break stuff down into headings. there is a
 bit of work to be done
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-sidebar)
+;; (package! org-sidebar)
 #+end_src
 
 
 #+begin_src emacs-lisp
-(use-package! org-sidebar
-  :after org)
+;; (use-package! org-sidebar
+;;   :after org)
 #+end_src
 *** themes
 I set my themes in my  [[#doom][Doom config]]
 #+begin_src emacs-lisp :tangle packages.el
-(package! ef-themes :recipe (:host nil :repo "https://git.sr.ht/~protesilaos/ef-themes"))
+;; (package! ef-themes :recipe (:host nil :repo "https://git.sr.ht/~protesilaos/ef-themes"))
 (package! tao-theme)
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package ef-themes :defer t)
+;; (use-package ef-themes :defer t)
 
 (use-package! tao-theme ; messing around with tao
   :defer
@@ -1014,6 +1017,19 @@ is basically stolen from [[https://tecosaur.github.io/emacs-config/config.html#d
 #+begin_src emacs-lisp
 (use-package! ox-chameleon :after ox)
 #+end_src
+**** easy draw
+#+begin_src emacs-lisp :tangle packages.el
+(package! edraw :recipe (:host github :repo "misohena/el-easydraw" :files ("*.el")))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! org
+  (require 'edraw-org)
+  (edraw-org-setup-default))
+#+end_src
+
+[[edraw:data=H4sIAIlaDmQAA7WVTXObMBCG/4pGucZCEkiIjvFFPTqXHnujBgMTGzJA4qS/vqsvqnqc6WQmOdj7arV6drXMwnZ+adGlr5euxCmlGHVN33aLX7w009yPQ4kZYRi9nk/DXOJuWZ6+JcnlciGXlIxTm3BKaQIgvNtOzWF5n/daYvh/s//H/nQq8d3xeMRoXqbxsSnxMA4NRn1d4qaeqsvmV3V4bKfxeagxSnbbNt4a6zfI91QtHQLnA6P0Pk9JLrRRkhOBGKf3ghEOKvNKM7n6VAhT4SQPDMThqHKmkOacUYzmEG6CGFMmypx00nKDl/+Va6xeQ5EMJBng0iYLZaD1Kj9Dl1xfQpfuiqIIq43vdWYb9E83WEr3wITKP4Txjrqau2qaKnhYCqVXdO7oJstX4DOP51+Dlx6ffQ1eebz8TPzSvC7oOA7L5lid+xPszNUwb+Zm6mF+7Mbc/wYyUxiZ4E01HLpxKvG5r+tTs84b59zOIdzeTiI8Q7z7UQ31eEbf+6qdqvO8TQwhulMBV8moVjnJjUBKRkaHVdj10QUnqVtnkdFhte76aOpXRPwj9oV0Rji6DsJEcCqupL7pjeQ1b+8S71Xm6gHhLuXKVAXJC3El9U1vJK9pe9haT4ro2t68N+hKqf8MuhnwlOucEmUEkpCPC+IEk9oYKolCLoJS85oBYwrhdm36YSOMgBPGWIKLAKbP4QxSPDLwCoAEwlhu+CIlUkcazhIbeaX1Db/IoIhIO3auAjsviLQvNAHV7kVuqrM+IU2YdgaBiylPi7S+4bfZI+2hIvVQuFeuXH9V1AlvPvzQPn2GOXUzzCXM8MMbgm8xqsfD87kZlnWIkxZ+8HHe/QESTaqB6wcAAA==]]
+[[file:diagrams.svg]]
 
 *** emacs lisp :emacsLisp:
 in the ever growing emacs ecosystem the amount of prefixes you can use are
@@ -1334,7 +1350,7 @@ I use non daemon sessions for testing I would much rather it would not be used
 #+end_src
 *** arrows
 #+begin_src emacs-lisp :tangle packages.el
-(package! arr :recipe (:local-repo "~/code/emacs/arrows"))
+;; (package! arr :recipe (:local-repo "~/code/emacs/arrows"))
 #+end_src
 
 * Modules
@@ -1429,7 +1445,8 @@ Iosevka is my new best friend
   doom-big-font (font-spec :family yeet/font-name :size 25)
   ;; doom-font (font-spec :family yeet/font-name :size 16)
   ;; doom-big-font (font-spec :family yeet/font-name :size 25)
-  doom-variable-pitch-font (font-spec :family "Merriweather" :size 17))
+  ;; doom-variable-pitch-font (font-spec :family "Merriweather" :size 17)
+  )
 
 ;; HACK to get rid of weird black circles in mu4e screen.
  (delete "Noto Emoji" doom-emoji-fallback-font-families)
@@ -1760,22 +1777,23 @@ current hack in testing
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! hideshow-tree-sitter
-  :recipe
-  (:local-repo "~/code/emacs/hideshow-tree-sitter"
-   :files ( "*.el" "queries")))
+;; (package! hideshow-tree-sitter
+;;   :recipe
+;;   (:local-repo "~/code/emacs/hideshow-tree-sitter"
+;;    :files ( "*.el" "queries")))
 
-(package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
-                                          :build (:not compile)))
+;; (package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
+;;                                           :build (:not compile)))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! hideshow-tree-sitter :after tree-sitter)
-(use-package! tree-sitter-playground
-  :after tree-sitter
-  :config
-  (setq tree-sitter-playground-jump-buttons t
-        tree-sitter-playground-highlight-jump-region t))
+;; (use-package! hideshow-tree-sitter :after tree-sitter)
+
+;; (use-package! tree-sitter-playground
+;;   :after tree-sitter
+;;   :config
+;;   (setq tree-sitter-playground-jump-buttons t
+;;         tree-sitter-playground-highlight-jump-region t))
 #+end_src
 
 The yellow used for function calls was the same colour used for strings (in
@@ -2170,10 +2188,10 @@ Elfeed is great. I just need more blogs
 
 I am now kinda the maintainer of elfeed-goodies...
 #+begin_src emacs-lisp :tangle packages.el
-(package! elfeed-goodies
-  :recipe (:local-repo "~/code/emacs/elfeed-goodies"
-           :build (:not compile))
-  :disable nil)
+;; (package! elfeed-goodies
+;;   :recipe (:local-repo "~/code/emacs/elfeed-goodies"
+;;            :build (:not compile))
+;;   :disable nil)
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
@@ -2239,7 +2257,7 @@ on the folders remember that they come from what you set in your [[https://githu
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
-  (setq mu4e-mu-version "1.8.11")
+  (setq mu4e-mu-version "1.8.14")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 #+END_SRC
@@ -2265,11 +2283,6 @@ do mail stuff. I do like =C-c C-c= to send tho
         "b" #'org-msg-goto-body
         "a" #'org-msg-attach)))
 #+end_src
-
-These are the settings for org-msg I may switch them to a snippet tho as I can
-toggle the kind of signature I want to use then
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
 
 I don't like the default replied face
 #+begin_src emacs-lisp

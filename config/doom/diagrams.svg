@@ -1,0 +1,15 @@
+<svg width="300" height="300" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="300" x="0" y="0" fill="#fff" stroke="none" id="edraw-background" />
+  <g id="edraw-body">
+    <path d="M100,73.75C100,62.5 120,51.25 140,51.25C160,51.25 180,62.5 180,73.75C200,73.75 220,85 220,96.25C220,107.5 200,118.75 180,118.75C160,118.75 120,118.75 100,118.75C80,118.75 60,107.5 60,96.25C60,85 80,73.75 100,73.75Z" fill="none" stroke="#999" stroke-width="4" />
+    <path d="M100,130L80,220" fill="none" stroke="#999" stroke-width="4" stroke-dasharray="8 3" />
+    <path d="M120,130L100,220" fill="none" stroke="#999" stroke-width="4" stroke-dasharray="8 3" />
+    <path d="M140,130L120,220" fill="none" stroke="#999" stroke-width="4" stroke-dasharray="8 3" />
+    <path d="M160,130L140,220" fill="none" stroke="#999" stroke-width="4" stroke-dasharray="8 3" />
+    <path d="M180,130L160,220" fill="none" stroke="#999" stroke-width="4" stroke-dasharray="8 3" />
+    <text font-family="sans-serif" font-size="18" text-anchor="middle" fill="#222" x="140" y="100">Random Diagrams</text>
+    <path d="M90,240C87.7,240 86,240 86,240C86,240 87.7,240 90,240C92.3,240 94,240 94,240C94,240 92.3,240 90,240C90,240 90.5,240 90.5,240L96,240L95.7,240C95.7,240 90.205,240 90.205,240C90.205,240 90.205,240 90.205,240L96,240L95.7,240L90,240L84.3,240L84,240C84,240 89.795,240 89.795,240C89.795,240 89.795,240 89.795,240L84.3,240L84,240L89.5,240C89.5,240 90,240 90,240Z" fill="none" stroke="#888" stroke-width="4" />
+    <path d="M80,232C70.8,232 64,225.2 64,216C64,206.8 70.8,200 80,200C89.2,200 96,206.8 96,216C96,225.2 89.2,232 80,232C80,232 82,232 82,232L104,252L102.8,253.6C102.8,253.6 80.82,233.6 80.82,233.6C80.82,233.6 80.82,254.8 80.82,254.8L104,278L102.8,279.6L80,256.8L57.2,279.6L56,278C56,278 79.18,254.8 79.18,254.8C79.18,254.8 79.18,233.6 79.18,233.6L57.2,253.6L56,252L78,232C78,232 80,232 80,232Z" fill="none" stroke="#888" stroke-width="4" />
+    <text font-family="sans-serif" font-size="18" text-anchor="middle" fill="#222" x="200" y="260">My org documents</text>
+  </g>
+</svg>

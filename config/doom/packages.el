@@ -11,9 +11,9 @@
 
 (package! ibuffer-sidebar)
 
-(package! org-sidebar)
+;; (package! org-sidebar)
 
-(package! ef-themes :recipe (:host nil :repo "https://git.sr.ht/~protesilaos/ef-themes"))
+;; (package! ef-themes :recipe (:host nil :repo "https://git.sr.ht/~protesilaos/ef-themes"))
 (package! tao-theme)
 
 (package! flymake-vale :recipe (:host github :repo "tpeacock19/flymake-vale"))
@@ -58,6 +58,8 @@
 
 (package! ox-chameleon :recipe (:host github :repo "tecosaur/ox-chameleon"))
 
+(package! edraw :recipe (:host github :repo "misohena/el-easydraw" :files ("*.el")))
+
 (package! nameless)
 
 (package! caddyfile-mode)
@@ -95,20 +97,20 @@
 
 (package! elcord)
 
-(package! arr :recipe (:local-repo "~/code/emacs/arrows"))
+;; (package! arr :recipe (:local-repo "~/code/emacs/arrows"))
 
 (package! horizon-theme)
 (unpin! doom-themes)
 
 ;; (unpin! pdf-tools)
 
-(package! hideshow-tree-sitter
-  :recipe
-  (:local-repo "~/code/emacs/hideshow-tree-sitter"
-   :files ( "*.el" "queries")))
+;; (package! hideshow-tree-sitter
+;;   :recipe
+;;   (:local-repo "~/code/emacs/hideshow-tree-sitter"
+;;    :files ( "*.el" "queries")))
 
-(package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
-                                          :build (:not compile)))
+;; (package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
+;;                                           :build (:not compile)))
 
 ;; (package! tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
 (package! evil-tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
@@ -118,9 +120,9 @@
 
 (package! circe-notifications :disable t)
 
-(package! elfeed-goodies
-  :recipe (:local-repo "~/code/emacs/elfeed-goodies"
-           :build (:not compile))
-  :disable nil)
+;; (package! elfeed-goodies
+;;   :recipe (:local-repo "~/code/emacs/elfeed-goodies"
+;;            :build (:not compile))
+;;   :disable nil)
 
 (package! mu4e-alert :disable t)

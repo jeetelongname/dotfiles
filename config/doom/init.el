@@ -4,7 +4,7 @@
 
 ;; I add it to the list early.. for no reason. put in your config.el
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
-
+(defvar native-comp-deferred-compilation-deny-list)
 (doom! :input
        ;;chinese
        ;;japanese
@@ -116,7 +116,8 @@
        ;;beancount         ; the accounting system in Emacs
        (cc +lsp            ; C/C++/Obj-C madness
            +tree-sitter)
-       (clojure +lsp)      ; java with a lisp
+       (clojure +lsp       ; java with a lisp
+                +tree-sitter)
        common-lisp         ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
@@ -211,7 +212,5 @@
 
        :config
        literate
-       ;; use-package
-       
        ;;tutorial
        (default +bindings +smartparens))
