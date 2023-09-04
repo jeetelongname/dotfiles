@@ -4,6 +4,8 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
+(package! closql :pin "0a7226331ff1f96142199915c0ac7940bac4afdd")
+
 (package! nyan-mode)
 (package! parrot)
 
@@ -80,6 +82,8 @@
 
 (package! tldr)
 
+(package! elfeed-goodies :disable t)
+
 (package! elfeed-tube :recipe (:host github :repo "karthink/elfeed-tube"))
 
 (package! xref :pin "a82f459b37b31546bf274388baf8aca79e9c30d9")
@@ -102,7 +106,8 @@
 (package! horizon-theme)
 (unpin! doom-themes)
 
-;; (unpin! pdf-tools)
+;; (package! pdf-tools :pin "7ff6293a25baaae65651b3e1c54b61208279a7ef")
+(unpin! pdf-tools)
 
 ;; (package! hideshow-tree-sitter
 ;;   :recipe

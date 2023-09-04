@@ -106,7 +106,8 @@
                                                         60)))))
 
 (defun yeet/export-with-pandoc (start end)
-  "take a region pass it to pandoc, get back a temp buffer as well as copied to your clipboard."
+  "take a region pass it to pandoc,
+get back a temp buffer as well as copied to your clipboard."
   (interactive "r")
   (let ((str (buffer-substring-no-properties start end))
         (from (read-from-minibuffer "Enter mode from: "))
@@ -152,6 +153,14 @@ explicitly use the variable."
 
 (thread-as 3 my-var (+ 2 my-var) (+ 4 my-var))
 
+(defmacro comment! (&rest _forms)
+  "Take in a list of forms and return nil."
+  (declare (indent 0))
+  nil)
+
+(macroexpand-1 (comment!
+                 (message "Hello!")))
+
 (display-time-mode +1)
 
 (global-subword-mode +1)
@@ -167,7 +176,9 @@ explicitly use the variable."
 
 (setq whitespace-style '(space-mark newline-mark))
 (setq whitespace-display-mappings '((space-mark 32 [183] [46])))
-(global-whitespace-mode)
+;; (global-whitespace-mode)
+
+(pixel-scroll-precision-mode +1)
 
 (set-popup-rules!
   '(("^\\*info\\*"
@@ -175,7 +186,7 @@ explicitly use the variable."
 
 (defvar yeet/birds '(default confused emacs nyan rotating science thumbsup))
 
-(use-package! nyan-mode
+(use-package nyan-mode
   :after doom-modeline
   :config
   (setq nyan-bar-length 15
@@ -308,13 +319,16 @@ explicitly use the variable."
 ;; (use-package! screenshot :defer)
 
 (use-package! aas
-  :hook (org-mode . aas-activate-for-major-mode)
   :config
   (aas-set-snippets 'org-mode
-    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil"))
+    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil")
+  (aas-set-snippets 'ess-r-mode
+    "%|" "%>%"))
 
 (use-package! laas
   :hook (LaTeX-mode . laas-mode))
+
+(add-hook! (org-mode ess-r-mode) #'aas-activate-for-major-mode)
 
 (use-package! lexic
   :commands lexic-search lexic-list-dictionary
@@ -547,6 +561,60 @@ explicitly use the variable."
   (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir)) ;; don't be cluttering my work tree
   (setq tldr-enabled-categories '("common" "linux")))
 
+(defadvice! your/elfeed-goodes-entry-line-draw (entry)
+  "Some doc"
+  :override #'elfeed-goodies/entry-line-draw
+  (let* ((title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+         (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+         (feed (elfeed-entry-feed entry))
+         (feed-title
+          (when feed
+            (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+         (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+         (tags-str (concat "[" (mapconcat 'identity tags ",") "]"))
+         (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                         elfeed-goodies/tag-column-width 4))
+         ;; what actually gets displayed.
+         ;; Feed name
+         (feed-column (elfeed-format-column
+                       feed-title
+                       elfeed-goodies/feed-source-column-width
+                       :left))
+         ;; Subject
+         (title-column (elfeed-format-column
+                        title ;; str
+                        elfeed-search-title-max-width ;; width
+                        :left)) ;; alignment
+         ;; Tags
+         (tag-column (elfeed-format-column
+                      tags-str
+                      elfeed-goodies/tag-column-width
+                      :left)))
+
+    (if (>= (window-width) (* (frame-width) elfeed-goodies/wide-threshold))
+        (progn
+          (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+          (insert (propertize title-column 'face title-faces 'kbd-help title) " ")
+          (insert (propertize tag-column 'face 'elfeed-search-tag-face) " "))
+      (insert (propertize title 'face title-faces 'kbd-help title)))))
+
+(defadvice! your/search-header-draw-wide (separator-left separator-right search-filter stats db-time)
+  "some doc"
+  :override #'search-header/draw-wide
+  (let* ((update (format-time-string "%Y-%m-%d %H:%M:%S %z" db-time))
+         (lhs (list
+               (powerline-raw (-pad-string-to "Feed" (- elfeed-goodies/feed-source-column-width 4)) 'powerline-active1 'l)
+               (funcall separator-left 'powerline-active1 'powerline-active2)
+               ;; play with the number 7 to get the tags to align better
+               (powerline-raw (-pad-string-to  "Subject" (-  elfeed-search-title-max-width 7)) 'mode-line 'l)
+               (funcall separator-left 'powerline-active2 'mode-line)
+               (powerline-raw (-pad-string-to "Tags" (- elfeed-goodies/tag-column-width 6)) 'powerline-active2 'l)))
+         (rhs (search-header/rhs separator-left separator-right search-filter stats update)))
+
+    (concat (powerline-render lhs)
+            (powerline-fill 'mode-line (powerline-width rhs))
+            (powerline-render rhs))))
+
 (use-package elfeed-tube
   :after elfeed
   :config
@@ -618,6 +686,20 @@ explicitly use the variable."
 (after! vertico
   (define-key vertico-map (kbd "M-o c") #'consult-toggle-preview))
 
+(defun yeet/flymake-kill-at-point (&optional arg)
+  "Your mum."
+  (interactive)
+  (let* ((diag-lst (mapcar (fn! (flymake--diag-text %1))
+                           (flymake-diagnostics (point))))
+         (diag (if (null (cdr diag-lst))
+                   (car diag-lst)
+                  (completing-read "Select Diagnostic: " diag-lst))))
+    (kill-new diag)))
+
+(after! embark
+  (map! (:map embark-flymake-map
+              "k" #'yeet/flymake-kill-at-point)))
+
 (defun yeet/face-annotator (cand)
   "Annotate faces with dummy text and face documentation"
   (when-let (sym (intern-soft cand))
@@ -637,19 +719,19 @@ explicitly use the variable."
         evil-want-fine-undo t))
 
 ;; Change out fonts quickly
- (defvar yeet/font-name "Iosevka")
+(defvar yeet/font-name "IntelOne Mono")
+(defvar yeet/font-size 18)
 
- (setq!
-  doom-font (font-spec :family yeet/font-name :size 16)
-  doom-big-font (font-spec :family yeet/font-name :size 25)
-  ;; doom-font (font-spec :family yeet/font-name :size 16)
-  ;; doom-big-font (font-spec :family yeet/font-name :size 25)
-  ;; doom-variable-pitch-font (font-spec :family "Merriweather" :size 17)
-  )
+
+(setq!
+ doom-font (font-spec :family yeet/font-name :size yeet/font-size)
+ doom-big-font (font-spec :family yeet/font-name :size (* yeet/font-size 2))
+ ;; doom-variable-pitch-font (font-spec :family "Merriweather" :size 17)
+ )
 
 ;; HACK to get rid of weird black circles in mu4e screen.
- (delete "Noto Emoji" doom-emoji-fallback-font-families)
- (delete "Noto Color Emoji" doom-emoji-fallback-font-families)
+(delete "Noto Emoji" doom-emoji-fallback-font-families)
+(delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 
 (setq! doom-themes-enable-bold t
         doom-themes-enable-italic t
@@ -668,6 +750,12 @@ explicitly use the variable."
 
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))
+
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(comment!
+ (add-hook! '+doom-dashboard-functions :append #'doom-dashboard-widget-shortmenu)
+ (remove-hook! '+doom-dashboard-functions :append))
+(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor nil)
 
 (defvar phrase-api-url
   (nth (random 3)
@@ -753,9 +841,6 @@ explicitly use the variable."
    (doom-dashboard-phrase)
    "\n"))
 
-(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
-
 (after! hl-todo
   (add-to-list 'hl-todo-keyword-faces `("DONE" org-done bold)))
 
@@ -797,6 +882,18 @@ explicitly use the variable."
   (setq +treemacs-git-mode 'extended
         treemacs-width 30))
 
+(map! :map treemacs-mode-map
+      "M-h" #'treemacs-TAB-action
+      "M-l" #'treemacs-RET-action)
+
+;; This makes treemacs act a little more like finder and explorer (or so I have heard)
+(after! treemacs
+  (treemacs-define-RET-action 'dir-node-open #'treemacs-root-down)
+  (treemacs-define-RET-action 'dir-node-closed #'treemacs-root-down)
+  (treemacs-define-RET-action 'root-node-open #'treemacs-root-up)
+  (treemacs-define-RET-action 'root-node-closed #'treemacs-root-up)
+  (evil-define-key 'treemacs treemacs-mode-map "l" 'treemacs-toggle-node))
+
 (defadvice! rigor/which-key-show-workspace (orig-fun &rest pages-obj)
   "Show my workspaces in the echo thingy"
   :around #'which-key--process-page
@@ -811,6 +908,14 @@ explicitly use the variable."
 
 (map! :leader "TAB TAB" nil
       :leader "TAB TAB" #'+workspace/switch-to)
+
+(defadvice! yeet/ask-for-confirmation-before-doing (orig &rest args)
+  :around #'doom/quickload-session
+  (if (yes-or-no-p "Do you really want to do the thing?")
+      (funcall orig args)
+    (message "cancelled")))
+
+(comment! (advice-remove 'doom/quickload-session #'yeet/ask-for-confirmation-before-doing))
 
 (custom-set-faces! `(eros-result-overlay-face
                      :foreground ,(doom-color 'violet)))
@@ -971,9 +1076,17 @@ explicitly use the variable."
 
 (after! org-capture
   (setq org-capture-templates
-        '(("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
+        '(("b" "Blog Entry" entry (file+headline "~/code/web/website/blog-hugo/content/posts/blog.org" "Posts") "** TODO %^{Title} %^g
+:PROPERTIES:
+:EXPORT_DATE: %(format-time-string \"%Y-%m-%d\")
+:EXPORT_FILE_NAME: %^{filename}
+:END:
+%?
+"
+           :immediate-finish t :jump-to-captured t :no-save t)
+          ("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
           ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
+          ("B" "Blog Ideas" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
 (after! org
@@ -1072,6 +1185,8 @@ explicitly use the variable."
 (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
 (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 
+(setq lsp-solargraph-use-bundler t)
+
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 
 (add-hook! latex-mode #'hl-todo-mode)
@@ -1101,8 +1216,14 @@ explicitly use the variable."
       :port 6697
       :nick "jeetelongname"
       :sasl-username "jeetelongname"
-      :sasl-password ,(+pass-get-secret "social/freenode")
+      :sasl-password ,(string-trim (shell-command-to-string "rbw get web.libera.chat"))
       :channels ("#emacs" "#haskell" "#doomemacs"))))
+
+;; I hit this too many times trying to compile projects.
+;; rebind it to something I can misstype less
+(map! :leader
+      "oc" nil
+      "oi" #'=irc)
 
 (after! elfeed
   (setq elfeed-search-filter "@4-week-ago -fun") ;; /they post so much/

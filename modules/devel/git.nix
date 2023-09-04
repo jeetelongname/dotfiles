@@ -9,7 +9,8 @@
       s = "status";
       yolo = ''
         !git commit -m "$(curl -s whatthecommit.com/index.txt)"
-      ''; # we take part in a modicum of tomfoolery
+      '';
+      # we take part in a modicum of tomfoolery
 
     };
 

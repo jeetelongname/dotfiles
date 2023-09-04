@@ -36,11 +36,20 @@ in {
     # so many
     sqlite
     xclip
+
+    # # pdf tools
+    # automake
+    # autoconf
+    # pkg-config
+    # libpng
+    # zlib
+    # poppler
+    sdcv
   ];
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs;
+    package = unstable.emacs-unstable;
     extraPackages = epkgs: [ epkgs.vterm ];
   };
 

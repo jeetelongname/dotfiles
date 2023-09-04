@@ -4,7 +4,9 @@
 
 ;; I add it to the list early.. for no reason. put in your config.el
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
+
 (defvar native-comp-deferred-compilation-deny-list)
+
 (doom! :input
        ;;chinese
        ;;japanese
@@ -16,7 +18,8 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;(ivy +prescient)  ; a search engine for love and life
-      (vertico +icons)     ; verting co
+      (vertico +icons
+               +childframe)     ; verting co
 
 
        :ui
@@ -41,7 +44,7 @@
        (treemacs +lsp)     ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        (vc-gutter          ; vcs diff in the fringe
-        +diff-hl)
+        -diff-hl)
        vi-tilde-fringe     ; fringe tildes to mark beyond EOB
        (window-select      ; visually switch windows
         +numbers)
@@ -136,7 +139,7 @@
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;gdscript          ; the language you waited for
-       ;;(go +lsp)         ; the hipster dialect
+       (go +lsp)           ; the hipster dialect
        (haskell +lsp       ; a language that's lazier than I am
                 +tree-sitter)
        ;;hy                ; readability of scheme w/ speed of python
@@ -155,8 +158,9 @@
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
-       (lua  +fennel       ; one-based indices? one-based indices
-             +tree-sitter)
+       (lua  +fennel                    ; one-based indices? one-based indices
+             +tree-sitter
+             +lsp)
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        nix                 ; I hereby declare "nix geht mehr!"

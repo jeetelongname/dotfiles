@@ -22,7 +22,7 @@
     modules/devel/git.nix
     modules/devel/latex.nix
     modules/devel/shell.nix
-    modules/editors/neovim.nix
+    # modules/editors/neovim.nix
     modules/editors/emacs.nix
     modules/languages/cc.nix
     modules/languages/haskell.nix

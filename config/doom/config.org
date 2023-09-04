@@ -27,14 +27,17 @@ Lets get this config started!
   - [[#cli-commands][cli commands]]
   - [[#funky-functions][funky functions]]
   - [[#macros][macros]]
+    - [[#comment-macro][comment macro]]
   - [[#random-modes][Random modes]]
     - [[#display-time-mode][display time mode]]
     - [[#globalsubword-mode][GlobalSubWord Mode]]
     - [[#type-break-mode][Type break mode]]
     - [[#battery-mode][Battery mode]]
     - [[#whitespace-mode][whitespace mode]]
+    - [[#pixel-scroll-precision-mode][pixel scroll precision mode]]
   - [[#popup-rules][popup rules]]
 - [[#packages][Packages]]
+  - [[#fixes][fixes]]
   - [[#ui][ui]]
     - [[#modeline-fun][modeline fun]]
     - [[#sidebars][sidebars]]
@@ -64,7 +67,7 @@ Lets get this config started!
     - [[#rss][rss]]
   - [[#other][other]]
     - [[#tetris][tetris]]
-    - [[#fixes][fixes]]
+    - [[#fixes-1][fixes]]
     - [[#discord-rich-presence][discord rich presence]]
     - [[#arrows][arrows]]
 - [[#modules][Modules]]
@@ -102,6 +105,7 @@ Lets get this config started!
     - [[#haskell][haskell]]
     - [[#python][python]]
     - [[#racket][racket]]
+    - [[#ruby][ruby]]
     - [[#latex][LaTeX]]
     - [[#web][Web]]
   - [[#app-1][app]]
@@ -452,7 +456,8 @@ I need more cats in my life
 
 #+begin_src emacs-lisp
 (defun yeet/export-with-pandoc (start end)
-  "take a region pass it to pandoc, get back a temp buffer as well as copied to your clipboard."
+  "take a region pass it to pandoc,
+get back a temp buffer as well as copied to your clipboard."
   (interactive "r")
   (let ((str (buffer-substring-no-properties start end))
         (from (read-from-minibuffer "Enter mode from: "))
@@ -519,6 +524,25 @@ explicitly use the variable."
 (thread-as 3 my-var (+ 2 my-var) (+ 4 my-var))
 #+end_src
 
+*** comment macro
+I really like the clojure ~comment~ macro that takes in a list of forms and always
+returns nil. it makes interactive use really easy. it does not evaluate
+anything.
+
+#+begin_src emacs-lisp
+(defmacro comment! (&rest _forms)
+  "Take in a list of forms and return nil."
+  (declare (indent 0))
+  nil)
+#+end_src
+
+#+begin_src emacs-lisp
+(macroexpand-1 (comment!
+                 (message "Hello!")))
+#+end_src
+
+#+RESULTS:
+
 ** Random modes
 *** display time mode
 #+begin_src emacs-lisp
@@ -548,7 +572,11 @@ I like my modeline busy
 #+begin_src emacs-lisp
 (setq whitespace-style '(space-mark newline-mark))
 (setq whitespace-display-mappings '((space-mark 32 [183] [46])))
-(global-whitespace-mode)
+;; (global-whitespace-mode)
+#+end_src
+*** pixel scroll precision mode
+#+begin_src emacs-lisp
+(pixel-scroll-precision-mode +1)
 #+end_src
 ** popup rules
 #+begin_src emacs-lisp
@@ -565,6 +593,10 @@ were doom modules
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
+** fixes
+#+begin_src emacs-lisp :tangle packages.el
+(package! closql :pin "0a7226331ff1f96142199915c0ac7940bac4afdd")
+#+end_src
 ** ui
 *** modeline fun :modeline:
 /whats life without a little colour?/
@@ -576,7 +608,7 @@ were doom modules
 #+begin_src emacs-lisp
 (defvar yeet/birds '(default confused emacs nyan rotating science thumbsup))
 
-(use-package! nyan-mode
+(use-package nyan-mode
   :after doom-modeline
   :config
   (setq nyan-bar-length 15
@@ -691,7 +723,7 @@ I set my themes in my  [[#doom][Doom config]]
 #+end_src
 ** checkers
 *** COMMENT syntax
-this is now a module doomemacs/doomemacs#6660
+this is now a module doomemacs/doomemacs#6660, This is now merged
 I have swapped out flycheck for flymake for a couple of reasons
 - its built in
 - its an easy switch
@@ -854,13 +886,16 @@ I need more gremlins
 
 #+begin_src emacs-lisp
 (use-package! aas
-  :hook (org-mode . aas-activate-for-major-mode)
   :config
   (aas-set-snippets 'org-mode
-    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil"))
+    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil")
+  (aas-set-snippets 'ess-r-mode
+    "%|" "%>%"))
 
 (use-package! laas
   :hook (LaTeX-mode . laas-mode))
+
+(add-hook! (org-mode ess-r-mode) #'aas-activate-for-major-mode)
 #+end_src
 *** dictionary
 tecosaurs [[https://github.com/tecosaur/lexic][lexic]] package is now powering my dictionary usage, This configuration
@@ -1028,7 +1063,7 @@ is basically stolen from [[https://tecosaur.github.io/emacs-config/config.html#d
   (edraw-org-setup-default))
 #+end_src
 
-[[edraw:data=H4sIAIlaDmQAA7WVTXObMBCG/4pGucZCEkiIjvFFPTqXHnujBgMTGzJA4qS/vqsvqnqc6WQmOdj7arV6drXMwnZ+adGlr5euxCmlGHVN33aLX7w009yPQ4kZYRi9nk/DXOJuWZ6+JcnlciGXlIxTm3BKaQIgvNtOzWF5n/daYvh/s//H/nQq8d3xeMRoXqbxsSnxMA4NRn1d4qaeqsvmV3V4bKfxeagxSnbbNt4a6zfI91QtHQLnA6P0Pk9JLrRRkhOBGKf3ghEOKvNKM7n6VAhT4SQPDMThqHKmkOacUYzmEG6CGFMmypx00nKDl/+Va6xeQ5EMJBng0iYLZaD1Kj9Dl1xfQpfuiqIIq43vdWYb9E83WEr3wITKP4Txjrqau2qaKnhYCqVXdO7oJstX4DOP51+Dlx6ffQ1eebz8TPzSvC7oOA7L5lid+xPszNUwb+Zm6mF+7Mbc/wYyUxiZ4E01HLpxKvG5r+tTs84b59zOIdzeTiI8Q7z7UQ31eEbf+6qdqvO8TQwhulMBV8moVjnJjUBKRkaHVdj10QUnqVtnkdFhte76aOpXRPwj9oV0Rji6DsJEcCqupL7pjeQ1b+8S71Xm6gHhLuXKVAXJC3El9U1vJK9pe9haT4ro2t68N+hKqf8MuhnwlOucEmUEkpCPC+IEk9oYKolCLoJS85oBYwrhdm36YSOMgBPGWIKLAKbP4QxSPDLwCoAEwlhu+CIlUkcazhIbeaX1Db/IoIhIO3auAjsviLQvNAHV7kVuqrM+IU2YdgaBiylPi7S+4bfZI+2hIvVQuFeuXH9V1AlvPvzQPn2GOXUzzCXM8MMbgm8xqsfD87kZlnWIkxZ+8HHe/QESTaqB6wcAAA==]]
+[[edraw:data=H4sIAC9fDmQAA7WVTXObMBCG/4pGucZCEkiIjvFFPTqXHnujBgMTGzJA4qS/vqsvqnqc6WQmOdj7arV6drXMwnZ+adGlr5euxCmlGHVN33aLX7w009yPQ4kZYRi9nk/DXOJuWZ6+JcnlciGXlIxTm3BKaQIgvNtOzWF5n/daYvh/s//H/nQq8d3xeMRoXqbxsSnxMA4NRn1d4qaeqsvmV3V4bKfxeagxSnbbNt4a6zfI91QtHQLnA6P0Pk9JLrRRkhOBGKf3ghEOKvNKM7n6VAhT4SQPDMThqHKmkOacUYzmEG6CGFMmypx00nKDl/+Va6xeQ5EMJBng0iYLZaD1Kj9Dl1xfQpfuiqIIq43vdWYb9E83WEr3wITKP4Txjrqau2qaKnhYCqVXdO7oJstX4DOP51+Dlx6ffQ1eebz8TPzSvC7oOA7L5lid+xPszNUwb+Zm6mF+7Mbc/wYyUxiZ4E01HLpxKvG5r+tTs84b59zOIdzeTiI8Q7z7UQ31eEbf+6qdqvO8TQwhulMBV8moVjnJjUBKRkaHVdj10QUnqVtnkdFhte76aOpXRPwj9oV0Rji6DsJEcCqupL7pjeQ1b+8S71Xm6gHhLuXKVAXJC3El9U1vJK9pe9haT4ro2t68N+hKqf8MuhnwlOucEmUEkpCPC+IEk9oYKolCLoJS85oBYwrhdm36YSOMgBPGWIKLAKbP4QxSPDLwCoAEwlhu+CIlUkcazhIbeaX1Db/IoIhIO3auAjsviLQvNAHV7kVuqrM+IU2YdgaBiylPi7S+4bfZI+2hIvVQuFeuXH9V1AlvPvzQPn2GOXUzzCXM8MMbgm8xqsfD87kZlnWIkxZ+8HHe/QESTaqB6wcAAA==]]
 [[file:diagrams.svg]]
 
 *** emacs lisp :emacsLisp:
@@ -1269,6 +1304,65 @@ a lot of useless information and .. no information. Now in emacs!
 #+end_src
 *** rss
 #+begin_src emacs-lisp :tangle packages.el
+(package! elfeed-goodies :disable t)
+#+end_src
+
+#+begin_src emacs-lisp
+(defadvice! your/elfeed-goodes-entry-line-draw (entry)
+  "Some doc"
+  :override #'elfeed-goodies/entry-line-draw
+  (let* ((title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+         (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+         (feed (elfeed-entry-feed entry))
+         (feed-title
+          (when feed
+            (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+         (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+         (tags-str (concat "[" (mapconcat 'identity tags ",") "]"))
+         (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                         elfeed-goodies/tag-column-width 4))
+         ;; what actually gets displayed.
+         ;; Feed name
+         (feed-column (elfeed-format-column
+                       feed-title
+                       elfeed-goodies/feed-source-column-width
+                       :left))
+         ;; Subject
+         (title-column (elfeed-format-column
+                        title ;; str
+                        elfeed-search-title-max-width ;; width
+                        :left)) ;; alignment
+         ;; Tags
+         (tag-column (elfeed-format-column
+                      tags-str
+                      elfeed-goodies/tag-column-width
+                      :left)))
+
+    (if (>= (window-width) (* (frame-width) elfeed-goodies/wide-threshold))
+        (progn
+          (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+          (insert (propertize title-column 'face title-faces 'kbd-help title) " ")
+          (insert (propertize tag-column 'face 'elfeed-search-tag-face) " "))
+      (insert (propertize title 'face title-faces 'kbd-help title)))))
+
+(defadvice! your/search-header-draw-wide (separator-left separator-right search-filter stats db-time)
+  "some doc"
+  :override #'search-header/draw-wide
+  (let* ((update (format-time-string "%Y-%m-%d %H:%M:%S %z" db-time))
+         (lhs (list
+               (powerline-raw (-pad-string-to "Feed" (- elfeed-goodies/feed-source-column-width 4)) 'powerline-active1 'l)
+               (funcall separator-left 'powerline-active1 'powerline-active2)
+               ;; play with the number 7 to get the tags to align better
+               (powerline-raw (-pad-string-to  "Subject" (-  elfeed-search-title-max-width 7)) 'mode-line 'l)
+               (funcall separator-left 'powerline-active2 'mode-line)
+               (powerline-raw (-pad-string-to "Tags" (- elfeed-goodies/tag-column-width 6)) 'powerline-active2 'l)))
+         (rhs (search-header/rhs separator-left separator-right search-filter stats update)))
+
+    (concat (powerline-render lhs)
+            (powerline-fill 'mode-line (powerline-width rhs))
+            (powerline-render rhs))))
+#+end_src
+#+begin_src emacs-lisp :tangle packages.el
 (package! elfeed-tube :recipe (:host github :repo "karthink/elfeed-tube"))
 #+end_src
 
@@ -1399,6 +1493,23 @@ this is to make prescient a little more intelligent
 (after! vertico
   (define-key vertico-map (kbd "M-o c") #'consult-toggle-preview))
 #+end_src
+**** embark
+#+begin_src emacs-lisp
+(defun yeet/flymake-kill-at-point (&optional arg)
+  "Your mum."
+  (interactive)
+  (let* ((diag-lst (mapcar (fn! (flymake--diag-text %1))
+                           (flymake-diagnostics (point))))
+         (diag (if (null (cdr diag-lst))
+                   (car diag-lst)
+                  (completing-read "Select Diagnostic: " diag-lst))))
+    (kill-new diag)))
+#+end_src
+#+begin_src emacs-lisp
+(after! embark
+  (map! (:map embark-flymake-map
+              "k" #'yeet/flymake-kill-at-point)))
+#+end_src
 **** marginalia
 These are some small tweaks to marginalia I will probably add more as its kind
 of fun!
@@ -1434,23 +1545,25 @@ settings and all of that fun stuff here
 +Inconsolata is the best font that *I* have used... but it does not italic well.+
 +if you do know of a better way. do get in touch!+
 
-Iosevka is my new best friend
++Iosevka is my new best friend+
+
+[[https://github.com/intel/intel-one-mono/][Intel One Mono is now my new best friend]]
 
 #+BEGIN_SRC emacs-lisp
- ;; Change out fonts quickly
- (defvar yeet/font-name "Iosevka")
+;; Change out fonts quickly
+(defvar yeet/font-name "IntelOne Mono")
+(defvar yeet/font-size 18)
 
- (setq!
-  doom-font (font-spec :family yeet/font-name :size 16)
-  doom-big-font (font-spec :family yeet/font-name :size 25)
-  ;; doom-font (font-spec :family yeet/font-name :size 16)
-  ;; doom-big-font (font-spec :family yeet/font-name :size 25)
-  ;; doom-variable-pitch-font (font-spec :family "Merriweather" :size 17)
-  )
+
+(setq!
+ doom-font (font-spec :family yeet/font-name :size yeet/font-size)
+ doom-big-font (font-spec :family yeet/font-name :size (* yeet/font-size 2))
+ ;; doom-variable-pitch-font (font-spec :family "Merriweather" :size 17)
+ )
 
 ;; HACK to get rid of weird black circles in mu4e screen.
- (delete "Noto Emoji" doom-emoji-fallback-font-families)
- (delete "Noto Color Emoji" doom-emoji-fallback-font-families)
+(delete "Noto Emoji" doom-emoji-fallback-font-families)
+(delete "Noto Color Emoji" doom-emoji-fallback-font-families)
 #+end_src
 
 the comments for horizon are borderline unreadable so now we have brighter
@@ -1496,6 +1609,18 @@ A futile reminder to get back to work
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))
 #+end_src
+
+I removed the helpful menu. I only use it for.. nothing. lets make it C L E A N
+#+begin_src emacs-lisp
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(comment!
+ (add-hook! '+doom-dashboard-functions :append #'doom-dashboard-widget-shortmenu)
+ (remove-hook! '+doom-dashboard-functions :append))
+(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor nil)
+#+end_src
+
+#+RESULTS:
+| doom--setq-evil-normal-state-cursor-for-+doom-dashboard-mode-h |
 
 This is again stolen from Tecosaur. All it does is insert a little message from
 a couple of online apis.
@@ -1585,11 +1710,6 @@ a couple of online apis.
    "\n"))
 #+end_src
 
-I removed the helpful menu. I only use it for.. nothing. lets make it C L E A N
-#+begin_src emacs-lisp
-(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
-#+end_src
 *** Hl TODO
 I want a done face for TODO's that are now done ala org mode
 #+begin_src emacs-lisp
@@ -1660,6 +1780,18 @@ its still useful for presentation's (dired sidebar is actually all I need)
 (after! treemacs
   (setq +treemacs-git-mode 'extended
         treemacs-width 30))
+
+(map! :map treemacs-mode-map
+      "M-h" #'treemacs-TAB-action
+      "M-l" #'treemacs-RET-action)
+
+;; This makes treemacs act a little more like finder and explorer (or so I have heard)
+(after! treemacs
+  (treemacs-define-RET-action 'dir-node-open #'treemacs-root-down)
+  (treemacs-define-RET-action 'dir-node-closed #'treemacs-root-down)
+  (treemacs-define-RET-action 'root-node-open #'treemacs-root-up)
+  (treemacs-define-RET-action 'root-node-closed #'treemacs-root-up)
+  (evil-define-key 'treemacs treemacs-mode-map "l" 'treemacs-toggle-node))
 #+END_SRC
 *** Workspaces :workspaces:
 This hot little number shows the workspaces whenever =SPC TAB= is hit. it makes
@@ -1681,6 +1813,18 @@ Thanks too @igorlamedia for it
 
 (map! :leader "TAB TAB" nil
       :leader "TAB TAB" #'+workspace/switch-to)
+#+end_src
+
+This less hot little number asks for confirmation before restoring workspaces
+#+begin_src emacs-lisp
+(defadvice! yeet/ask-for-confirmation-before-doing (orig &rest args)
+  :around #'doom/quickload-session
+  (if (yes-or-no-p "Do you really want to do the thing?")
+      (funcall orig args)
+    (message "cancelled")))
+
+(comment! (advice-remove 'doom/quickload-session #'yeet/ask-for-confirmation-before-doing))
+
 #+end_src
 ** tools :tools:
 *** eval :eval:
@@ -1712,7 +1856,8 @@ file watchers crash emacs. I never know what they do anyway
 custom modeline for pdf files stolen from tecosaur and hopefully it will become
 a default
 #+begin_src emacs-lisp :tangle packages.el
-;; (unpin! pdf-tools)
+;; (package! pdf-tools :pin "7ff6293a25baaae65651b3e1c54b61208279a7ef")
+(unpin! pdf-tools)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1950,9 +2095,17 @@ directly
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
   (setq org-capture-templates
-        '(("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
+        '(("b" "Blog Entry" entry (file+headline "~/code/web/website/blog-hugo/content/posts/blog.org" "Posts") "** TODO %^{Title} %^g
+:PROPERTIES:
+:EXPORT_DATE: %(format-time-string \"%Y-%m-%d\")
+:EXPORT_FILE_NAME: %^{filename}
+:END:
+%?
+"
+           :immediate-finish t :jump-to-captured t :no-save t)
+          ("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
           ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-          ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
+          ("B" "Blog Ideas" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
           ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 **** Export settings
@@ -2089,6 +2242,10 @@ adding unicode input
 (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
 (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 #+end_src
+*** ruby :ruby:
+#+begin_src emacs-lisp
+(setq lsp-solargraph-use-bundler t)
+#+end_src
 
 *** LaTeX :LaTeX:
 #+BEGIN_SRC emacs-lisp
@@ -2144,7 +2301,6 @@ Why leave emacs too compile sass?  TODO take an input and output dir
   (interactive)
   (delete-process "sass-compile")
   (message "Sass process killed"))
-
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2175,8 +2331,14 @@ I have a beard and I do like wasting time...
       :port 6697
       :nick "jeetelongname"
       :sasl-username "jeetelongname"
-      :sasl-password ,(+pass-get-secret "social/freenode")
+      :sasl-password ,(string-trim (shell-command-to-string "rbw get web.libera.chat"))
       :channels ("#emacs" "#haskell" "#doomemacs"))))
+
+;; I hit this too many times trying to compile projects.
+;; rebind it to something I can misstype less
+(map! :leader
+      "oc" nil
+      "oi" #'=irc)
 #+end_src
 
 I don't really need the notifications
@@ -2184,7 +2346,7 @@ I don't really need the notifications
 (package! circe-notifications :disable t)
 #+end_src
 *** rss :rss:
-Elfeed is great. I just need more blogs
+Elfeed i    s great. I just need more blogs
 
 I am now kinda the maintainer of elfeed-goodies...
 #+begin_src emacs-lisp :tangle packages.el
