@@ -29,11 +29,12 @@ packer.startup(function()
    -- language support
    use 'sheerun/vim-polyglot' -- language support for the lazy
    use 'sherylynn/vim-elisp' -- what can I say except I enjoy living in sin
-   -- use {
-   --    'nvim-treesitter/nvim-treesitter',
-   --    run = ':TSUpdate'
-   -- }
-   -- use "nvim-treesitter/playground"
+   use {'nvim-treesitter/nvim-treesitter'}
+   use {'nvim-orgmode/orgmode', config = function()
+     require('orgmode').setup{}
+   end
+   }
+   use "nvim-treesitter/playground"
    -- lang server's
    use 'neovim/nvim-lspconfig' -- all the completion
    use 'hrsh7th/nvim-compe'  -- for actual completion
@@ -66,7 +67,7 @@ packer.startup(function()
    use 'TimUntersberger/neogit' -- emacs is dead, long live emacs! FIXME
 
    -- other stuff
-   use 'aurieh/discord.nvim' -- whats the point in using vim if your not telling the world?
+   -- use 'aurieh/discord.nvim' -- whats the point in using vim if your not telling the world?
 end)
 -- settings -- this is all of the basic vim settings
 local o = vim.o  -- global
@@ -80,7 +81,7 @@ o.inccommand = "nosplit"
 o.swapfile = true
 o.dir = '/tmp'
 o.smartcase = true
-o.laststatus = 2
+o.laststatus = 3
 o.hlsearch = true
 o.incsearch = true
 o.ignorecase = true
@@ -238,19 +239,30 @@ lspconfig.pylsp.setup{} -- python
 lspconfig.solargraph.setup{} -- ruby
 lspconfig.texlab.setup{} -- latex
 
+-- orgmode
+require('orgmode').setup_ts_grammar()
+
+require('orgmode').setup({
+  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+  org_default_notes_file = '~/Dropbox/org/refile.org',
+})
+
 -- treesitter
--- require'nvim-treesitter.configs'.setup {
---    ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
---    ignore_install = { "javascript" }, -- List of parsers to ignore installing
---    highlight = {
---       enable = true,              -- false will disable the whole extension
---       -- disable = { "c", "rust" },  -- list of language that will be disabled
---    },
--- }
+require'nvim-treesitter.configs'.setup {
+   ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+   highlight = {
+      enable = true,              -- false will disable the whole extension
+      -- disable = { "c", "rust" },  -- list of language that will be disabled
+      -- Required for spellcheck, some LaTex highlights and
+      -- code block highlights that do not have ts grammar
+      additional_vim_regex_highlighting = {'org'},
+   },
+}
+
 -- ui -- basic ui settings ------------------------------------------------------------
 o.termguicolors = true
 vim.cmd("colorscheme horizon")
-
+vim.cmd("highlight WinSeparator guibg=None ")
 -- custom lightline
 g.lightline = {
    colorscheme = 'horizon';
@@ -281,7 +293,7 @@ vim.cmd([[
 ]]) -- centers the startpage banner
 
 -- misc stuff
-g.discord_activate_on_enter = 1
+-- g.discord_activate_on_enter = 1
 
 -- and thats it. thats my config. This should hopefully prove to people a noob (that can code)
 -- can configure neovim to a very usable state. if you want to read more of this config (and check me out)

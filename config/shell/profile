@@ -11,7 +11,8 @@ export VISUAL="emacsclient -c "
 export TERMINAL="alacritty"
 export BROWSER="firefox"
 export FILEMANAGER="nautilus"
-export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma fdm=indent' -\""
+export MANPAGER="nvim +Man!"
+export MANWIDTH=999
 export PAGER="less"
 # export MANPAGER="/bin/sh -c \"col -b | nvim -u '~/.config/nvim/init.man.vim' -\""
 #cleanup
