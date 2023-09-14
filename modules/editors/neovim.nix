@@ -8,12 +8,11 @@
     }))
   ];
 
-  home.packages = with pkgs;
-    [
-      neovim-nightly
-      # python39Packages.pynvim # pip install --user --upgrade pynvim
+  home.packages = with pkgs; [
+    neovim-nightly
+    python39Packages.pynvim # pip install --user --upgrade pynvim
 
-    ];
+  ];
 
   xdg.configFile = {
     "nvim".source = config.lib.file.mkOutOfStoreSymlink ../../config/neovim;
