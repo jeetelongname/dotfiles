@@ -1216,7 +1216,8 @@ explicitly use the variable."
       :port 6697
       :nick "jeetelongname"
       :sasl-username "jeetelongname"
-      :sasl-password ,(string-trim (shell-command-to-string "rbw get web.libera.chat"))
+      :sasl-password (lambda (&rest _rest)
+                       (string-trim (shell-command-to-string "rbw get web.libera.chat")))
       :channels ("#emacs" "#haskell" "#doomemacs"))))
 
 ;; I hit this too many times trying to compile projects.
