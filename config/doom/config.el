@@ -250,12 +250,12 @@ explicitly use the variable."
   (setq tao-theme-use-sepia t
         tao-theme-sepia-depth 50))
 
-(use-package! flymake-vale
-  :hook ((text-mode       . flymake-vale-load)
-         (latex-mode      . flymake-vale-load)
-         (org-mode        . flymake-vale-load)
-         (markdown-mode   . flymake-vale-load)
-         (message-mode    . flymake-vale-load)))
+(add-hook! (text-mode
+            latex-mode
+            org-mode
+            markdown-mode
+            message-mode)
+           #'flymake-vale-load)
 
 (add-hook! 'org-msg-mode-hook
   (setq flymake-vale-file-ext ".org")
@@ -1187,6 +1187,9 @@ explicitly use the variable."
 
 (setq lsp-solargraph-use-bundler t)
 
+(set-repl-handler! 'ruby-mode (cmd! (robe-start)
+                                    (robe-inf-buffer)))
+
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 
 (add-hook! latex-mode #'hl-todo-mode)
@@ -1259,7 +1262,7 @@ explicitly use the variable."
                     t)
 
 (after! mu4e
-  (setq mu4e-mu-version "1.8.14")
+  (setq mu4e-mu-version "1.10.6")
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 25))
 
