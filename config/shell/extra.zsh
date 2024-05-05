@@ -27,6 +27,7 @@ export KEYTIMEOUT=1
 autoload edit-command-line
 zle -N edit-command-line
 bindkey '^e' edit-command-line
+bindkey '^H' backward-kill-word
 
 #exports
 export LS_COLORS="$(vivid generate snazzy)"

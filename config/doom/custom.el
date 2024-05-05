@@ -5,15 +5,39 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("fce8c428aa62c06dfb5becf9d538ff24bcba7b0f2fc6d8892f2fbf7d19ba746b" default))
+ '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(pdf-misc-print-program-executable "/usr/bin/lp")
  '(safe-local-variable-values
-   '((vc-prepare-patches-separately)
+   '((eval
+      (lambda nil
+        (defun cider-jack-in-wrapper-function
+            (orig-fun &rest args)
+          (if
+              (and
+               (boundp 'use-bb-dev)
+               use-bb-dev)
+              (message "Use `bb dev` to start the development server, then `cider-connect` to the port it specifies.")
+            (apply orig-fun args)))
+        (advice-add 'cider-jack-in :around #'cider-jack-in-wrapper-function)
+        (when
+            (not
+             (featurep 'clerk))
+          (let
+              ((init-file-path
+                (expand-file-name "clerk.el" default-directory)))
+            (when
+                (file-exists-p init-file-path)
+              (load init-file-path)
+              (require 'clerk))))))
+     (use-bb-dev . t)
+     (prettify-symbols-mode)
+     (vc-prepare-patches-separately)
      (diff-add-log-use-relative-names . t)
      (vc-git-annotate-switches . "-w")
      (org-export-with-author)
      (org-log-done quote time)
-     (org-re-reveal-root\. "../reveal.js")
-     (org-re-reveal-root\. "./presentations/reveal.js")
+     (org-re-reveal-root. "../reveal.js")
+     (org-re-reveal-root. "./presentations/reveal.js")
      (org-re-reveal-root . "presentations/reveal.js"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -35,7 +59,7 @@
  '(org-level-4 ((t (:foreground "#58cfd1" :height 1.0 :weight normal))))
  '(org-level-5 ((t (:foreground "#9093ae" :weight normal))))
  '(org-level-6 ((t (:foreground "#90dfe0" :weight normal))))
- '(tree-sitter-hl-face:function\.call ((t (:foreground "#21bfc2"))))
+ '(tree-sitter-hl-face:function.call ((t (:foreground "#21bfc2"))))
  '(ts-fold-replacement-face ((t (:foreground nil :box nil :inherit font-lock-comment-face :weight light)))))
 (put 'erase-buffer 'disabled nil)
 

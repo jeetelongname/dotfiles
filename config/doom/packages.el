@@ -107,7 +107,19 @@
 (unpin! doom-themes)
 
 ;; (package! pdf-tools :pin "7ff6293a25baaae65651b3e1c54b61208279a7ef")
-(unpin! pdf-tools)
+(package! pdf-tools :recipe
+          (:host github
+                 :repo "dalanicolai/pdf-tools"
+                 :branch "pdf-roll"
+                 :files ("lisp/*.el"
+                         "README"
+                         ("build" "Makefile")
+                         ("build" "server")
+                         (:exclude "lisp/tablist.el" "lisp/tablist-filter.el"))))
+
+(package! image-roll :recipe
+          (:host github
+                 :repo "dalanicolai/image-roll.el"))
 
 ;; (package! hideshow-tree-sitter
 ;;   :recipe
@@ -117,8 +129,7 @@
 ;; (package! tree-sitter-playground :recipe (:local-repo "~/code/emacs/tree-sitter-playground"
 ;;                                           :build (:not compile)))
 
-;; (package! tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
-(package! evil-tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
+(package! doct)
 
 (package! origami)
 (package! org-super-agenda)

@@ -35,7 +35,6 @@ Lets get this config started!
     - [[#battery-mode][Battery mode]]
     - [[#whitespace-mode][whitespace mode]]
     - [[#pixel-scroll-precision-mode][pixel scroll precision mode]]
-  - [[#popup-rules][popup rules]]
 - [[#packages][Packages]]
   - [[#fixes][fixes]]
   - [[#ui][ui]]
@@ -73,6 +72,7 @@ Lets get this config started!
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
+    - [[#corfu][corfu]]
     - [[#deprecated-ivy][DEPRECATED ivy]]
     - [[#vertico][vertico]]
   - [[#editor][editor]]
@@ -578,12 +578,6 @@ I like my modeline busy
 #+begin_src emacs-lisp
 (pixel-scroll-precision-mode +1)
 #+end_src
-** popup rules
-#+begin_src emacs-lisp
-(set-popup-rules!
-  '(("^\\*info\\*"
-     :slot 1 :vslot 1 :side right :width 0.45 :quit nil)))
-#+end_src
 * Packages
 I have quite a few packages that I use. These are the packages and there
 subsequent configurations.
@@ -597,6 +591,13 @@ were doom modules
 #+begin_src emacs-lisp :tangle packages.el
 (package! closql :pin "0a7226331ff1f96142199915c0ac7940bac4afdd")
 #+end_src
+
+#+begin_src emacs-lisp
+(setq flymake-allowed-file-name-masks nil)
+#+end_src
+
+#+RESULTS:
+
 ** ui
 *** modeline fun :modeline:
 /whats life without a little colour?/
@@ -1463,6 +1464,11 @@ defer the idle delay for those real brain fart seconds
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 #+END_SRC
+*** corfu :corfu:
+Also deals with completions, something else I like.
+#+begin_src emacs-lisp
+
+#+end_src
 *** DEPRECATED ivy :ivy:
 Ivy is nice but +selectrum+ vertico is my friend
 #+BEGIN_SRC emacs-lisp
@@ -1479,6 +1485,7 @@ this is to make prescient a little more intelligent
 (setq-default prescient-history-length 10000)
 #+END_SRC
 *** vertico :vertico:
+**** Consult
 #+begin_src emacs-lisp
 (defvar-local consult-toggle-preview-orig nil)
 
@@ -1495,6 +1502,12 @@ this is to make prescient a little more intelligent
 (after! vertico
   (define-key vertico-map (kbd "M-o c") #'consult-toggle-preview))
 #+end_src
+
+#+begin_src emacs-lisp
+(after! consult
+  (setq! consult-man-args "/usr/bin/man -k"))
+#+end_src
+
 **** embark
 #+begin_src emacs-lisp
 (defun yeet/flymake-kill-at-point (&optional arg)
@@ -1719,9 +1732,23 @@ I want a done face for TODO's that are now done ala org mode
   (add-to-list 'hl-todo-keyword-faces `("DONE" org-done bold)))
 #+end_src
 *** Popup
-#+begin_src emacs-lisp
-;; (set-popup-rule! "\\*info*\\" :side 'right)
+We make the results output because otherwise when my butter fingers hits [[kbd:RET]]
+the output explodes
+#+begin_src emacs-lisp :results output
+(setq yeet/popup-settings '(:slot 1
+                            :vslot 1
+                            :side right
+                            :width 0.45
+                            :quit nil))
+(set-popup-rules!
+  `((,(rx line-start "*info*")
+     ,@yeet/popup-settings)
+    (,(rx line-start "*" (? "Wo") "Man " (? (any numeric)) (?  " ") (+ (any alphanumeric))"*" )
+     ,@yeet/popup-settings)))
+
 #+end_src
+
+
 *** Modeline :modeline:
 My modeline does a lot...
 #+BEGIN_SRC emacs-lisp
@@ -1750,7 +1777,7 @@ whats the fun in that?
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding checker major-mode process " " bar " ")))
+    '(misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process " " bar " ")))
 #+end_src
 
 I stole this from @tecosaur Its frankly a great addition (this is a theme
@@ -1859,7 +1886,19 @@ custom modeline for pdf files stolen from tecosaur and hopefully it will become
 a default
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! pdf-tools :pin "7ff6293a25baaae65651b3e1c54b61208279a7ef")
-(unpin! pdf-tools)
+(package! pdf-tools :recipe
+          (:host github
+                 :repo "dalanicolai/pdf-tools"
+                 :branch "pdf-roll"
+                 :files ("lisp/*.el"
+                         "README"
+                         ("build" "Makefile")
+                         ("build" "server")
+                         (:exclude "lisp/tablist.el" "lisp/tablist-filter.el"))))
+
+(package! image-roll :recipe
+          (:host github
+                 :repo "dalanicolai/image-roll.el"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1954,7 +1993,7 @@ The yellow used for function calls was the same colour used for strings (in
                                        '((python-mode . [(import_statement) @import])
                                          (rust-mode . [(use_declaration) @import]))))))
 #+end_src
-**** Tree edit
+**** COMMENT Tree edit
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
 (package! evil-tree-edit :recipe (:host github :repo "ethan-leba/tree-edit"))
@@ -2051,7 +2090,6 @@ This readds the functionality of spelling on =return=
 *** org :org:
 Org mode. our favorite plain text markup format! these are my configurations for
 it
-
 **** General
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/org-notes/")
@@ -2093,8 +2131,14 @@ directly
   `(org-level-6 :foreground ,(doom-color 'blue) :weight normal))
 #+END_SRC
 
-**** Capture
+**** TODO Capture
+switch to doct, steal[[https://tecosaur.github.io/emacs-config/#visuals][tecos config on the matter]] 
+#+begin_src emacs-lisp :tangle packages.el
+(package! doct)
+#+end_src
 #+BEGIN_SRC emacs-lisp
+(use-package! doct :commands doct)
+
 (after! org-capture
   (setq org-capture-templates
         '(("b" "Blog Entry" entry (file+headline "~/code/web/website/blog-hugo/content/posts/blog.org" "Posts") "** TODO %^{Title} %^g
@@ -2106,9 +2150,26 @@ directly
 "
            :immediate-finish t :jump-to-captured t :no-save t)
           ("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
-          ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-          ("B" "Blog Ideas" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
-          ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
+          ("B" "Blog Ideas" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t))))
+
+(doct '(("Blog"
+         :keys "b"
+         :file "~/code/web/website/blog-hugo/content/posts/blog.org"
+         :type entry
+         :headline "Posts"
+         :immediate-finish t
+         :jump-to-captured t
+         :no-save t
+         :template ("** TODO %^{Title} %^g
+:PROPERTIES:
+:EXPORT_DATE: %(format-time-string \"%Y-%m-%d\")
+:EXPORT_FILE_NAME: %^{filename}
+:END:
+%?
+")
+         )))
+
+
 #+END_SRC
 **** Export settings
 Better defaults for links.

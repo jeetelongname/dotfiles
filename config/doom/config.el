@@ -180,9 +180,7 @@ explicitly use the variable."
 
 (pixel-scroll-precision-mode +1)
 
-(set-popup-rules!
-  '(("^\\*info\\*"
-     :slot 1 :vslot 1 :side right :width 0.45 :quit nil)))
+(setq flymake-allowed-file-name-masks nil)
 
 (defvar yeet/birds '(default confused emacs nyan rotating science thumbsup))
 
@@ -321,7 +319,9 @@ explicitly use the variable."
 (use-package! aas
   :config
   (aas-set-snippets 'org-mode
-    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil")
+    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil"
+    "attroll" "#+attr_reveal: :frag (roll-in)")
+
   (aas-set-snippets 'ess-r-mode
     "%|" "%>%"))
 
@@ -662,6 +662,8 @@ explicitly use the variable."
         ;; company-minimum-prefix-length 2
         company-show-numbers t))
 
+
+
 (after! ivy
   (setq ivy-height 20
         ivy-wrap nil
@@ -685,6 +687,9 @@ explicitly use the variable."
 ;; Bind to `vertico-map' or `selectrum-minibuffer-map'
 (after! vertico
   (define-key vertico-map (kbd "M-o c") #'consult-toggle-preview))
+
+(after! consult
+  (setq! consult-man-args "/usr/bin/man -k"))
 
 (defun yeet/flymake-kill-at-point (&optional arg)
   "Your mum."
@@ -844,7 +849,16 @@ explicitly use the variable."
 (after! hl-todo
   (add-to-list 'hl-todo-keyword-faces `("DONE" org-done bold)))
 
-;; (set-popup-rule! "\\*info*\\" :side 'right)
+(setq yeet/popup-settings '(:slot 1
+                            :vslot 1
+                            :side right
+                            :width 0.45
+                            :quit nil))
+(set-popup-rules!
+  `((,(rx line-start "*info*")
+     ,@yeet/popup-settings)
+    (,(rx line-start "*" (? "Wo") "Man " (? (any numeric)) (?  " ") (+ (any alphanumeric))"*" )
+     ,@yeet/popup-settings)))
 
 (after! doom-modeline
   (setq! doom-modeline-buffer-file-name-style 'auto
@@ -864,7 +878,7 @@ explicitly use the variable."
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding checker major-mode process " " bar " ")))
+    '(misc-info vcs persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process " " bar " ")))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
@@ -997,9 +1011,6 @@ explicitly use the variable."
                                        '((python-mode . [(import_statement) @import])
                                          (rust-mode . [(use_declaration) @import]))))))
 
-(use-package! evil-tree-edit
-  :hook (python-mode . evil-tree-edit-mode))
-
 (setq dired-dwim-target t)
 
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
@@ -1074,6 +1085,8 @@ explicitly use the variable."
   `(org-level-5 :foreground ,(doom-color 'grey) :weight normal)
   `(org-level-6 :foreground ,(doom-color 'blue) :weight normal))
 
+(use-package! doct :commands doct)
+
 (after! org-capture
   (setq org-capture-templates
         '(("b" "Blog Entry" entry (file+headline "~/code/web/website/blog-hugo/content/posts/blog.org" "Posts") "** TODO %^{Title} %^g
@@ -1085,9 +1098,24 @@ explicitly use the variable."
 "
            :immediate-finish t :jump-to-captured t :no-save t)
           ("n" "Note" entry (file+olp+datetree "slipbox.org") "**** %T %?" :prepend t :kill-buffer t)
-          ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-          ("B" "Blog Ideas" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t)
-          ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
+          ("B" "Blog Ideas" entry (file+headline "blog-ideas.org" "Ideas") "**** +DAY  %?\n%i" :prepend t :kill-buffer t))))
+
+(doct '(("Blog"
+         :keys "b"
+         :file "~/code/web/website/blog-hugo/content/posts/blog.org"
+         :type entry
+         :headline "Posts"
+         :immediate-finish t
+         :jump-to-captured t
+         :no-save t
+         :template ("** TODO %^{Title} %^g
+:PROPERTIES:
+:EXPORT_DATE: %(format-time-string \"%Y-%m-%d\")
+:EXPORT_FILE_NAME: %^{filename}
+:END:
+%?
+")
+         )))
 
 (after! org
   (setq org-latex-hyperref-template
