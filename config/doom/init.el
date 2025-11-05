@@ -17,7 +17,7 @@
        ;;  +childframe)
        (corfu +orderless      ; complete with cap(f), cape and a flying feather!
               +icons
-              +dabbrev)
+              -dabbrev)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;(ivy +prescient)  ; a search engine for love and life
@@ -96,7 +96,7 @@
        direnv
        ;;docker
        editorconfig      ; let someone else argue about tabs vs spaces
-       ;;ein               ; tame Jupyter notebooks with emacs
+       ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)                  ; run code, run (also, repls)
        (lookup
         +docset)                      ; navigate your code and its documentation

@@ -7,7 +7,7 @@
     tmux
     # abduco
     # dvtm-unstable
-    urlview
+    tmuxPlugins.urlview
 
   ];
 

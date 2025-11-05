@@ -24,7 +24,7 @@ in {
     languagetool
 
     # tools/format
-    nixfmt
+    nixfmt-rfc-style
     shfmt
 
     # tools/editorconfig

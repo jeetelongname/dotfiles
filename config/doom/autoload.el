@@ -61,7 +61,7 @@
 ;;;###autoload
 (defun yeet/select-bird (bird)
   "Select BIRD from birds"
-  (interactive (list (completing-read "Select bird: " birds)))
+  (interactive (list (completing-read "Select bird: " yeet/birds)))
   (parrot-set-parrot-type bird))
 
 (defun yeet/scss-compile (watch)

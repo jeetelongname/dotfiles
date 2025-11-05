@@ -19,7 +19,7 @@
     nodePackages.js-beautify
 
     # language servers
-    nodePackages.vscode-json-languageserver-bin
+    vscode-langservers-extracted
     nodePackages.typescript-language-server
   ];
 }

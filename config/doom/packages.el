@@ -6,8 +6,15 @@
 
 (package! closql :pin "0a7226331ff1f96142199915c0ac7940bac4afdd")
 
+(package! cond-let)
+(package! llama)
+
 (package! nyan-mode)
 (package! parrot)
+
+;; (package! marqueeo
+;;   :recipe (:host github
+;;            :repo "progfolio/marqueeo/"))
 
 (package! dired-sidebar)
 
@@ -20,10 +27,10 @@
 
 (package! flymake-vale :recipe (:host github :repo "tpeacock19/flymake-vale"))
 
-;; (package! dired-dragon :recipe (:local-repo "~/code/emacs/dired-dragon"
-;;                                 :build (:not compile)))
-(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"
+(package! dired-dragon :recipe (:local-repo "~/code/emacs-packages/dired-dragon"
                                 :build (:not compile)))
+;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"
+;;                                 :build (:not compile)))
 
 (package! mmm-mode)
 
@@ -133,6 +140,14 @@
 
 (package! origami)
 (package! org-super-agenda)
+
+(package! code-cells)
+
+(package! typst-ts-mode
+  :recipe (:host codeberg
+           :repo "meow_king/typst-ts-mode"))
+(package! typst-preview
+  :recipe (:host github :repo "havarddj/typst-preview.el"))
 
 (package! circe-notifications :disable t)
 

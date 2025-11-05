@@ -1,11 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   home.packages = with pkgs; [ vivid ];
   programs.zsh = {
     enable = true;
 
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     enableCompletion = true;
 
     autocd = true;
@@ -27,7 +32,7 @@
       size = 10000;
     };
 
-    initExtra = "source $ZDOTDIR/extra.zsh";
+    initContent = "source $ZDOTDIR/extra.zsh";
 
     zplug = {
       enable = true;
@@ -47,11 +52,18 @@
         }
         {
           name = "jeetelongname/Yeet-theme";
-          tags = [ "as:theme" "defer:1" "dir:~/code/shell/yeet-theme" ];
+          tags = [
+            "as:theme"
+            "defer:1"
+            "dir:~/code/shell/yeet-theme"
+          ];
         }
         {
           name = "plugins/alias-finder";
-          tags = [ "from:oh-my-zsh" "as:plugin" ];
+          tags = [
+            "from:oh-my-zsh"
+            "as:plugin"
+          ];
         }
         { name = "MichaelAquilina/zsh-you-should-use"; }
       ];
@@ -59,27 +71,19 @@
   };
 
   xdg.configFile = {
-    "zsh/extra.zsh".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/extra.zsh;
-    "zsh/functions.zsh".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/functions.zsh;
-    "zsh/keys.zsh".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/keys.zsh;
-    "aliases".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/aliases;
+    "zsh/extra.zsh".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/extra.zsh;
+    "zsh/functions.zsh".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/functions.zsh;
+    "zsh/keys.zsh".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/keys.zsh;
+    "aliases".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/aliases;
     # "environment.d".source =
     #   config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile.conf;
   };
 
   home.file = {
-    ".bashrc".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/bashrc;
-    ".xprofile".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/xprofile;
-    ".profile".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile;
-    ".zprofile".source =
-      config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile;
+    ".bashrc".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/bashrc;
+    ".xprofile".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/xprofile;
+    ".profile".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile;
+    ".zprofile".source = config.lib.file.mkOutOfStoreSymlink ../../config/shell/profile;
 
   };
 }

@@ -13,7 +13,7 @@
     # TODO move this out of here
     packages = with pkgs; [ gimp ];
 
-    stateVersion = "21.05";
+    stateVersion = "24.11";
   };
 
   imports = [

@@ -124,6 +124,15 @@ get back a temp buffer as well as copied to your clipboard."
       (message "copied to kill ring")
       (pop-to-buffer (current-buffer)))))
 
+(defun yeet/randomise-lines (start end)
+  (interactive "r")
+  (let* ((str-lst (split-string (delete-and-extract-region start end)
+                                "\n"))
+         (randomised (seq-sort (lambda (_ __) (random 2)) str-lst))
+         (to-insert (mapconcat (lambda (s) (format "%s\n" s)) (cdr randomised))))
+    (goto-char start)
+    (insert to-insert)))
+
 (defmacro with-temp-buffer! (&rest BODY)
   "A wrapper around `with-temp-buffer' that implicitly calls `buffer-string'
 This is in an effort to streamline a very common usecase"
@@ -193,7 +202,7 @@ explicitly use the variable."
   (nyan-start-animation))
 
 (use-package! parrot
-  :defer t
+  :after doom-modeline
   :config
   (parrot-set-parrot-type (nth (random (length yeet/birds)) yeet/birds)) ;; this chooses a random bird on startup
   (parrot-mode +1)
@@ -212,7 +221,8 @@ explicitly use the variable."
                                                          "He is just happy to be here"))))
     (cdr (assoc cand yeet/birds+annotations))))
 
-;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
+(after! marginalia
+  (add-to-list 'marginalia-annotator-registry '(bird bird-annotations)))
 
 (defun yeet/sidebar-toggle ()
   "toggle both ibuffer and dired sidebars"
@@ -262,6 +272,7 @@ explicitly use the variable."
 (use-package! dired-dragon
   :after dired
   :config
+  (setq! dired-dragon-location (executable-find "xdragon"))
   (map! :map dired-mode-map
         (:prefix "C-s"
          :n "d" #'dired-dragon
@@ -319,9 +330,7 @@ explicitly use the variable."
 (use-package! aas
   :config
   (aas-set-snippets 'org-mode
-    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil"
-    "attroll" "#+attr_reveal: :frag (roll-in)")
-
+    "#+options" "#+options: title:nil author:nil date:nil broken-links:ignore toc:nil")
   (aas-set-snippets 'ess-r-mode
     "%|" "%>%"))
 
@@ -434,6 +443,11 @@ explicitly use the variable."
                '(psql (sql-product 'postgres)
                       (sql-port 22)
                       (sql-server (read-from-minibuffer "server ip: ")))))
+
+(after! sqlite
+  (map! :map sqlite-mode-map
+        :n "TAB" #'sqlite-mode-list-data
+        :n "c"   #'sqlite-mode-list-columns))
 
 (use-package! caddyfile-mode
   :mode (("Caddyfile\\'" . caddyfile-mode)
@@ -641,7 +655,7 @@ explicitly use the variable."
       :n "p" #'tetris-pause-game)
 
 (when (daemonp)
-  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
+  (use-package! elcord ;;
     :config
     (defun yeet/elcord-buffer-info ()
       "Get the buffer name or whether we are editing it or not and return a formatted string."
@@ -868,7 +882,7 @@ explicitly use the variable."
          doom-modeline-env-version t
          doom-modeline-buffer-modification-icon t
          doom-modeline-enable-word-count t
-         doom-modeline-continuous-word-count-modes '(text-mode)
+         doom-modeline-continuous-word-count-modes '(text-mode org-mode)
          doom-modeline-icon (display-graphic-p)
          doom-modeline-persp-name t
          doom-modeline-persp-icon t
@@ -1114,8 +1128,7 @@ explicitly use the variable."
 :EXPORT_FILE_NAME: %^{filename}
 :END:
 %?
-")
-         )))
+"))))
 
 (after! org
   (setq org-latex-hyperref-template
@@ -1213,10 +1226,17 @@ explicitly use the variable."
 (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
 (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 
-(setq lsp-solargraph-use-bundler t)
+(setq lsp-solargraph-use-bundler nil
+      lsp-ruby-lsp-use-bundler   nil
+      lsp-ruby-syntax-tree-use-bundler t)
 
 (set-repl-handler! 'ruby-mode (cmd! (robe-start)
                                     (robe-inf-buffer)))
+
+(after! apheleia
+  (setf (alist-get 'rufo apheleia-formatters)
+        '("bundle" "exec" "rufo" "--filename" filepath "--simple-exit"))
+  (setf (alist-get 'ruby-mode apheleia-mode-alist) 'rufo))
 
 (setq +latex-viewers '(pdf-tools zathura)) ;; don't be going to those filthy third party apps
 
@@ -1224,6 +1244,36 @@ explicitly use the variable."
 
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
+
+(use-package! typst-ts-mode
+  :mode "\\.typ")
+
+(after! lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
+  (lsp-register-client (make-lsp-client
+                        :new-connection (lsp-stdio-connection "tinymist")
+                        :activation-fn  (lsp-activate-on "typst")
+                        :server-id 'tinymist))
+
+  (add-hook 'typst-ts-mode-hook #'lsp! 'append)
+
+  (lsp-defcustom lsp-tinymist-export-pdf "onSave"
+                 "Export"
+                 :group 'tinymist
+                 :lsp-path "tinymist.settings.exportPdf"))
+
+(after! typst-preview
+  (setq typst-preview-invert-colors "never"))
+
+(map!
+ (:map typst-ts-mode-map
+       (:prefix "C-c"
+        :g "C-p" #'typst-preview-start
+        :g "C-s-p" #'typst-preview-stop)))
+
+(after! (typst-ts-mode smartparens)
+  (sp-local-pair 'typst-ts-mode "<" ">")
+  (sp-local-pair 'typst-ts-mode "$" "$"))
 
 (setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
 (setq +format-on-save-enabled-modes

@@ -39,6 +39,7 @@ Lets get this config started!
   - [[#fixes][fixes]]
   - [[#ui][ui]]
     - [[#modeline-fun][modeline fun]]
+    - [[#headerline-fun][headerline fun]]
     - [[#sidebars][sidebars]]
     - [[#themes][themes]]
   - [[#checkers][checkers]]
@@ -107,6 +108,7 @@ Lets get this config started!
     - [[#racket][racket]]
     - [[#ruby][ruby]]
     - [[#latex][LaTeX]]
+    - [[#typst][Typst]]
     - [[#web][Web]]
   - [[#app-1][app]]
     - [[#irc][irc]]
@@ -478,6 +480,20 @@ get back a temp buffer as well as copied to your clipboard."
 #+RESULTS:
 : yeet/export-with-pandoc
 
+#+begin_src emacs-lisp
+(defun yeet/randomise-lines (start end)
+  (interactive "r")
+  (let* ((str-lst (split-string (delete-and-extract-region start end)
+                                "\n"))
+         (randomised (seq-sort (lambda (_ __) (random 2)) str-lst))
+         (to-insert (mapconcat (lambda (s) (format "%s\n" s)) (cdr randomised))))
+    (goto-char start)
+    (insert to-insert)))
+#+end_src
+
+#+RESULTS:
+: yeet/randomise-lines
+
 ** macros
 this is a small helper macro that wraps ~with-temp-buffer~ with an implicit call
 to ~buffer-string~ I did this as I see this patter all over the place and
@@ -598,6 +614,11 @@ were doom modules
 
 #+RESULTS:
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! cond-let)
+(package! llama)
+#+end_src
+
 ** ui
 *** modeline fun :modeline:
 /whats life without a little colour?/
@@ -618,7 +639,7 @@ were doom modules
   (nyan-start-animation))
 
 (use-package! parrot
-  :defer t
+  :after doom-modeline
   :config
   (parrot-set-parrot-type (nth (random (length yeet/birds)) yeet/birds)) ;; this chooses a random bird on startup
   (parrot-mode +1)
@@ -637,16 +658,24 @@ were doom modules
                                                          "He is just happy to be here"))))
     (cdr (assoc cand yeet/birds+annotations))))
 
-;; (add-to-list 'marginalia-annotator-registry '(bird bird-annotations))
+(after! marginalia
+  (add-to-list 'marginalia-annotator-registry '(bird bird-annotations)))
 #+end_src
 
 #+begin_src emacs-lisp :tangle autoload.el
 ;;;###autoload
 (defun yeet/select-bird (bird)
   "Select BIRD from birds"
-  (interactive (list (completing-read "Select bird: " birds)))
+  (interactive (list (completing-read "Select bird: " yeet/birds)))
   (parrot-set-parrot-type bird))
 #+end_src
+*** headerline fun
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! marqueeo
+;;   :recipe (:host github
+;;            :repo "progfolio/marqueeo/"))
+#+end_src
+
 *** sidebars :sidebars:
 By virtue of these things I seem to have 3 different sidebars (4 if you include
 treemacs) that I have taken a liking to so they get there own sub genre
@@ -786,16 +815,17 @@ this replaces =:checkers grammer= and parts of =:checkers spell=
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
 wellish
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! dired-dragon :recipe (:local-repo "~/code/emacs/dired-dragon"
-;;                                 :build (:not compile)))
-(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"
+(package! dired-dragon :recipe (:local-repo "~/code/emacs-packages/dired-dragon"
                                 :build (:not compile)))
+;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"
+;;                                 :build (:not compile)))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package! dired-dragon
   :after dired
   :config
+  (setq! dired-dragon-location (executable-find "xdragon"))
   (map! :map dired-mode-map
         (:prefix "C-s"
          :n "d" #'dired-dragon
@@ -1097,6 +1127,15 @@ package shortens them to make reading code a lot easier
                '(psql (sql-product 'postgres)
                       (sql-port 22)
                       (sql-server (read-from-minibuffer "server ip: ")))))
+#+end_src
+
+#+begin_src emacs-lisp
+
+(after! sqlite
+  (map! :map sqlite-mode-map
+        :n "TAB" #'sqlite-mode-list-data
+        :n "c"   #'sqlite-mode-list-columns))
+
 #+end_src
 
 *** Caddy
@@ -1429,7 +1468,7 @@ I use non daemon sessions for testing I would much rather it would not be used
 
 #+begin_src emacs-lisp
 (when (daemonp)
-  (use-package! elcord ;; FIXME: flatpak discord can't pick up the calls :(
+  (use-package! elcord ;;
     :config
     (defun yeet/elcord-buffer-info ()
       "Get the buffer name or whether we are editing it or not and return a formatted string."
@@ -1760,7 +1799,7 @@ My modeline does a lot...
          doom-modeline-env-version t
          doom-modeline-buffer-modification-icon t
          doom-modeline-enable-word-count t
-         doom-modeline-continuous-word-count-modes '(text-mode)
+         doom-modeline-continuous-word-count-modes '(text-mode org-mode)
          doom-modeline-icon (display-graphic-p)
          doom-modeline-persp-name t
          doom-modeline-persp-icon t
@@ -2132,7 +2171,7 @@ directly
 #+END_SRC
 
 **** TODO Capture
-switch to doct, steal[[https://tecosaur.github.io/emacs-config/#visuals][tecos config on the matter]] 
+switch to doct, steal [[https://tecosaur.github.io/emacs-config/#visuals][tecos config on the matter]]
 #+begin_src emacs-lisp :tangle packages.el
 (package! doct)
 #+end_src
@@ -2166,8 +2205,7 @@ switch to doct, steal[[https://tecosaur.github.io/emacs-config/#visuals][tecos c
 :EXPORT_FILE_NAME: %^{filename}
 :END:
 %?
-")
-         )))
+"))))
 
 
 #+END_SRC
@@ -2297,6 +2335,10 @@ Python is great is it not 🐍
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 #+END_SRC
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! code-cells)
+#+end_src
 *** racket
 racket is slowly becoming my favorite language
 
@@ -2307,12 +2349,21 @@ adding unicode input
 #+end_src
 *** ruby :ruby:
 #+begin_src emacs-lisp
-(setq lsp-solargraph-use-bundler t)
+(setq lsp-solargraph-use-bundler nil
+      lsp-ruby-lsp-use-bundler   nil
+      lsp-ruby-syntax-tree-use-bundler t)
 #+end_src
 
 #+begin_src emacs-lisp
 (set-repl-handler! 'ruby-mode (cmd! (robe-start)
                                     (robe-inf-buffer)))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! apheleia
+  (setf (alist-get 'rufo apheleia-formatters)
+        '("bundle" "exec" "rufo" "--filename" filepath "--simple-exit"))
+  (setf (alist-get 'ruby-mode apheleia-mode-alist) 'rufo))
 #+end_src
 *** LaTeX :LaTeX:
 #+BEGIN_SRC emacs-lisp
@@ -2327,7 +2378,53 @@ adding unicode input
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
 #+END_SRC
+*** Typst
+#+begin_src emacs-lisp :tangle packages.el
+(package! typst-ts-mode
+  :recipe (:host codeberg
+           :repo "meow_king/typst-ts-mode"))
+(package! typst-preview
+  :recipe (:host github :repo "havarddj/typst-preview.el"))
+#+end_src
 
+Lsp schenanigans, just about works but I am not sure how to get the methods to
+actually work.
+#+begin_src emacs-lisp
+
+(use-package! typst-ts-mode
+  :mode "\\.typ")
+
+(after! lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
+  (lsp-register-client (make-lsp-client
+                        :new-connection (lsp-stdio-connection "tinymist")
+                        :activation-fn  (lsp-activate-on "typst")
+                        :server-id 'tinymist))
+
+  (add-hook 'typst-ts-mode-hook #'lsp! 'append)
+
+  (lsp-defcustom lsp-tinymist-export-pdf "onSave"
+                 "Export"
+                 :group 'tinymist
+                 :lsp-path "tinymist.settings.exportPdf"))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! typst-preview
+  (setq typst-preview-invert-colors "never"))
+
+(map!
+ (:map typst-ts-mode-map
+       (:prefix "C-c"
+        :g "C-p" #'typst-preview-start
+        :g "C-s-p" #'typst-preview-stop)))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! (typst-ts-mode smartparens)
+  (sp-local-pair 'typst-ts-mode "<" ">")
+  (sp-local-pair 'typst-ts-mode "$" "$"))
+#+end_src
 *** Web :web:
 I just find the tidy formatter indent functionality annoying and redundant. so
 I changed it

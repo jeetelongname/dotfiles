@@ -8,7 +8,7 @@
     bitwarden-cli
     calc
     xdragon
-    exa
+    eza
     fd
     htop
     jq

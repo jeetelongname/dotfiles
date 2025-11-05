@@ -16,3 +16,6 @@ shopt -s expand_aliases # expand aliases
 shopt -s checkwinsize   # checks term size when bash regains control
 
 [ -f ~/.config/aliases ] && source ~/.config/aliases
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

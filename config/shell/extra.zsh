@@ -56,6 +56,7 @@ export PF_COL3=5 ## color of the title (hostname and all that)
 export PF_ALIGN="8"
 
 export PATH="$HOME/.poetry/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 
 vterm_printf() {
     if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ]); then

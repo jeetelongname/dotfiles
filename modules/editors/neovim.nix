@@ -9,8 +9,8 @@
   ];
 
   home.packages = with pkgs; [
-    neovim-nightly
-    python39Packages.pynvim # pip install --user --upgrade pynvim
+    neovim
+    python312Packages.pynvim # pip install --user --upgrade pynvim
 
   ];
 

@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: details
+# key: <d
+# condition: t
+# --
+#+begin_details
+#+begin_summary
+${1: "Some Summary"}
+#+end_summary
+$0
+#+end_details

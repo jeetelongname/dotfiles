@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.git = {
@@ -25,14 +30,14 @@
 
     };
 
-    includes = [{ path = "~/gitconfig.hidden"; }];
+    includes = [ { path = "~/gitconfig.hidden"; } ];
 
     userEmail = "jeetelongname@gmail.com";
     userName = "Jeetaditya Chatterjee";
 
     signing = {
       key = "BA34D124";
-      gpgPath = "/usr/bin/gpg";
+      signer = "/usr/bin/gpg";
       signByDefault = true;
     };
 
